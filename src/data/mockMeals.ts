@@ -1,0 +1,85 @@
+import { MealLogEntry } from '../types';
+
+export const initialMockMeals: MealLogEntry[] = [
+  {
+    id: 'meal-01',
+    timestamp: new Date(Date.now() - 13.5 * 3600 * 1000).toISOString(),
+    mealType: 'breakfast',
+    name: 'South Indian Breakfast (Idli & Sambar)',
+    items: [
+      {
+        foodId: 'food-idli',
+        name: 'Idli (Steamed rice & urad dal cakes)',
+        servings: 3,
+        servingDescription: '1 medium idli (45g)',
+        carbsPerServing: 12,
+        totalCarbs: 36,
+      },
+      {
+        foodId: 'food-sambar',
+        name: 'Sambar (Toor dal & vegetables)',
+        servings: 1,
+        servingDescription: '1 small katori (150ml)',
+        carbsPerServing: 9,
+        totalCarbs: 9,
+      },
+    ],
+    totalCarbs: 45,
+    notes: 'Pre-bolused 15 min earlier; minimal spike peak at 162 mg/dL.',
+    isDemo: true,
+  },
+  {
+    id: 'meal-02',
+    timestamp: new Date(Date.now() - 8.5 * 3600 * 1000).toISOString(),
+    mealType: 'lunch',
+    name: 'Home North Indian Thali',
+    items: [
+      {
+        foodId: 'food-chapati',
+        name: 'Whole Wheat Chapati / Phulka (No ghee)',
+        servings: 2,
+        servingDescription: '1 medium chapati (35g)',
+        carbsPerServing: 17,
+        totalCarbs: 34,
+      },
+      {
+        foodId: 'food-dal-tadka',
+        name: 'Yellow Dal Tadka',
+        servings: 1,
+        servingDescription: '1 medium katori (150g)',
+        carbsPerServing: 14,
+        totalCarbs: 14,
+      },
+    ],
+    totalCarbs: 48,
+    notes: 'Paired with fiber-rich cucumber salad; smooth return to baseline by 3 PM.',
+    isDemo: true,
+  },
+  {
+    id: 'meal-03',
+    timestamp: new Date(Date.now() - 1.2 * 3600 * 1000).toISOString(),
+    mealType: 'dinner',
+    name: 'Paneer & Brown Rice Dinner',
+    items: [
+      {
+        foodId: 'food-brown-rice',
+        name: 'Steamed Brown Rice (Cooked)',
+        servings: 1,
+        servingDescription: '1 medium katori (150g cooked)',
+        carbsPerServing: 35,
+        totalCarbs: 35,
+      },
+      {
+        foodId: 'food-paneer-curry',
+        name: 'Palak Paneer (Spinach & cottage cheese)',
+        servings: 1,
+        servingDescription: '1 medium katori (150g)',
+        carbsPerServing: 9,
+        totalCarbs: 9,
+      },
+    ],
+    totalCarbs: 44,
+    notes: 'Paneer fats cause a gentle delayed digestion curve; monitoring 10 PM reading.',
+    isDemo: true,
+  },
+];

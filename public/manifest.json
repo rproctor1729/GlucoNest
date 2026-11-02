@@ -1,0 +1,21 @@
+{
+  "name": "GlucoNest — Type-1 Diabetes Companion",
+  "short_name": "GlucoNest",
+  "description": "Your glucose tells a story. We help you read it. Built by diabetics, for diabetics.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c1218",
+  "theme_color": "#5c9183",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

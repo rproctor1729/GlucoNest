@@ -1,0 +1,32 @@
+import { GlucoseReading } from '../types';
+
+export const mockGlucoseReadings: GlucoseReading[] = [
+  { id: 'g-00', timestamp: '00:00', timeLabel: '12:00 AM', value: 110, trend: 'FLAT', isDemo: true },
+  { id: 'g-01', timestamp: '01:00', timeLabel: '1:00 AM', value: 106, trend: 'FLAT', isDemo: true },
+  { id: 'g-02', timestamp: '02:00', timeLabel: '2:00 AM', value: 102, trend: 'FLAT', isDemo: true },
+  { id: 'g-03', timestamp: '03:00', timeLabel: '3:00 AM', value: 98, trend: 'FLAT', isDemo: true },
+  { id: 'g-04', timestamp: '04:00', timeLabel: '4:00 AM', value: 101, trend: 'FLAT', isDemo: true },
+  { id: 'g-05', timestamp: '05:00', timeLabel: '5:00 AM', value: 114, trend: 'SLIGHT_UP', notes: 'Gentle dawn hepatic wake-up', isDemo: true },
+  { id: 'g-06', timestamp: '06:00', timeLabel: '6:00 AM', value: 126, trend: 'SLIGHT_UP', isDemo: true },
+  { id: 'g-07', timestamp: '07:00', timeLabel: '7:00 AM', value: 138, trend: 'FLAT', event: 'insulin', eventDetails: '4.0u rapid pre-bolus', isDemo: true },
+  { id: 'g-0715', timestamp: '07:15', timeLabel: '7:15 AM', value: 132, trend: 'SLIGHT_DOWN', event: 'meal', eventDetails: '3 Idlis + Sambar (45g carbs)', isDemo: true },
+  { id: 'g-08', timestamp: '08:00', timeLabel: '8:00 AM', value: 154, trend: 'SLIGHT_UP', isDemo: true },
+  { id: 'g-0830', timestamp: '08:30', timeLabel: '8:30 AM', value: 162, trend: 'FLAT', isDemo: true },
+  { id: 'g-09', timestamp: '09:00', timeLabel: '9:00 AM', value: 140, trend: 'SLIGHT_DOWN', isDemo: true },
+  { id: 'g-10', timestamp: '10:00', timeLabel: '10:00 AM', value: 118, trend: 'FLAT', isDemo: true },
+  { id: 'g-11', timestamp: '11:00', timeLabel: '11:00 AM', value: 106, trend: 'FLAT', isDemo: true },
+  { id: 'g-12', timestamp: '12:00', timeLabel: '12:00 PM', value: 99, trend: 'FLAT', isDemo: true },
+  { id: 'g-1230', timestamp: '12:30', timeLabel: '12:30 PM', value: 104, trend: 'SLIGHT_UP', event: 'meal', eventDetails: '2 Chapatis + Dal Tadka + Bhindi (48g carbs)', isDemo: true },
+  { id: 'g-1245', timestamp: '12:45', timeLabel: '12:45 PM', value: 112, trend: 'UP', event: 'insulin', eventDetails: '4.5u rapid dose', isDemo: true },
+  { id: 'g-1330', timestamp: '13:30', timeLabel: '1:30 PM', value: 158, trend: 'FLAT', isDemo: true },
+  { id: 'g-14', timestamp: '14:00', timeLabel: '2:00 PM', value: 142, trend: 'SLIGHT_DOWN', isDemo: true },
+  { id: 'g-15', timestamp: '15:00', timeLabel: '3:00 PM', value: 119, trend: 'FLAT', isDemo: true },
+  { id: 'g-16', timestamp: '16:00', timeLabel: '4:00 PM', value: 112, trend: 'FLAT', isDemo: true },
+  { id: 'g-17', timestamp: '17:00', timeLabel: '5:00 PM', value: 105, trend: 'FLAT', event: 'exercise', eventDetails: '25 min brisk neighborhood walk', isDemo: true },
+  { id: 'g-1730', timestamp: '17:30', timeLabel: '5:30 PM', value: 94, trend: 'SLIGHT_DOWN', isDemo: true },
+  { id: 'g-18', timestamp: '18:00', timeLabel: '6:00 PM', value: 102, trend: 'FLAT', isDemo: true },
+  { id: 'g-19', timestamp: '19:00', timeLabel: '7:00 PM', value: 116, trend: 'FLAT', isDemo: true },
+  { id: 'g-20', timestamp: '20:00', timeLabel: '8:00 PM', value: 110, trend: 'FLAT', event: 'meal', eventDetails: 'Paneer curry + 1 cup brown rice (44g carbs)', isDemo: true },
+  { id: 'g-2015', timestamp: '20:15', timeLabel: '8:15 PM', value: 115, trend: 'SLIGHT_UP', event: 'insulin', eventDetails: '4.0u rapid dose', isDemo: true },
+  { id: 'g-21', timestamp: '21:00', timeLabel: '9:00 PM', value: 118, trend: 'SLIGHT_UP', isDemo: true }, // Current demo reading
+];
