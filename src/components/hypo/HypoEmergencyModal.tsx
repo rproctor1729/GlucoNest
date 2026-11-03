@@ -118,17 +118,23 @@ export default function HypoEmergencyModal() {
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6">
           {/* Current Reading Context */}
           <div className="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/40 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-baseline gap-2">
-              <span className="text-xs font-semibold text-rose-700 dark:text-rose-300 uppercase tracking-wider">
-                Sample Glucose Value:
+            {currentReading ? (
+              <div className="flex items-baseline gap-2">
+                <span className="text-xs font-semibold text-rose-700 dark:text-rose-300 uppercase tracking-wider">
+                  Latest glucose value:
+                </span>
+                <span className="text-3xl font-bold font-mono tracking-tight text-rose-600 dark:text-rose-400">
+                  {convertGlucose(currentReading.value, glucoseUnit)}
+                </span>
+                <span className="text-sm font-medium text-rose-600 dark:text-rose-400">
+                  {formatUnitLabel(glucoseUnit)}
+                </span>
+              </div>
+            ) : (
+              <span className="text-xs font-semibold text-rose-700 dark:text-rose-300">
+                No glucose reading is currently available.
               </span>
-              <span className="text-3xl font-bold font-mono tracking-tight text-rose-600 dark:text-rose-400">
-                {convertGlucose(currentReading.value, glucoseUnit)}
-              </span>
-              <span className="text-sm font-medium text-rose-600 dark:text-rose-400">
-                {formatUnitLabel(glucoseUnit)}
-              </span>
-            </div>
+            )}
             <div className="text-xs text-rose-700 dark:text-rose-300 flex items-center gap-1.5">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>Target safe threshold: 70 mg/dL (3.9 mmol/L)</span>

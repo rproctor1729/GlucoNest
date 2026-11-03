@@ -40,6 +40,11 @@ export default function Footer() {
                 </button>
               </li>
               <li>
+                <button onClick={() => setActiveSection('devices')} className="hover:text-slate-900 dark:hover:text-white">
+                  Devices &amp; Data Sources
+                </button>
+              </li>
+              <li>
                 <button onClick={() => setActiveSection('quick-log')} className="hover:text-slate-900 dark:hover:text-white">
                   Quick Log
                 </button>

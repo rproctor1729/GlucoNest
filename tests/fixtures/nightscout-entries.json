@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "sample-latest",
+    "sgv": 144,
+    "dateString": "2026-11-03T10:00:00.000Z",
+    "direction": "FortyFiveUp",
+    "device": "sample-cgm"
+  },
+  {
+    "_id": "sample-earlier",
+    "sgv": 3.8,
+    "units": "mmol/L",
+    "date": 1793699700000,
+    "direction": "Flat"
+  },
+  {
+    "_id": "sample-duplicate",
+    "sgv": 180,
+    "dateString": "2026-11-03T10:00:00.000Z"
+  },
+  {
+    "_id": "sample-invalid",
+    "sgv": 0,
+    "date": 1793699400000
+  }
+]

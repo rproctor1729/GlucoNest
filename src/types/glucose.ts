@@ -9,11 +9,25 @@ export type GlucoseTrend =
   | 'DOWN'
   | 'DOUBLE_DOWN';
 
+export interface NormalizedGlucoseReading {
+  id: string;
+  value: number;
+  unit: 'mg/dL';
+  timestamp: string;
+  timeLabel: string;
+  source: 'nightscout' | 'csv' | 'manual';
+  trend?: GlucoseTrend;
+  originalSource?: string;
+}
+
 export interface GlucoseReading {
   id?: string;
   timestamp: string; // "HH:mm" or ISO string
   timeLabel: string;
   value: number; // in mg/dL (normalized)
+  unit?: 'mg/dL';
+  source?: 'nightscout' | 'csv' | 'manual';
+  originalSource?: string;
   trend?: GlucoseTrend;
   notes?: string;
   event?: 'meal' | 'insulin' | 'exercise' | 'correction' | 'hypo';

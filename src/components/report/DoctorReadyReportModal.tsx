@@ -25,11 +25,48 @@ export default function DoctorReadyReportModal() {
     glucoseUnit,
     reportPeriod,
     setReportPeriod,
+    isNightscoutConnected,
+    dataSource,
   } = useApp();
 
   const printRef = useRef<HTMLDivElement>(null);
 
   if (!isReportModalOpen) return null;
+
+  if (dataSource !== 'demo') {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-fadeIn">
+        <div
+          className="w-full max-w-lg bg-white dark:bg-[#131b24] text-slate-900 dark:text-slate-100 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="report-modal-title"
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2 id="report-modal-title" className="text-base font-semibold">
+                Sample report preview only
+              </h2>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                This report contains a sample patient profile, logs, and observations. It is unavailable with {isNightscoutConnected ? 'Nightscout' : 'manual'} data to prevent mixing sample content with your readings.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsReportModalOpen(false)}
+              className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+              aria-label="Close report message"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            The selected glucose data remains available on My Day and My Insights. This prototype does not provide medical advice.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const tirData = calculateDetailedTIR(readings);
 
@@ -61,7 +98,7 @@ export default function DoctorReadyReportModal() {
                 </span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Print or export clean PDF for your upcoming endocrinologist consultation.
+                Print or export a sample PDF for preview; replace demo details before sharing.
               </p>
             </div>
           </div>
