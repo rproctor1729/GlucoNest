@@ -30,7 +30,6 @@ const communityProfiles = [
 export default function LearnCommunitySection() {
   const {
     guides,
-    triggerHypoEmergency,
     setIsReportModalOpen,
     setActiveSection,
   } = useApp();
@@ -113,14 +112,6 @@ export default function LearnCommunitySection() {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={triggerHypoEmergency}
-            className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-sm transition-all flex items-center gap-1.5"
-          >
-            <ShieldAlert className="w-4 h-4" />
-            <span>Open 15-Minute Hypo Timer & SOS</span>
-          </button>
         </div>
 
         <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">

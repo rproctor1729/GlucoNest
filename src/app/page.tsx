@@ -15,7 +15,6 @@ import DevicesSection from '@/components/devices/DevicesSection';
 import HypoEmergencyModal from '@/components/hypo/HypoEmergencyModal';
 import OneTapLogModal from '@/components/dashboard/OneTapLogModal';
 import DoctorReadyReportModal from '@/components/report/DoctorReadyReportModal';
-import PinnedHypoButton from '@/components/hypo/PinnedHypoButton';
 
 function MainContent() {
   const { activeSection } = useApp();
@@ -37,11 +36,10 @@ function MainContent() {
 
       <Footer />
 
-      {/* Global Modals & Persistent Emergency Pinned Trigger */}
+      {/* Global modals */}
       <HypoEmergencyModal />
       <OneTapLogModal />
       <DoctorReadyReportModal />
-      <PinnedHypoButton />
     </div>
   );
 }
