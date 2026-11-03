@@ -135,7 +135,7 @@ export default function QuickLogSection() {
         ],
         totalCarbs: carbsNum,
         notes: mealNotes,
-        isDemo: true,
+        isDemo: false,
       });
       showToast('Meal recorded to local logs');
     }
@@ -169,7 +169,7 @@ export default function QuickLogSection() {
         brandName: insulinBrand,
         deliveryMethod: 'pen',
         notes: insulinNotes,
-        isDemo: true,
+        isDemo: false,
       });
       showToast('Insulin dose logged');
     }
@@ -185,19 +185,21 @@ export default function QuickLogSection() {
     }
 
     const normalizedMgDl = parseGlucoseInput(val, glucoseUnit);
-    const timeLabel = new Date(`${formDate}T${formTime}:00`).toLocaleTimeString([], {
+    const manualTimestamp = new Date(`${formDate}T${formTime}:00`);
+    const timeLabel = manualTimestamp.toLocaleTimeString([], {
       hour: '2-digit',
       minute: '2-digit',
     });
 
     addReading({
       id: 'g-manual-' + Date.now(),
-      timestamp: formTime,
+      timestamp: manualTimestamp.toISOString(),
       timeLabel,
       value: normalizedMgDl,
       trend: 'FLAT',
       notes: glucoseNotes || 'Manual fingerstick check',
-      isDemo: true,
+      source: 'manual',
+      isDemo: false,
     });
 
     showToast('Manual glucose reading saved');
@@ -220,7 +222,7 @@ export default function QuickLogSection() {
       durationMinutes: mins,
       intensity: activityIntensity,
       notes: activityNotes,
-      isDemo: true,
+      isDemo: false,
     });
 
     showToast('Activity logged');

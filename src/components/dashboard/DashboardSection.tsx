@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import {
   convertGlucose,
@@ -54,22 +54,40 @@ export default function DashboardSection() {
     setActiveSection,
     setIsReportModalOpen,
     resetDemoData,
+    dataSource,
+    connectionStatus,
+    isNightscoutConnected,
+    lastSuccessfulFetch,
+    connectionError,
+    refreshNightscout,
   } = useApp();
 
   const [timeRange, setTimeRange] = useState<'3h' | '6h' | '12h' | '24h'>('24h');
+  const [now, setNow] = useState(Date.now());
 
-  const trend = getTrendSymbol(currentReading.trend);
-  const status = getGlucoseStatus(currentReading.value);
-  const statusColors = getGlucoseStatusColor(status, darkMode);
   const tirStats = calculateDetailedTIR(readings);
 
-  // Filter readings based on selected time window
+  useEffect(() => {
+    if (!isNightscoutConnected) return;
+    const timer = window.setInterval(() => setNow(Date.now()), 60 * 1000);
+    return () => window.clearInterval(timer);
+  }, [isNightscoutConnected]);
+
   const filteredReadings = useMemo(() => {
+    if (dataSource !== 'demo' && readings.length > 0) {
+      const durationHours = Number.parseInt(timeRange, 10);
+      const timestamps = readings.map((reading) => Date.parse(reading.timestamp)).filter(Number.isFinite);
+      if (timestamps.length === readings.length) {
+        const latestTimestamp = Math.max(...timestamps);
+        const startTimestamp = latestTimestamp - durationHours * 60 * 60 * 1000;
+        return readings.filter((reading) => Date.parse(reading.timestamp) >= startTimestamp);
+      }
+    }
     if (timeRange === '3h') return readings.slice(-6);
     if (timeRange === '6h') return readings.slice(-10);
     if (timeRange === '12h') return readings.slice(-16);
     return readings;
-  }, [readings, timeRange]);
+  }, [dataSource, readings, timeRange]);
 
   // Chart data formatted for current unit
   const chartData = useMemo(() => {
@@ -78,6 +96,9 @@ export default function DashboardSection() {
       return {
         ...r,
         displayValue: displayVal,
+        chartTime: Number.isFinite(Date.parse(r.timestamp))
+          ? new Date(r.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          : r.timeLabel,
       };
     });
   }, [filteredReadings, glucoseUnit]);
@@ -112,7 +133,11 @@ export default function DashboardSection() {
       });
 
     // From meals
-    meals.forEach((m) => {
+    const visibleMeals = dataSource === 'demo' ? meals : meals.filter((meal) => !meal.isDemo);
+    const visibleInsulinLogs = dataSource === 'demo' ? insulinLogs : insulinLogs.filter((log) => !log.isDemo);
+    const visibleActivityLogs = dataSource === 'demo' ? activityLogs : activityLogs.filter((log) => !log.isDemo);
+
+    visibleMeals.forEach((m) => {
       const timeStr = new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       events.push({
         id: m.id,
@@ -124,7 +149,7 @@ export default function DashboardSection() {
     });
 
     // From insulin logs
-    insulinLogs.forEach((i) => {
+    visibleInsulinLogs.forEach((i) => {
       const timeStr = new Date(i.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       events.push({
         id: i.id,
@@ -136,7 +161,7 @@ export default function DashboardSection() {
     });
 
     // From activity
-    activityLogs.forEach((a) => {
+    visibleActivityLogs.forEach((a) => {
       const timeStr = new Date(a.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       events.push({
         id: a.id,
@@ -149,31 +174,124 @@ export default function DashboardSection() {
 
     // Return unique items (latest first)
     return events.slice(0, 7);
-  }, [readings, meals, insulinLogs, activityLogs, glucoseUnit]);
+  }, [readings, meals, insulinLogs, activityLogs, glucoseUnit, dataSource]);
+
+  if (!currentReading) {
+    return (
+      <div className="space-y-6 animate-fadeIn">
+        <div className="rounded-2xl border border-nest-200 dark:border-nest-900/60 bg-white dark:bg-[#131b24] p-6 sm:p-8 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                Connected to Nightscout
+              </span>
+              <h2 className="mt-4 text-xl font-bold text-slate-900 dark:text-white">No glucose readings available</h2>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                The instance returned no valid readings. Demo readings are not mixed with this source.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => void refreshNightscout()}
+              disabled={connectionStatus === 'fetching'}
+              className="h-10 px-4 rounded-xl bg-nest-600 hover:bg-nest-700 disabled:opacity-60 text-white text-xs font-semibold"
+            >
+              {connectionStatus === 'fetching' ? 'Fetching…' : 'Refresh'}
+            </button>
+          </div>
+          {connectionError && <p role="alert" className="text-xs text-amber-700 dark:text-amber-300">{connectionError}</p>}
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Last successful fetch: {lastSuccessfulFetch ? new Date(lastSuccessfulFetch).toLocaleString() : 'Not available'}
+          </p>
+          <button
+            type="button"
+            onClick={() => setActiveSection('devices')}
+            className="text-xs font-semibold text-nest-700 dark:text-nest-300 hover:underline"
+          >
+            Manage data sources
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const trend = currentReading.trend ? getTrendSymbol(currentReading.trend) : null;
+  const status = getGlucoseStatus(currentReading.value);
+  const statusColors = getGlucoseStatusColor(status, darkMode);
+  const latestReadingTime = Number.isFinite(Date.parse(currentReading.timestamp))
+    ? new Date(currentReading.timestamp).toLocaleString()
+    : currentReading.timeLabel;
+  const readingIsStale = isNightscoutConnected &&
+    Number.isFinite(Date.parse(currentReading.timestamp)) &&
+    now - Date.parse(currentReading.timestamp) > 10 * 60 * 1000;
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-fadeIn">
-      {/* Explicit Prototype & Demo Data Banner */}
-      <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs text-amber-900 dark:text-amber-200">
-        <div className="flex items-center gap-2">
-          <span className="px-2 py-0.5 rounded font-bold uppercase tracking-wider bg-amber-200/80 dark:bg-amber-900/80 text-amber-900 dark:text-amber-100 text-[10px]">
-            DEMO DATA
+      <div className={`rounded-xl border p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs ${
+        isNightscoutConnected
+          ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/60 text-emerald-900 dark:text-emerald-200'
+          : dataSource === 'manual'
+            ? 'bg-slate-50 dark:bg-slate-900/70 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
+            : 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/60 text-amber-900 dark:text-amber-200'
+      }`}>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={`px-2 py-0.5 rounded font-bold uppercase tracking-wider text-[10px] ${
+            isNightscoutConnected
+              ? 'bg-emerald-200/80 dark:bg-emerald-900/80 text-emerald-900 dark:text-emerald-100'
+              : dataSource === 'manual'
+                ? 'bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
+                : 'bg-amber-200/80 dark:bg-amber-900/80 text-amber-900 dark:text-amber-100'
+          }`}>
+            {isNightscoutConnected ? 'NIGHTSCOUT DATA' : dataSource === 'manual' ? 'MANUAL DATA' : 'DEMO DATA'}
           </span>
           <span className="font-medium">
-            Prototype Preview: Not connected to a real sensor. All readings and analytics are realistic sample data for exploration.
+            {isNightscoutConnected
+              ? `Read-only Nightscout history · Last fetched ${lastSuccessfulFetch ? new Date(lastSuccessfulFetch).toLocaleString() : 'not yet'}`
+              : dataSource === 'manual'
+                ? 'Manually entered glucose readings only · demo samples are not included.'
+                : 'Prototype preview: sample readings and analytics for exploration.'}
           </span>
+          {readingIsStale && <span className="font-semibold">Last reading is stale · {latestReadingTime}</span>}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          {isNightscoutConnected && (
+            <button
+              type="button"
+              onClick={() => void refreshNightscout()}
+              disabled={connectionStatus === 'fetching'}
+              className="font-semibold hover:underline disabled:opacity-60"
+            >
+              {connectionStatus === 'fetching' ? 'Fetching…' : 'Refresh'}
+            </button>
+          )}
+          {dataSource === 'demo' && (
+            <button
+              type="button"
+              onClick={resetDemoData}
+              className="flex items-center gap-1 hover:underline font-semibold"
+              title="Reset to default sample data"
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>Reset Demo</span>
+            </button>
+          )}
           <button
             type="button"
-            onClick={resetDemoData}
-            className="flex items-center gap-1 text-amber-800 dark:text-amber-300 hover:underline font-semibold"
-            title="Reset to default sample data"
+            onClick={() => setActiveSection('devices')}
+            className="font-semibold hover:underline"
           >
-            <RotateCcw className="w-3 h-3" />
-            <span>Reset Demo</span>
+            Data sources
           </button>
         </div>
+        {connectionError && isNightscoutConnected && (
+          <p role="alert" className="basis-full">{connectionError} Showing the last successfully fetched readings.</p>
+        )}
+        {connectionError && !isNightscoutConnected && (
+          <p role="alert" className="basis-full font-medium">
+            Nightscout connection failed: {connectionError} Demo data remains active.
+          </p>
+        )}
       </div>
 
       {/* The Big Number First Card */}
@@ -185,7 +303,7 @@ export default function DashboardSection() {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  Sample Glucose (My Day)
+                  {isNightscoutConnected ? 'Latest Glucose' : dataSource === 'manual' ? 'Manual Glucose' : 'Sample Glucose (My Day)'}
                 </span>
               </div>
               <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${statusColors.badgeBg}`}>
@@ -200,9 +318,11 @@ export default function DashboardSection() {
               </span>
 
               <div className="flex flex-col">
-                <span className="text-3xl font-bold text-nest-600 dark:text-nest-400" title={trend.text}>
-                  {trend.symbol}
-                </span>
+                {trend && (
+                  <span className="text-3xl font-bold text-nest-600 dark:text-nest-400" title={trend.text}>
+                    {trend.symbol}
+                  </span>
+                )}
                 <span className="text-xs font-medium text-slate-500 font-mono">
                   {formatUnitLabel(glucoseUnit)}
                 </span>
@@ -210,7 +330,10 @@ export default function DashboardSection() {
             </div>
 
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {trend.text} · Sample reading 2m ago (Demo baseline)
+              {trend ? `${trend.text} · ` : ''}
+              {isNightscoutConnected
+                ? `Reading timestamp: ${latestReadingTime}`
+                : dataSource === 'manual' ? `Manual reading · ${latestReadingTime}` : `Demo reading · ${latestReadingTime}`}
             </p>
           </div>
 
@@ -219,12 +342,12 @@ export default function DashboardSection() {
             <div className="flex items-center justify-between text-xs">
               <span className="text-slate-700 dark:text-slate-300 font-medium">Time In Range (TIR)</span>
               <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                {tirStats.inRangePercent}% (Target &gt;70%)
+                {tirStats.hasSufficientData ? `${tirStats.inRangePercent}% (Target >70%)` : 'Insufficient data'}
               </span>
             </div>
 
             {/* Horizontal Mini Stack */}
-            <div className="h-3 w-full rounded-full overflow-hidden flex bg-slate-200 dark:bg-slate-800">
+            <div className={`h-3 w-full rounded-full overflow-hidden flex bg-slate-200 dark:bg-slate-800 ${tirStats.hasSufficientData ? '' : 'opacity-30'}`}>
               <div style={{ width: `${tirStats.veryLowPercent}%` }} className="bg-rose-700" title={`Urgent Low: ${tirStats.veryLowPercent}%`} />
               <div style={{ width: `${tirStats.lowPercent}%` }} className="bg-rose-400" title={`Low: ${tirStats.lowPercent}%`} />
               <div style={{ width: `${tirStats.inRangePercent}%` }} className="bg-emerald-500" title={`In Range: ${tirStats.inRangePercent}%`} />
@@ -234,14 +357,14 @@ export default function DashboardSection() {
 
             {/* TBR and TAR pill breakdown */}
             <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono pt-0.5">
-              <span className="text-rose-600 dark:text-rose-400">TBR: {tirStats.timeBelowRangePercent}%</span>
-              <span className="text-emerald-600 dark:text-emerald-400">TIR: {tirStats.inRangePercent}%</span>
-              <span className="text-amber-600 dark:text-amber-400">TAR: {tirStats.timeAboveRangePercent}%</span>
+              <span className="text-rose-600 dark:text-rose-400">TBR: {tirStats.hasSufficientData ? `${tirStats.timeBelowRangePercent}%` : '—'}</span>
+              <span className="text-emerald-600 dark:text-emerald-400">TIR: {tirStats.hasSufficientData ? `${tirStats.inRangePercent}%` : '—'}</span>
+              <span className="text-amber-600 dark:text-amber-400">TAR: {tirStats.hasSufficientData ? `${tirStats.timeAboveRangePercent}%` : '—'}</span>
             </div>
           </div>
         </div>
 
-        {/* Pattern of the Day Card */}
+        {dataSource === 'demo' ? (
         <div className="lg:col-span-7 bg-white dark:bg-[#131b24] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 sm:p-7 shadow-subtle flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -300,7 +423,18 @@ export default function DashboardSection() {
               ))}
             </div>
           </div>
-        </div>
+          </div>
+          ) : (
+            <div className="lg:col-span-7 bg-white dark:bg-[#131b24] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 sm:p-7 flex flex-col justify-center">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <Compass className="w-4 h-4 text-nest-600 dark:text-nest-400" />
+                Demo patterns hidden
+              </div>
+              <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+                Sample observations and suggestions are not derived from this data source. No insulin adjustment advice is provided.
+              </p>
+            </div>
+            )}
       </div>
 
       {/* Glucose Curve Section with Target Band */}
@@ -308,13 +442,17 @@ export default function DashboardSection() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="space-y-0.5">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <span>Continuous Demo Glucose Curve</span>
+              <span>              {isNightscoutConnected ? 'Nightscout Glucose History' : dataSource === 'manual' ? 'Manual Glucose History' : 'Continuous Demo Glucose Curve'}</span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-normal">
                 Target: {targetLow}–{targetHigh} {formatUnitLabel(glucoseUnit)}
               </span>
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Interactive timeline with meals, insulin doses, and activity pins. Hover data points to view details.
+              {isNightscoutConnected
+                ? 'Read-only glucose history from your connected Nightscout instance.'
+                : dataSource === 'manual'
+                  ? 'Glucose values recorded manually in Quick Log; no demo readings are included.'
+                  : 'Interactive timeline with sample glucose values. Hover data points to view details.'}
             </p>
           </div>
 
@@ -342,7 +480,7 @@ export default function DashboardSection() {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 15, right: 15, left: -20, bottom: 5 }}>
               <XAxis
-                dataKey="timestamp"
+                dataKey="chartTime"
                 tick={{ fontSize: 11, fill: darkMode ? '#94a3b8' : '#64748b' }}
                 axisLine={{ stroke: darkMode ? '#334155' : '#cbd5e1' }}
                 tickLine={false}
@@ -418,10 +556,10 @@ export default function DashboardSection() {
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-3 h-0.5 bg-nest-500"></span>
-              <span>Continuous Demo Trace</span>
+              <span>{isNightscoutConnected ? 'Nightscout trace' : dataSource === 'manual' ? 'Manual readings' : 'Continuous Demo Trace'}</span>
             </div>
           </div>
-          <span className="text-[11px]">DEMO DATA · Sample T1D profile</span>
+          <span className="text-[11px]">{isNightscoutConnected ? 'NIGHTSCOUT DATA · Read-only' : dataSource === 'manual' ? 'MANUAL DATA' : 'DEMO DATA · Sample T1D profile'}</span>
         </div>
       </div>
 
@@ -433,23 +571,33 @@ export default function DashboardSection() {
             {convertGlucose(tirStats.meanGlucose, glucoseUnit)}{' '}
             <span className="text-xs font-normal text-slate-400">{formatUnitLabel(glucoseUnit)}</span>
           </div>
-          <span className="text-[10px] text-slate-400">Based on 24-hr sample</span>
+          <span className="text-[10px] text-slate-400">
+            {isNightscoutConnected
+              ? `${tirStats.totalReadings} readings · ${Math.floor(tirStats.coverageMinutes / 60)}h usable coverage`
+              : dataSource === 'manual' ? `${tirStats.totalReadings} manual readings` : 'Based on 24-hr sample'}
+          </span>
         </div>
 
         <div className="bg-white dark:bg-[#131b24] p-4 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle space-y-1">
           <span className="text-[11px] text-slate-500 uppercase tracking-wider block">Estimated GMI</span>
           <div className="text-xl font-bold font-mono text-nest-600 dark:text-nest-400">
-            {tirStats.gmiPercent}%
+            {tirStats.hasSufficientGmiData ? `${tirStats.gmiPercent}%` : 'Insufficient data'}
           </div>
-          <span className="text-[10px] text-slate-400">CGM estimate (not lab HbA1c)</span>
+          <span className="text-[10px] text-slate-400">
+            {tirStats.hasSufficientGmiData
+              ? 'CGM estimate (not lab HbA1c)'
+              : 'Requires at least 10 days of readings'}
+          </span>
         </div>
 
         <div className="bg-white dark:bg-[#131b24] p-4 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle space-y-1">
           <span className="text-[11px] text-slate-500 uppercase tracking-wider block">Variability (CV)</span>
           <div className="text-xl font-bold font-mono text-slate-900 dark:text-white">
-            {tirStats.coefficientOfVariation}%
+            {tirStats.hasSufficientVariabilityData ? `${tirStats.coefficientOfVariation}%` : 'Insufficient data'}
           </div>
-          <span className="text-[10px] text-emerald-600 dark:text-emerald-400">&lt;36% stable target</span>
+          <span className="text-[10px] text-slate-400">
+            {tirStats.hasSufficientVariabilityData ? 'CV (SD / mean)' : 'Requires at least 2 usable readings'}
+          </span>
         </div>
 
         <div className="bg-white dark:bg-[#131b24] p-4 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle space-y-1">
@@ -484,7 +632,11 @@ export default function DashboardSection() {
           </div>
 
           <div className="space-y-3">
-            {dailyTimeline.map((item) => (
+            {dataSource !== 'demo' ? (
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Demo meal and activity samples are hidden while using {isNightscoutConnected ? 'Nightscout' : 'manual'} glucose data.
+              </p>
+            ) : dailyTimeline.map((item) => (
               <div
                 key={item.id}
                 className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 flex items-center justify-between text-xs"
@@ -562,7 +714,11 @@ export default function DashboardSection() {
                     <div className="font-semibold text-slate-900 dark:text-white group-hover:text-nest-600 dark:group-hover:text-nest-400">
                       Doctor-Ready Clinical PDF
                     </div>
-                    <div className="text-[11px] text-slate-400">Printable AGP summary (14/30/90 days)</div>
+                    <div className="text-[11px] text-slate-400">
+                      {dataSource === 'demo'
+                        ? 'Printable sample AGP summary (14/30/90 days)'
+                        : 'Sample report preview only; not generated from selected readings'}
+                    </div>
                   </div>
                 </div>
                 <span>→</span>

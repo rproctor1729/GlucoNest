@@ -12,7 +12,8 @@ export type NavigationSection =
   | 'food-library'
   | 'learn-community'
   | 'about'
-  | 'feedback';
+  | 'feedback'
+  | 'devices';
 
 export interface PatternInsight {
   id: string;

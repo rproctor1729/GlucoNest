@@ -11,6 +11,7 @@ import FoodLibrarySection from '@/components/food/FoodLibrarySection';
 import LearnCommunitySection from '@/components/community/LearnCommunitySection';
 import AboutSection from '@/components/about/AboutSection';
 import FeedbackSection from '@/components/feedback/FeedbackSection';
+import DevicesSection from '@/components/devices/DevicesSection';
 import HypoEmergencyModal from '@/components/hypo/HypoEmergencyModal';
 import OneTapLogModal from '@/components/dashboard/OneTapLogModal';
 import DoctorReadyReportModal from '@/components/report/DoctorReadyReportModal';
@@ -25,6 +26,7 @@ function MainContent() {
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
         {activeSection === 'my-day' && <DashboardSection />}
+        {activeSection === 'devices' && <DevicesSection />}
         {activeSection === 'quick-log' && <QuickLogSection />}
         {activeSection === 'insights' && <InsightsSection />}
         {activeSection === 'food-library' && <FoodLibrarySection />}

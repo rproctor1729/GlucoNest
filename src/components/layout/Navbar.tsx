@@ -28,6 +28,7 @@ export default function Navbar() {
 
   const navItems: Array<{ id: NavigationSection; label: string }> = [
     { id: 'my-day', label: 'My Day' },
+    { id: 'devices', label: 'Devices & Data Sources' },
     { id: 'quick-log', label: 'Quick Log' },
     { id: 'insights', label: 'My Insights' },
     { id: 'food-library', label: 'Food Library' },

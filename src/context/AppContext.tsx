@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import {
   NavigationSection,
   GlucoseUnit,
@@ -21,6 +21,14 @@ import { initialMockInsulin } from '../data/mockInsulin';
 import { mockPatternInsights } from '../data/mockInsights';
 import { communityStories as initialStories } from '../data/stories';
 import { educationalGuides } from '../data/educationalContent';
+import {
+  fetchNightscoutReadings,
+  NightscoutConfig,
+  NightscoutError,
+} from '../lib/integrations/nightscout';
+
+export type GlucoseDataSource = 'demo' | 'manual' | 'nightscout';
+export type DataConnectionStatus = 'disconnected' | 'fetching' | 'connected' | 'error';
 
 interface AppContextType {
   // Navigation
@@ -37,8 +45,17 @@ interface AppContextType {
 
   // Readings
   readings: GlucoseReading[];
-  currentReading: GlucoseReading;
+  currentReading: GlucoseReading | null;
   addReading: (reading: GlucoseReading) => void;
+  dataSource: GlucoseDataSource;
+  connectionStatus: DataConnectionStatus;
+  isNightscoutConnected: boolean;
+  nightscoutUrl: string;
+  lastSuccessfulFetch: string | null;
+  connectionError: string | null;
+  connectNightscout: (config: NightscoutConfig) => Promise<void>;
+  refreshNightscout: () => Promise<void>;
+  disconnectNightscout: () => void;
 
   // Meal Logs
   meals: MealLogEntry[];
@@ -110,7 +127,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [glucoseUnit, setGlucoseUnit] = useState<GlucoseUnit>('mg/dL');
 
   // Readings & Logs
-  const [readings, setReadings] = useState<GlucoseReading[]>(mockGlucoseReadings);
+  const [demoReadings, setDemoReadings] = useState<GlucoseReading[]>(mockGlucoseReadings);
+  const [manualReadings, setManualReadings] = useState<GlucoseReading[]>([]);
+  const [nightscoutReadings, setNightscoutReadings] = useState<GlucoseReading[]>([]);
+  const [nightscoutCredentials, setNightscoutCredentials] = useState<NightscoutConfig | null>(null);
+  const [nightscoutUrl, setNightscoutUrl] = useState('');
+  const [dataSource, setDataSource] = useState<GlucoseDataSource>('demo');
+  const [connectionStatus, setConnectionStatus] = useState<DataConnectionStatus>('disconnected');
+  const [lastSuccessfulFetch, setLastSuccessfulFetch] = useState<string | null>(null);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
+  const fetchSequence = useRef(0);
+  const fetchInProgress = useRef(false);
   const [meals, setMeals] = useState<MealLogEntry[]>(initialMockMeals);
   const [insulinLogs, setInsulinLogs] = useState<InsulinLogEntry[]>(initialMockInsulin);
   const [activityLogs, setActivityLogs] = useState<ActivityLogEntry[]>([
@@ -203,23 +230,102 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const currentReading = readings[readings.length - 1] || {
-    timestamp: '21:00',
-    timeLabel: '9:00 PM',
-    value: 118,
-    trend: 'SLIGHT_UP',
-    isDemo: true,
-  };
+  const readings = dataSource === 'nightscout'
+    ? nightscoutReadings
+    : dataSource === 'manual'
+      ? manualReadings
+      : demoReadings;
+  const currentReading = readings[readings.length - 1] || null;
 
   const addReading = (reading: GlucoseReading) => {
-    setReadings((prev) => [...prev, reading]);
+    if (reading.source === 'manual') {
+      setManualReadings((previous) => [
+        ...previous,
+        { ...reading, isDemo: false },
+      ].sort((first, second) => Date.parse(first.timestamp) - Date.parse(second.timestamp)));
+      if (dataSource !== 'nightscout') setDataSource('manual');
+      return;
+    }
+    setDemoReadings((previous) => [
+      ...previous,
+      reading,
+    ]);
   };
+
+  const runNightscoutFetch = useCallback(async (config: NightscoutConfig) => {
+    if (fetchInProgress.current) return;
+    const requestId = ++fetchSequence.current;
+    fetchInProgress.current = true;
+    setConnectionStatus('fetching');
+    setConnectionError(null);
+
+    try {
+      const fetchedReadings = await fetchNightscoutReadings(config);
+      if (requestId !== fetchSequence.current) return;
+      setNightscoutReadings(fetchedReadings);
+      setDataSource('nightscout');
+      setConnectionStatus('connected');
+      setLastSuccessfulFetch(new Date().toISOString());
+    } catch (error) {
+      if (requestId !== fetchSequence.current) return;
+      setConnectionError(
+        error instanceof NightscoutError
+          ? error.message
+          : 'Nightscout could not be reached. Check the URL and read access, then try again.'
+      );
+      setConnectionStatus('error');
+    } finally {
+      if (requestId === fetchSequence.current) fetchInProgress.current = false;
+    }
+  }, []);
+
+  const connectNightscout = useCallback(async (config: NightscoutConfig) => {
+    setNightscoutCredentials(config);
+    setNightscoutUrl(config.url.trim());
+    await runNightscoutFetch(config);
+  }, [runNightscoutFetch]);
+
+  const refreshNightscout = useCallback(async () => {
+    if (!nightscoutCredentials) return;
+    await runNightscoutFetch(nightscoutCredentials);
+  }, [nightscoutCredentials, runNightscoutFetch]);
+
+  const disconnectNightscout = useCallback(() => {
+    fetchSequence.current += 1;
+    fetchInProgress.current = false;
+    setNightscoutCredentials(null);
+    setNightscoutReadings([]);
+    setDemoReadings(mockGlucoseReadings);
+    setNightscoutUrl('');
+    setDataSource('demo');
+    setConnectionStatus('disconnected');
+    setLastSuccessfulFetch(null);
+    setConnectionError(null);
+  }, []);
+
+  const isNightscoutConnected = dataSource === 'nightscout';
+
+  useEffect(() => {
+    if (!isNightscoutConnected || !nightscoutCredentials) return;
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') void refreshNightscout();
+    };
+    const interval = window.setInterval(refreshWhenVisible, 5 * 60 * 1000);
+    document.addEventListener('visibilitychange', refreshWhenVisible);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener('visibilitychange', refreshWhenVisible);
+    };
+  }, [isNightscoutConnected, nightscoutCredentials, refreshNightscout]);
+
+  const readingForLog = currentReading ?? mockGlucoseReadings[mockGlucoseReadings.length - 1];
 
   // Meal management
   const addMealLog = (meal: Omit<MealLogEntry, 'id'>) => {
     const newEntry: MealLogEntry = {
       ...meal,
       id: 'meal-' + Date.now(),
+      isDemo: false,
     };
     const updated = [newEntry, ...meals];
     setMeals(updated);
@@ -233,8 +339,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       id: 'g-meal-' + Date.now(),
       timestamp: nowTime,
       timeLabel: nowTime,
-      value: currentReading.value,
-      trend: currentReading.trend,
+      value: readingForLog.value,
+      trend: readingForLog.trend,
       event: 'meal',
       eventDetails: `${newEntry.name} (${newEntry.totalCarbs}g carbs)`,
       isDemo: true,
@@ -262,6 +368,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const newEntry: InsulinLogEntry = {
       ...entry,
       id: 'ins-' + Date.now(),
+      isDemo: false,
     };
     const updated = [newEntry, ...insulinLogs];
     setInsulinLogs(updated);
@@ -274,8 +381,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       id: 'g-ins-' + Date.now(),
       timestamp: nowTime,
       timeLabel: nowTime,
-      value: currentReading.value,
-      trend: currentReading.trend,
+      value: readingForLog.value,
+      trend: readingForLog.trend,
       event: 'insulin',
       eventDetails: `${newEntry.units}u ${newEntry.type} insulin`,
       isDemo: true,
@@ -303,6 +410,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const newEntry: ActivityLogEntry = {
       ...act,
       id: 'act-' + Date.now(),
+      isDemo: false,
     };
     setActivityLogs((prev) => [newEntry, ...prev]);
 
@@ -311,8 +419,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       id: 'g-act-' + Date.now(),
       timestamp: nowTime,
       timeLabel: nowTime,
-      value: currentReading.value,
-      trend: currentReading.trend,
+      value: readingForLog.value,
+      trend: readingForLog.trend,
       event: 'exercise',
       eventDetails: `${newEntry.durationMinutes} min ${newEntry.type}`,
       isDemo: true,
@@ -407,7 +515,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const activePattern = patterns.find((p) => p.id === activePatternId) || patterns[0];
 
   const resetDemoData = () => {
-    setReadings(mockGlucoseReadings);
+    setDataSource('demo');
+    setDemoReadings(mockGlucoseReadings);
     setMeals(initialMockMeals);
     setInsulinLogs(initialMockInsulin);
     try {
@@ -430,6 +539,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         readings,
         currentReading,
         addReading,
+        dataSource,
+        connectionStatus,
+        isNightscoutConnected,
+        nightscoutUrl,
+        lastSuccessfulFetch,
+        connectionError,
+        connectNightscout,
+        refreshNightscout,
+        disconnectNightscout,
         meals,
         addMealLog,
         updateMealLog,
