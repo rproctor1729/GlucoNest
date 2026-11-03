@@ -192,7 +192,7 @@ ${additionalSuggestions || 'None'}`;
             <button
               type="button"
               onClick={handleCopyToClipboard}
-              className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 text-xs font-semibold flex items-center gap-2 transition-colors"
+              className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold flex items-center gap-2 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500"
             >
               <Copy className="w-4 h-4" />
               <span>{copiedSuccess ? 'Copied to Clipboard!' : 'Copy Formatted Text'}</span>

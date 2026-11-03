@@ -173,7 +173,7 @@ export default function FoodLibrarySection() {
               className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
                 selectedCategory === cat
                   ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold shadow-sm'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               {cat}
@@ -304,7 +304,7 @@ export default function FoodLibrarySection() {
                           <button
                             type="button"
                             onClick={() => updateMealPlateItem(item.foodId, item.servings - 0.5)}
-                            className="p-1 rounded bg-slate-200 dark:bg-slate-800 hover:bg-slate-300"
+                            className="p-1 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500"
                             title="Decrease serving"
                           >
                             <Minus className="w-2.5 h-2.5" />
@@ -312,7 +312,7 @@ export default function FoodLibrarySection() {
                           <button
                             type="button"
                             onClick={() => updateMealPlateItem(item.foodId, item.servings + 0.5)}
-                            className="p-1 rounded bg-slate-200 dark:bg-slate-800 hover:bg-slate-300"
+                            className="p-1 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500"
                             title="Increase serving"
                           >
                             <Plus className="w-2.5 h-2.5" />
