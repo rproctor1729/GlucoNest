@@ -12,6 +12,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Build output and caches (generated, never commit)
+.next/
+out/
+*.tsbuildinfo
+
 # OS / Editor files
 .DS_Store
 Thumbs.db

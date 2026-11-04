@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     'A calm, clean, community-driven web app that helps people living with type-1 diabetes track glucose, understand why numbers behave the way they do, and never feel alone.',
   manifest: '/manifest.json',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/icon.svg',
   },
 };
 

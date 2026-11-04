@@ -10,7 +10,6 @@ import {
   ActivityLogEntry,
   NoteLogEntry,
   PatternInsight,
-  CommunityStory,
   EducationalGuide,
   CommunityFeedback,
   MealItemSelection,
@@ -19,13 +18,25 @@ import { mockGlucoseReadings } from '../data/mockGlucose';
 import { initialMockMeals } from '../data/mockMeals';
 import { initialMockInsulin } from '../data/mockInsulin';
 import { mockPatternInsights } from '../data/mockInsights';
-import { communityStories as initialStories } from '../data/stories';
 import { educationalGuides } from '../data/educationalContent';
 import {
   fetchNightscoutReadings,
   NightscoutConfig,
   NightscoutError,
 } from '../lib/integrations/nightscout';
+
+// Sample activity shown in demo mode. Built on demand so its timestamp is fresh.
+function makeDemoActivity(): ActivityLogEntry {
+  return {
+    id: 'act-01',
+    timestamp: new Date(Date.now() - 4.5 * 3600 * 1000).toISOString(),
+    type: 'walk',
+    durationMinutes: 25,
+    intensity: 'light',
+    notes: 'Brisk evening neighborhood walk after tea',
+    isDemo: true,
+  };
+}
 
 export type GlucoseDataSource = 'demo' | 'manual' | 'nightscout';
 export type DataConnectionStatus = 'disconnected' | 'fetching' | 'connected' | 'error';
@@ -86,10 +97,6 @@ interface AppContextType {
   activePattern: PatternInsight;
   setActivePatternId: (id: string) => void;
 
-  // Community Stories
-  stories: CommunityStory[];
-  toggleStoryHeart: (id: string) => void;
-
   // Guides
   guides: EducationalGuide[];
   selectedGuide: EducationalGuide | null;
@@ -106,11 +113,6 @@ interface AppContextType {
 
   isOneTapModalOpen: boolean;
   setIsOneTapModalOpen: (open: boolean) => void;
-
-  isReportModalOpen: boolean;
-  setIsReportModalOpen: (open: boolean) => void;
-  reportPeriod: 14 | 30 | 90;
-  setReportPeriod: (days: 14 | 30 | 90) => void;
 
   // Demo Reset
   resetDemoData: () => void;
@@ -140,17 +142,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const fetchInProgress = useRef(false);
   const [meals, setMeals] = useState<MealLogEntry[]>(initialMockMeals);
   const [insulinLogs, setInsulinLogs] = useState<InsulinLogEntry[]>(initialMockInsulin);
-  const [activityLogs, setActivityLogs] = useState<ActivityLogEntry[]>([
-    {
-      id: 'act-01',
-      timestamp: new Date(Date.now() - 4.5 * 3600 * 1000).toISOString(),
-      type: 'walk',
-      durationMinutes: 25,
-      intensity: 'light',
-      notes: 'Brisk evening neighborhood walk after tea',
-      isDemo: true,
-    },
-  ]);
+  const [activityLogs, setActivityLogs] = useState<ActivityLogEntry[]>(() => [makeDemoActivity()]);
 
   // Active Food Library Meal Plate Builder
   const [mealPlate, setMealPlate] = useState<MealItemSelection[]>([]);
@@ -159,8 +151,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [patterns] = useState<PatternInsight[]>(mockPatternInsights);
   const [activePatternId, setActivePatternId] = useState<string>('pat-01');
 
-  // Stories & Guides
-  const [stories, setStories] = useState<CommunityStory[]>(initialStories);
+  // Guides
   const [guides] = useState<EducationalGuide[]>(educationalGuides);
   const [selectedGuide, setSelectedGuide] = useState<EducationalGuide | null>(null);
 
@@ -170,8 +161,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Modals
   const [isHypoModalOpen, setIsHypoModalOpen] = useState(false);
   const [isOneTapModalOpen, setIsOneTapModalOpen] = useState(false);
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [reportPeriod, setReportPeriod] = useState<14 | 30 | 90>(30);
 
   // Client-side initialization from localStorage
   useEffect(() => {
@@ -318,8 +307,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
   }, [isNightscoutConnected, nightscoutCredentials, refreshNightscout]);
 
-  const readingForLog = currentReading ?? mockGlucoseReadings[mockGlucoseReadings.length - 1];
-
   // Meal management
   const addMealLog = (meal: Omit<MealLogEntry, 'id'>) => {
     const newEntry: MealLogEntry = {
@@ -333,18 +320,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('gluconest_meals', JSON.stringify(updated));
     } catch {}
 
-    // Also link to glucose readings chart for visualization
-    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    addReading({
-      id: 'g-meal-' + Date.now(),
-      timestamp: nowTime,
-      timeLabel: nowTime,
-      value: readingForLog.value,
-      trend: readingForLog.trend,
-      event: 'meal',
-      eventDetails: `${newEntry.name} (${newEntry.totalCarbs}g carbs)`,
-      isDemo: true,
-    });
   };
 
   const updateMealLog = (id: string, updatedFields: Partial<MealLogEntry>) => {
@@ -376,17 +351,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('gluconest_insulin', JSON.stringify(updated));
     } catch {}
 
-    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    addReading({
-      id: 'g-ins-' + Date.now(),
-      timestamp: nowTime,
-      timeLabel: nowTime,
-      value: readingForLog.value,
-      trend: readingForLog.trend,
-      event: 'insulin',
-      eventDetails: `${newEntry.units}u ${newEntry.type} insulin`,
-      isDemo: true,
-    });
   };
 
   const updateInsulinLog = (id: string, updatedFields: Partial<InsulinLogEntry>) => {
@@ -414,17 +378,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     setActivityLogs((prev) => [newEntry, ...prev]);
 
-    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    addReading({
-      id: 'g-act-' + Date.now(),
-      timestamp: nowTime,
-      timeLabel: nowTime,
-      value: readingForLog.value,
-      trend: readingForLog.trend,
-      event: 'exercise',
-      eventDetails: `${newEntry.durationMinutes} min ${newEntry.type}`,
-      isDemo: true,
-    });
   };
 
   const deleteActivityLog = (id: string) => {
@@ -476,23 +429,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMealPlate([]);
   };
 
-  // Stories
-  const toggleStoryHeart = (id: string) => {
-    setStories((prev) =>
-      prev.map((s) => {
-        if (s.id === id) {
-          const liked = !s.userLiked;
-          return {
-            ...s,
-            userLiked: liked,
-            hearts: liked ? s.hearts + 1 : s.hearts - 1,
-          };
-        }
-        return s;
-      })
-    );
-  };
-
   // Feedback
   const submitFeedback = (fb: Omit<CommunityFeedback, 'id' | 'submittedAt'>) => {
     const newFb: CommunityFeedback = {
@@ -514,14 +450,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const activePattern = patterns.find((p) => p.id === activePatternId) || patterns[0];
 
+  // Resets only the sample content. Anything the user logged (isDemo false) is kept.
   const resetDemoData = () => {
     setDataSource('demo');
     setDemoReadings(mockGlucoseReadings);
-    setMeals(initialMockMeals);
-    setInsulinLogs(initialMockInsulin);
+    const nextMeals = [...meals.filter((m) => !m.isDemo), ...initialMockMeals];
+    const nextInsulin = [...insulinLogs.filter((i) => !i.isDemo), ...initialMockInsulin];
+    setMeals(nextMeals);
+    setInsulinLogs(nextInsulin);
+    setActivityLogs((prev) => [...prev.filter((a) => !a.isDemo), makeDemoActivity()]);
     try {
-      localStorage.removeItem('gluconest_meals');
-      localStorage.removeItem('gluconest_insulin');
+      localStorage.setItem('gluconest_meals', JSON.stringify(nextMeals));
+      localStorage.setItem('gluconest_insulin', JSON.stringify(nextInsulin));
     } catch {}
   };
 
@@ -567,8 +507,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         patterns,
         activePattern,
         setActivePatternId,
-        stories,
-        toggleStoryHeart,
         guides,
         selectedGuide,
         setSelectedGuide,
@@ -579,10 +517,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         triggerHypoEmergency,
         isOneTapModalOpen,
         setIsOneTapModalOpen,
-        isReportModalOpen,
-        setIsReportModalOpen,
-        reportPeriod,
-        setReportPeriod,
         resetDemoData,
       }}
     >
