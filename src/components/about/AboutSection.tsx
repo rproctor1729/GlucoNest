@@ -111,7 +111,7 @@ export default function AboutSection() {
               3. Health data is NEVER sold or monetized
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              All interactions in this prototype reside exclusively inside your browser's localStorage. We have no backend databases, no trackers, and no interest in monetizing or selling health information.
+              All interactions in this prototype reside exclusively inside your browser's localStorage. We have no backend databases, no trackers, and no interest in monetizing or selling health information. Data is stored unencrypted in this browser, so on a shared device, clear this site&apos;s data when you are done.
             </p>
           </div>
 

@@ -49,6 +49,24 @@ function emptyBreakdown(): TirBreakdown {
   };
 }
 
+// Rounds bucket shares so they always add to exactly 100 (largest-remainder method).
+// Plain per-bucket rounding can make the range percentages total 99 or 101.
+function roundBucketsToHundred(amounts: number[], total: number): number[] {
+  if (total <= 0 || amounts.every((amount) => amount === 0)) return amounts.map(() => 0);
+  const raw = amounts.map((amount) => (amount / total) * 100);
+  const result = raw.map((value) => Math.floor(value));
+  let remaining = 100 - result.reduce((sum, value) => sum + value, 0);
+  const byFraction = raw
+    .map((value, index) => ({ index, fraction: value - Math.floor(value) }))
+    .sort((a, b) => b.fraction - a.fraction);
+  for (const { index } of byFraction) {
+    if (remaining <= 0) break;
+    result[index] += 1;
+    remaining -= 1;
+  }
+  return result;
+}
+
 export function calculateDetailedTIR(readings: TimedReading[]): TirBreakdown {
   const uniqueReadings = new Map<string, TimedReading>();
   (readings || []).forEach((reading, index) => {
@@ -122,12 +140,10 @@ export function calculateDetailedTIR(readings: TimedReading[]): TirBreakdown {
   const standardDeviation = Math.round(Math.sqrt(variance));
   const coefficientOfVariation = mean > 0 ? Math.round((standardDeviation / mean) * 100) : 0;
   const denominator = totalWeight || cleanReadings.length;
-  const asPercent = (amount: number) => Math.round((amount / denominator) * 100);
-  const lowPercent = asPercent(buckets.low);
-  const veryLowPercent = asPercent(buckets.veryLow);
-  const highPercent = asPercent(buckets.high);
-  const veryHighPercent = asPercent(buckets.veryHigh);
-  const inRangePercent = asPercent(buckets.inRange);
+  const [veryLowPercent, lowPercent, inRangePercent, highPercent, veryHighPercent] = roundBucketsToHundred(
+    [buckets.veryLow, buckets.low, buckets.inRange, buckets.high, buckets.veryHigh],
+    denominator
+  );
 
   return {
     totalReadings: cleanReadings.length,

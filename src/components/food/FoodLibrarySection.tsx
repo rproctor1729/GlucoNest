@@ -107,7 +107,7 @@ export default function FoodLibrarySection() {
       items: mealPlate,
       totalCarbs: totalPlateCarbs,
       notes: 'Logged from Indian Food Library Plate Builder',
-      isDemo: true,
+      isDemo: false,
     });
 
     setSavedSuccessBanner(`Meal plate saved (${totalPlateCarbs}g carbs recorded)`);
@@ -131,7 +131,7 @@ export default function FoodLibrarySection() {
           </h2>
         </div>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Curated nutritional estimates based on National Institute of Nutrition (IFCT Hyderabad) and clinical T1D dietary tables. Build meals, calculate carbs, and log locally.
+          Approximate carbohydrate estimates for counting, drawn from general reference tables. These are not laboratory-verified values and have not yet been reviewed by a registered dietitian. Portion sizes vary, so weigh or measure when you can. Build meals, estimate carbs, and log locally.
         </p>
       </div>
 
