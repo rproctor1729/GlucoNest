@@ -142,9 +142,14 @@ ${additionalSuggestions || 'None'}`;
     URL.revokeObjectURL(url);
   };
 
-  const mailtoLink = `mailto:community@gluconest.local?subject=${encodeURIComponent(
-    'GlucoNest Community Feedback'
-  )}&body=${encodeURIComponent(buildFormattedText())}`;
+  // Set NEXT_PUBLIC_FEEDBACK_EMAIL at build time to enable the email button.
+  // When it is unset, the email button is hidden and users copy or download their text instead.
+  const FEEDBACK_EMAIL = process.env.NEXT_PUBLIC_FEEDBACK_EMAIL ?? '';
+  const mailtoLink = FEEDBACK_EMAIL
+    ? `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(
+        'GlucoNest Community Feedback'
+      )}&body=${encodeURIComponent(buildFormattedText())}`
+    : '';
 
   return (
     <div className="space-y-8 animate-fadeIn max-w-3xl mx-auto">
@@ -169,7 +174,7 @@ ${additionalSuggestions || 'None'}`;
           <span>How Your Feedback is Handled in this Preview:</span>
         </div>
         <p className="leading-relaxed">
-          Because this prototype runs without a central cloud database, clicking <strong>Submit</strong> stores your responses locally in your browser. You can also copy your response to share via email or our community discussion board. We will never collect personal identifying health details without consent.
+          Because this prototype runs without a central cloud database, clicking <strong>Submit</strong> stores your responses only in your browser. Nothing is sent to the maintainer automatically. To share your answers, copy or download the text and send it yourself. Please don&apos;t include identifying health details in free-text answers.
         </p>
       </div>
 
@@ -184,7 +189,7 @@ ${additionalSuggestions || 'None'}`;
               Thank You for Your Voice!
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto">
-              Your feedback is saved locally in this browser. To ensure your input reaches the creator, you can easily copy your answers or send via email below.
+              Your feedback is saved only in this browser. To send it to the maintainer, copy or download your answers below{FEEDBACK_EMAIL ? ', or use the email button' : ''}.
             </p>
           </div>
 
@@ -198,13 +203,15 @@ ${additionalSuggestions || 'None'}`;
               <span>{copiedSuccess ? 'Copied to Clipboard!' : 'Copy Formatted Text'}</span>
             </button>
 
-            <a
-              href={mailtoLink}
-              className="px-4 py-2 rounded-xl bg-nest-600 hover:bg-nest-700 text-white text-xs font-semibold flex items-center gap-2 transition-colors shadow-sm"
-            >
-              <Mail className="w-4 h-4" />
-              <span>Send via Email Client</span>
-            </a>
+            {FEEDBACK_EMAIL && (
+              <a
+                href={mailtoLink}
+                className="px-4 py-2 rounded-xl bg-nest-600 hover:bg-nest-700 text-white text-xs font-semibold flex items-center gap-2 transition-colors shadow-sm"
+              >
+                <Mail className="w-4 h-4" />
+                <span>Send via Email Client</span>
+              </a>
+            )}
 
             <button
               type="button"
