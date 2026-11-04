@@ -14,7 +14,6 @@ import FeedbackSection from '@/components/feedback/FeedbackSection';
 import DevicesSection from '@/components/devices/DevicesSection';
 import HypoEmergencyModal from '@/components/hypo/HypoEmergencyModal';
 import OneTapLogModal from '@/components/dashboard/OneTapLogModal';
-import DoctorReadyReportModal from '@/components/report/DoctorReadyReportModal';
 
 function MainContent() {
   const { activeSection } = useApp();
@@ -39,7 +38,6 @@ function MainContent() {
       {/* Global modals */}
       <HypoEmergencyModal />
       <OneTapLogModal />
-      <DoctorReadyReportModal />
     </div>
   );
 }

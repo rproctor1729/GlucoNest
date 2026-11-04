@@ -74,6 +74,11 @@ export const educationalGuides: EducationalGuide[] = [
     ],
     bodySections: [
       {
+        heading: 'Your care team’s sick-day plan comes first',
+        content:
+          'If anything here differs from the sick-day plan your endocrinologist gave you, follow your plan and contact your care team. The numbers below are general examples, not dosing instructions.',
+      },
+      {
         heading: 'Why You Must Never Stop Basal Insulin',
         content:
           'Even during complete fasting, your cells need basal insulin for basic cellular respiration. Without baseline insulin, the liver breaks down fatty acids into acidic ketones, leading to Diabetic Ketoacidosis (DKA), a life-threatening medical emergency.',
@@ -81,7 +86,7 @@ export const educationalGuides: EducationalGuide[] = [
       {
         heading: 'Hydration Strategy with Indian Fluids',
         content:
-          'If blood sugar is high (>180 mg/dL), hydrate with carb-free liquids: plain water, salted buttermilk (chaas), or light herbal tea. If blood sugar starts dropping below 140 mg/dL while nauseous, sip diluted tender coconut water or glucose-electrolyte solution to prevent hypoglycemia while keeping ketones at bay.',
+          'If blood sugar is high (>180 mg/dL), hydrate with carb-free liquids: plain water, salted buttermilk (chaas), or light herbal tea. If you feel sick and your glucose is falling, treat any low (below 70 mg/dL) with the Rule of 15 and tell your care team. Do not wait for symptoms to get worse.',
       },
     ],
   },
@@ -95,12 +100,12 @@ export const educationalGuides: EducationalGuide[] = [
       {
         heading: 'The International Consensus Targets (70–180 mg/dL)',
         content:
-          '• Target Time-In-Range (TIR): >70% of the day (approx. 17 hours)\n• Time-Below-Range (TBR <70): <4% (under 1 hour/day)\n• Urgent Lows (<54 mg/dL): <1% (under 15 minutes/day)\n• Time-Above-Range (>180 mg/dL): <25%\nEvery 5% increase in TIR has documented cardiovascular, kidney, and retinal protective benefits.',
+          '• Target Time-In-Range (TIR): >70% of the day (approx. 17 hours)\n• Time-Below-Range (TBR <70): <4% (under 1 hour/day)\n• Urgent Lows (<54 mg/dL): <1% (under 15 minutes/day)\n• Time-Above-Range (>180 mg/dL): <25%\nResearch links more time in range with fewer long-term complications.',
       },
       {
         heading: 'Coefficient of Variation (CV %): The Smoothness Metric',
         content:
-          'Two people can have the same 7.0% A1c: one might experience peaceful, flat curves between 90 and 150 mg/dL, while another is riding rollercoasters between 40 and 300 mg/dL. CV measures glucose variability. A CV under 36% indicates safe, stable diabetes control with low risk of unpredictable lows.',
+          'Two people can have the same 7.0% A1c: one might experience peaceful, flat curves between 90 and 150 mg/dL, while another is riding rollercoasters between 40 and 300 mg/dL. CV measures glucose variability. A CV under 36% is the commonly used target for stable glucose.',
       },
     ],
   },
@@ -111,7 +116,7 @@ export const educationalGuides: EducationalGuide[] = [
     readTime: '3 min read',
     summary: 'Turn your 15-minute clinical consultation into a collaborative strategy session.',
     checklistItems: [
-      'Export and print your GlucoNest 30-day or 90-day Doctor-Ready PDF report.',
+      'Bring a printed or written summary of your recent readings and logs. (The app does not produce a report yet.)',
       'Pick 2 specific patterns you noticed to discuss (e.g. 3 AM alarms or post-lunch spikes).',
       'Note down current Basal-to-Bolus ratio and daily total units.',
       'Check prescription refills needed for insulin vials, pen needles (4mm/5mm), and CGM sensors.',

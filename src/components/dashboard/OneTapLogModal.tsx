@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { X, Utensils, Syringe, Activity, Check, Plus, Sparkles } from 'lucide-react';
+
+type PendingInsulin = { units: number; subType: 'rapid' | 'basal'; label: string };
 
 export default function OneTapLogModal() {
   const {
@@ -18,13 +20,20 @@ export default function OneTapLogModal() {
   const [note, setNote] = useState<string>('');
   const [insulinSubtype, setInsulinSubtype] = useState<'rapid' | 'basal'>('rapid');
   const [justLogged, setJustLogged] = useState<string | null>(null);
+  // Insulin is never logged on a single tap: the user must confirm the exact dose first.
+  const [pendingInsulin, setPendingInsulin] = useState<PendingInsulin | null>(null);
+
+  // Clear any unconfirmed dose when the modal closes.
+  useEffect(() => {
+    if (!isOneTapModalOpen) setPendingInsulin(null);
+  }, [isOneTapModalOpen]);
 
   if (!isOneTapModalOpen) return null;
 
   const handleInstantLog = (
-    type: 'carbs' | 'insulin' | 'exercise',
+    type: 'carbs' | 'exercise',
     value: number,
-    subType?: any,
+    subType?: string,
     itemNote?: string
   ) => {
     const timestamp = new Date().toISOString();
@@ -46,17 +55,7 @@ export default function OneTapLogModal() {
         ],
         totalCarbs: value,
         notes: note || undefined,
-        isDemo: true,
-      });
-    } else if (type === 'insulin') {
-      addInsulinLog({
-        timestamp,
-        type: subType || 'rapid',
-        units: value,
-        brandName: subType === 'basal' ? 'Lantus / Tresiba' : 'Novorapid / Humalog',
-        deliveryMethod: 'pen',
-        notes: itemNote || note || undefined,
-        isDemo: true,
+        isDemo: false,
       });
     } else {
       addActivityLog({
@@ -65,11 +64,11 @@ export default function OneTapLogModal() {
         durationMinutes: value,
         intensity: 'moderate',
         notes: itemNote || note || undefined,
-        isDemo: true,
+        isDemo: false,
       });
     }
 
-    setJustLogged(`${value}${type === 'carbs' ? 'g carbs' : type === 'insulin' ? 'u insulin' : ' min activity'} logged`);
+    setJustLogged(`${value}${type === 'carbs' ? 'g carbs' : ' min activity'} logged`);
     setTimeout(() => {
       setJustLogged(null);
       setIsOneTapModalOpen(false);
@@ -78,12 +77,41 @@ export default function OneTapLogModal() {
     }, 700);
   };
 
+  const confirmInsulin = () => {
+    if (!pendingInsulin) return;
+    addInsulinLog({
+      timestamp: new Date().toISOString(),
+      type: pendingInsulin.subType,
+      units: pendingInsulin.units,
+      brandName: pendingInsulin.subType === 'basal' ? 'Lantus / Tresiba' : 'Novorapid / Humalog',
+      deliveryMethod: 'pen',
+      notes: pendingInsulin.label || note || undefined,
+      isDemo: false,
+    });
+    setPendingInsulin(null);
+    setJustLogged(`${pendingInsulin.units}u insulin logged`);
+    setTimeout(() => {
+      setJustLogged(null);
+      setIsOneTapModalOpen(false);
+      setCustomValue('');
+      setNote('');
+    }, 700);
+  };
+
+  const requestInsulin = (units: number, subType: 'rapid' | 'basal', label: string) => {
+    setPendingInsulin({ units, subType, label });
+  };
+
   const handleCustomSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const val = parseFloat(customValue);
     if (isNaN(val) || val <= 0) return;
 
-    handleInstantLog(activeTab, val, activeTab === 'insulin' ? insulinSubtype : undefined, note);
+    if (activeTab === 'insulin') {
+      requestInsulin(val, insulinSubtype, note);
+      return;
+    }
+    handleInstantLog(activeTab, val, undefined, note);
   };
 
   return (
@@ -110,6 +138,7 @@ export default function OneTapLogModal() {
           <button
             onClick={() => setIsOneTapModalOpen(false)}
             className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Close one-tap log"
           >
             <X className="w-5 h-5" />
           </button>
@@ -119,7 +148,7 @@ export default function OneTapLogModal() {
         <div className="p-3 bg-slate-50 dark:bg-[#0f161e] border-b border-slate-100 dark:border-slate-800/80 grid grid-cols-3 gap-2">
           <button
             type="button"
-            onClick={() => setActiveTab('carbs')}
+            onClick={() => { setActiveTab('carbs'); setPendingInsulin(null); }}
             className={`py-2 px-3 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 transition-all ${
               activeTab === 'carbs'
                 ? 'bg-white dark:bg-slate-800 text-nest-600 dark:text-nest-400 shadow-sm border border-slate-200 dark:border-slate-700'
@@ -143,7 +172,7 @@ export default function OneTapLogModal() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('exercise')}
+            onClick={() => { setActiveTab('exercise'); setPendingInsulin(null); }}
             className={`py-2 px-3 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 transition-all ${
               activeTab === 'exercise'
                 ? 'bg-white dark:bg-slate-800 text-nest-600 dark:text-nest-400 shadow-sm border border-slate-200 dark:border-slate-700'
@@ -196,7 +225,7 @@ export default function OneTapLogModal() {
               {/* Indian favorites defaults */}
               <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <span className="text-[11px] text-slate-400 uppercase tracking-wider block mb-2">
-                  Indian Favorites:
+                  Indian Favorites (estimates; count your own portions):
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {[
@@ -229,7 +258,7 @@ export default function OneTapLogModal() {
                 <div className="flex items-center bg-slate-100 dark:bg-slate-900 rounded-lg p-0.5 text-xs">
                   <button
                     type="button"
-                    onClick={() => setInsulinSubtype('rapid')}
+                    onClick={() => { setInsulinSubtype('rapid'); setPendingInsulin(null); }}
                     className={`px-2.5 py-1 rounded-md transition-colors ${
                       insulinSubtype === 'rapid'
                         ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-medium shadow-sm'
@@ -240,7 +269,7 @@ export default function OneTapLogModal() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setInsulinSubtype('basal')}
+                    onClick={() => { setInsulinSubtype('basal'); setPendingInsulin(null); }}
                     className={`px-2.5 py-1 rounded-md transition-colors ${
                       insulinSubtype === 'basal'
                         ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-medium shadow-sm'
@@ -262,7 +291,7 @@ export default function OneTapLogModal() {
                   <button
                     key={item.units}
                     type="button"
-                    onClick={() => handleInstantLog('insulin', item.units, insulinSubtype, `${item.units}u ${insulinSubtype}`)}
+                    onClick={() => requestInsulin(item.units, insulinSubtype, `${item.units}u ${insulinSubtype}`)}
                     className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:border-nest-500 hover:bg-nest-50/50 text-center transition-all group"
                   >
                     <div className="text-xl font-bold font-mono text-slate-900 dark:text-white group-hover:text-nest-600 dark:group-hover:text-nest-400">
@@ -274,6 +303,30 @@ export default function OneTapLogModal() {
                   </button>
                 ))}
               </div>
+
+              {pendingInsulin && (
+                <div role="alertdialog" aria-label="Confirm insulin dose" className="mt-4 p-3.5 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 space-y-3">
+                  <p className="text-xs text-amber-900 dark:text-amber-200">
+                    Confirm you gave <strong className="font-mono">{pendingInsulin.units}u</strong> of {pendingInsulin.subType} insulin. This only records the dose; it does not calculate one.
+                  </p>
+                  <div className="flex items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPendingInsulin(null)}
+                      className="px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={confirmInsulin}
+                      className="px-4 py-2 rounded-xl bg-nest-600 hover:bg-nest-700 text-white text-xs font-semibold"
+                    >
+                      Yes, log {pendingInsulin.units}u
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -312,6 +365,7 @@ export default function OneTapLogModal() {
               <input
                 type="number"
                 step="any"
+                aria-label={activeTab === 'carbs' ? 'Custom grams' : activeTab === 'insulin' ? 'Custom units' : 'Minutes'}
                 placeholder={
                   activeTab === 'carbs'
                     ? 'Custom grams (e.g. 35)'
@@ -329,7 +383,7 @@ export default function OneTapLogModal() {
                 className="px-4 py-2.5 rounded-xl bg-nest-600 hover:bg-nest-700 disabled:opacity-40 text-white text-xs font-medium flex items-center gap-1 transition-colors"
               >
                 <Plus className="w-4 h-4" />
-                <span>Log</span>
+                <span>{activeTab === 'insulin' ? 'Review' : 'Log'}</span>
               </button>
             </div>
             <input
@@ -344,7 +398,7 @@ export default function OneTapLogModal() {
 
         {/* Footer info */}
         <div className="px-5 py-3 bg-slate-50 dark:bg-[#0f161e] border-t border-slate-100 dark:border-slate-800/80 text-[11px] text-slate-500 dark:text-slate-400">
-          Logs pin to your daily curve and save in browser storage.
+          Logs are saved in this browser. Insulin doses need confirmation before they are recorded.
         </div>
       </div>
     </div>
