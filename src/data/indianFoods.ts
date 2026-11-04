@@ -130,7 +130,7 @@ export const indianFoodDatabase: IndianFoodItem[] = [
     fiberGrams: 2.6,
     glycemicIndexImpact: 'Medium',
     t1dTip: 'High whole wheat fiber delivers predictable, steady glucose response. Benchmark staple.',
-    sourceOrVerification: 'IFCT (NIN Hyderabad) Verified',
+    sourceOrVerification: 'IFCT (NIN Hyderabad)',
   },
   {
     id: 'food-chapati-ghee',
@@ -326,7 +326,7 @@ export const indianFoodDatabase: IndianFoodItem[] = [
     fiberGrams: 3.5,
     glycemicIndexImpact: 'Low',
     t1dTip: 'High soluble fiber and plant protein creates a very gentle, flat glucose response.',
-    sourceOrVerification: 'IFCT (NIN Hyderabad) Verified',
+    sourceOrVerification: 'IFCT (NIN Hyderabad)',
   },
   {
     id: 'food-dal-makhani',
@@ -374,7 +374,7 @@ export const indianFoodDatabase: IndianFoodItem[] = [
     fiberGrams: 6.5,
     glycemicIndexImpact: 'Low',
     t1dTip: 'Exceptional resistant starch and soluble fiber. One of the best complex carb choices.',
-    sourceOrVerification: 'IFCT (NIN Hyderabad) Verified',
+    sourceOrVerification: 'IFCT (NIN Hyderabad)',
   },
   {
     id: 'food-chole',
@@ -504,7 +504,7 @@ export const indianFoodDatabase: IndianFoodItem[] = [
     fiberGrams: 6.2,
     glycemicIndexImpact: 'Low',
     t1dTip: 'Excellent portable snack for T1D. High protein and fiber minimize any sharp rise.',
-    sourceOrVerification: 'IFCT (NIN Hyderabad) Verified',
+    sourceOrVerification: 'IFCT (NIN Hyderabad)',
   },
   {
     id: 'food-bhel-puri',
@@ -538,7 +538,7 @@ export const indianFoodDatabase: IndianFoodItem[] = [
     fiberGrams: 2.4,
     glycemicIndexImpact: 'Medium',
     t1dTip: 'People living with T1D CAN eat mangoes! Measure portions and count the 24g carbs.',
-    sourceOrVerification: 'IFCT (NIN Hyderabad) Verified',
+    sourceOrVerification: 'IFCT (NIN Hyderabad)',
   },
   {
     id: 'food-papaya',
@@ -554,7 +554,7 @@ export const indianFoodDatabase: IndianFoodItem[] = [
     fiberGrams: 2.6,
     glycemicIndexImpact: 'Medium',
     t1dTip: 'High water volume and digestive enzymes create very forgiving post-snack readings.',
-    sourceOrVerification: 'IFCT (NIN Hyderabad) Verified',
+    sourceOrVerification: 'IFCT (NIN Hyderabad)',
   },
   {
     id: 'food-banana',
@@ -570,7 +570,7 @@ export const indianFoodDatabase: IndianFoodItem[] = [
     fiberGrams: 2.6,
     glycemicIndexImpact: 'Medium',
     t1dTip: 'Ripe bananas with brown freckles absorb faster; slightly green bananas have resistant starch.',
-    sourceOrVerification: 'IFCT (NIN Hyderabad) Verified',
+    sourceOrVerification: 'IFCT (NIN Hyderabad)',
   },
   {
     id: 'food-guava',
@@ -586,7 +586,7 @@ export const indianFoodDatabase: IndianFoodItem[] = [
     fiberGrams: 5.4,
     glycemicIndexImpact: 'Low',
     t1dTip: 'Exceptional 5.4g fiber makes this one of the most stable fruits for blood glucose.',
-    sourceOrVerification: 'IFCT (NIN Hyderabad) Verified',
+    sourceOrVerification: 'IFCT (NIN Hyderabad)',
   },
   {
     id: 'food-apple',
@@ -602,7 +602,7 @@ export const indianFoodDatabase: IndianFoodItem[] = [
     fiberGrams: 3.2,
     glycemicIndexImpact: 'Low',
     t1dTip: 'Pectin fiber in peel slows fructose uptake. Predictable carb response.',
-    sourceOrVerification: 'IFCT (NIN Hyderabad) Verified',
+    sourceOrVerification: 'IFCT (NIN Hyderabad)',
   },
 
   // --- BEVERAGES & DAIRY ---
@@ -652,7 +652,7 @@ export const indianFoodDatabase: IndianFoodItem[] = [
     fiberGrams: 0.2,
     glycemicIndexImpact: 'Low',
     t1dTip: 'Refreshing summer drink with negligible glucose impact. Great for hydration.',
-    sourceOrVerification: 'IFCT (NIN Hyderabad) Verified',
+    sourceOrVerification: 'IFCT (NIN Hyderabad)',
   },
   {
     id: 'food-coconut-water',
@@ -667,7 +667,7 @@ export const indianFoodDatabase: IndianFoodItem[] = [
     fatGrams: 0.5,
     fiberGrams: 1.1,
     glycemicIndexImpact: 'Medium',
-    t1dTip: 'Natural liquid sucrose and potassium. Gentle carb rise; can also serve as a mild hypo buffer.',
-    sourceOrVerification: 'IFCT (NIN Hyderabad) Verified',
+    t1dTip: 'Natural liquid sugars and potassium. Carbs still need counting. It is not a substitute for fast-acting glucose during a low.',
+    sourceOrVerification: 'IFCT (NIN Hyderabad)',
   },
 ];

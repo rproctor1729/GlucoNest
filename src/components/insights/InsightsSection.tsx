@@ -228,7 +228,7 @@ export default function InsightsSection() {
         </div>
 
         <div className="p-3.5 bg-slate-50 dark:bg-[#0f161e] rounded-xl border border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-          <strong>Observation Note:</strong> Glucose remains remarkably flat between 100 and 110 mg/dL until 5:00 AM, after which a natural hepatic cortisol wake-up drift begins. Basal rate appears well-matched to metabolic needs.
+          <strong>Sample observation only:</strong> In this demo data, glucose stays fairly flat until about 5:00 AM, then rises gradually. Basal insulin decisions belong to your care team.
         </div>
       </div>
 
