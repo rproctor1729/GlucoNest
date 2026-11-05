@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { AppProvider } from '@/context/AppContext';
+import ServiceWorkerRegistration from '@/components/layout/ServiceWorkerRegistration';
 
 export const metadata: Metadata = {
   title: 'GlucoNest — Built by Diabetics, for Diabetics',
@@ -20,7 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased font-sans selection:bg-nest-500/20 selection:text-nest-700">
-        <AppProvider>{children}</AppProvider>
+        <AppProvider>
+          {children}
+          <ServiceWorkerRegistration />
+        </AppProvider>
       </body>
     </html>
   );

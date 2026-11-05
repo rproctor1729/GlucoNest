@@ -10,7 +10,13 @@ import {
   Plus,
   Menu,
   X,
+  Globe2,
+  ChevronDown,
+  Home,
+  ClipboardList,
+  TrendingUp,
 } from 'lucide-react';
+import { APP_LANGUAGES, AppLanguage, translate } from '@/lib/i18n';
 
 export default function Navbar() {
   const {
@@ -22,19 +28,27 @@ export default function Navbar() {
     toggleGlucoseUnit,
     triggerHypoEmergency,
     setIsOneTapModalOpen,
+    language,
+    setLanguage,
   } = useApp();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [openNavGroup, setOpenNavGroup] = useState<string | null>(null);
 
   const navItems: Array<{ id: NavigationSection; label: string }> = [
-    { id: 'my-day', label: 'My Day' },
-    { id: 'devices', label: 'Devices & Data Sources' },
-    { id: 'quick-log', label: 'Quick Log' },
-    { id: 'insights', label: 'My Insights' },
-    { id: 'food-library', label: 'Food Library' },
-    { id: 'learn-community', label: 'Learn & Community' },
-    { id: 'about', label: 'About GlucoNest' },
-    { id: 'feedback', label: 'Feedback' },
+    { id: 'my-day', label: translate(language, 'nav.myDay') },
+    { id: 'devices', label: translate(language, 'nav.devices') },
+    { id: 'quick-log', label: translate(language, 'nav.quickLog') },
+    { id: 'insights', label: translate(language, 'nav.insights') },
+    { id: 'food-library', label: translate(language, 'nav.food') },
+    { id: 'learn-community', label: translate(language, 'nav.learn') },
+    { id: 'about', label: translate(language, 'nav.about') },
+    { id: 'feedback', label: translate(language, 'nav.feedback') },
+  ];
+  const navGroups = [
+    { label: 'Track', items: navItems.filter((item) => ['my-day', 'devices', 'quick-log'].includes(item.id)) },
+    { label: 'Understand', items: navItems.filter((item) => ['insights', 'food-library'].includes(item.id)) },
+    { label: 'Community', items: navItems.filter((item) => ['learn-community', 'about', 'feedback'].includes(item.id)) },
   ];
 
   const handleNavClick = (id: NavigationSection) => {
@@ -44,7 +58,8 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/95 dark:bg-[#0c1218]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+    <>
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md transition-colors dark:border-slate-800/80 dark:bg-[#0c1218]/95 print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <div className="flex items-center shrink-0 mr-2 xl:mr-4">
           <button
@@ -61,28 +76,67 @@ export default function Navbar() {
           </button>
         </div>
 
-        <nav className="hidden 2xl:flex flex-1 items-center justify-center gap-1">
-          {navItems.map((item) => {
-            const isActive = activeSection === item.id;
+        <nav className="hidden 2xl:flex flex-1 items-center justify-center gap-1" aria-label="Main navigation">
+          {navGroups.map((group) => {
+            const groupIsActive = group.items.some((item) => item.id === activeSection);
+            const expanded = openNavGroup === group.label;
             return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => handleNavClick(item.id)}
-                aria-current={isActive ? 'page' : undefined}
-                className={`h-9 px-3 rounded-xl text-[13px] font-medium transition-all whitespace-nowrap focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500 ${
-                  isActive
-                    ? 'bg-nest-50 dark:bg-nest-950/40 text-nest-800 dark:text-nest-300 border border-nest-200 dark:border-nest-800 font-semibold'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800'
-                }`}
-              >
-                {item.label}
-              </button>
+              <div key={group.label} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setOpenNavGroup(expanded ? null : group.label)}
+                  aria-expanded={expanded}
+                  className={`inline-flex h-9 items-center gap-1 rounded-xl border px-3 text-[13px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500 ${
+                    groupIsActive
+                      ? 'border-nest-200 bg-nest-50 text-nest-800 dark:border-nest-800 dark:bg-nest-950/40 dark:text-nest-300'
+                      : 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
+                  }`}
+                >
+                  {group.label}
+                  <ChevronDown aria-hidden="true" className={`h-3.5 w-3.5 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+                </button>
+                {expanded && (
+                  <div className="absolute left-0 top-full z-50 mt-2 min-w-52 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+                    {group.items.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          handleNavClick(item.id);
+                          setOpenNavGroup(null);
+                        }}
+                        aria-current={activeSection === item.id ? 'page' : undefined}
+                        className={`block min-h-10 w-full rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors ${
+                          activeSection === item.id
+                            ? 'bg-nest-50 text-nest-800 dark:bg-nest-950/50 dark:text-nest-200'
+                            : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             );
           })}
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          <label className="hidden h-9 items-center gap-1 rounded-xl border border-slate-200 bg-white px-2 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 sm:flex">
+            <Globe2 className="h-3.5 w-3.5" aria-hidden="true" />
+            <span className="sr-only">Language</span>
+            <select
+              value={language}
+              onChange={(event) => setLanguage(event.target.value as AppLanguage)}
+              className="max-w-[4.5rem] bg-transparent text-[11px] font-semibold outline-none"
+              aria-label="Language"
+            >
+              {APP_LANGUAGES.map((item) => (
+                <option key={item.code} value={item.code}>{item.shortLabel}</option>
+              ))}
+            </select>
+          </label>
           <button
             type="button"
             onClick={() => setIsOneTapModalOpen(true)}
@@ -138,21 +192,28 @@ export default function Navbar() {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="2xl:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1218] p-4 space-y-2 animate-fadeIn">
-          <div className="grid grid-cols-2 gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => handleNavClick(item.id)}
-                aria-current={activeSection === item.id ? 'page' : undefined}
-                className={`h-10 py-2 px-3 rounded-xl text-xs text-left font-medium flex items-center transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500 ${
-                  activeSection === item.id
-                    ? 'bg-nest-600 text-white font-semibold'
-                    : 'text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                {item.label}
-              </button>
+          <div className="grid grid-cols-1 gap-4 pb-3 border-b border-slate-100 dark:border-slate-800 sm:grid-cols-3">
+            {navGroups.map((group) => (
+              <section key={group.label} aria-label={`${group.label} navigation`}>
+                <h2 className="mb-1.5 px-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{group.label}</h2>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {group.items.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleNavClick(item.id)}
+                      aria-current={activeSection === item.id ? 'page' : undefined}
+                      className={`min-h-10 rounded-xl px-2.5 py-2 text-left text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500 ${
+                        activeSection === item.id
+                          ? 'bg-nest-600 text-white font-semibold'
+                          : 'bg-slate-50 text-slate-700 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
 
@@ -169,8 +230,45 @@ export default function Navbar() {
               <span>One-tap log (Carbs / Insulin / Activity)</span>
             </button>
           </div>
+          <label className="flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 sm:hidden">
+            <Globe2 className="h-4 w-4" aria-hidden="true" />
+            Language
+            <select
+              value={language}
+              onChange={(event) => setLanguage(event.target.value as AppLanguage)}
+              className="ml-auto bg-transparent outline-none"
+              aria-label="Language"
+            >
+              {APP_LANGUAGES.map((item) => (
+                <option key={item.code} value={item.code}>{item.label}</option>
+              ))}
+            </select>
+          </label>
         </div>
       )}
     </header>
+      <nav aria-label="Quick navigation" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t border-slate-200 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur dark:border-slate-800 dark:bg-[#0c1218]/95 xl:hidden">
+        {[
+          { id: 'my-day' as const, label: translate(language, 'nav.myDay'), Icon: Home },
+          { id: 'quick-log' as const, label: translate(language, 'nav.quickLog'), Icon: ClipboardList },
+          { id: 'insights' as const, label: translate(language, 'nav.insights'), Icon: TrendingUp },
+        ].map(({ id, label, Icon }) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => handleNavClick(id)}
+            aria-current={activeSection === id ? 'page' : undefined}
+            className={`flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500 ${
+              activeSection === id
+                ? 'text-nest-700 dark:text-nest-300'
+                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Icon className="h-4 w-4" aria-hidden="true" />
+            {label}
+          </button>
+        ))}
+      </nav>
+    </>
   );
 }

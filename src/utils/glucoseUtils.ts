@@ -39,15 +39,15 @@ export function getTrendSymbol(trend?: GlucoseTrend): { symbol: string; text: st
   }
 }
 
-export function getGlucoseStatus(mgDl: number): GlucoseStatus {
+export function getGlucoseStatus(mgDl: number, targetLow = 70, targetHigh = 180): GlucoseStatus {
   if (mgDl < 54) return 'very-low';
-  if (mgDl < 70) return 'low';
-  if (mgDl <= 180) return 'in-range';
+  if (mgDl < targetLow) return 'low';
+  if (mgDl <= targetHigh) return 'in-range';
   if (mgDl <= 250) return 'high';
   return 'very-high';
 }
 
-export function getGlucoseStatusColor(status: GlucoseStatus, isDark = false): {
+export function getGlucoseStatusColor(status: GlucoseStatus, isDark = false, targetLow = 70, targetHigh = 180): {
   badgeBg: string;
   badgeText: string;
   dotColor: string;
@@ -66,21 +66,21 @@ export function getGlucoseStatusColor(status: GlucoseStatus, isDark = false): {
         badgeBg: isDark ? 'bg-rose-950/40 border-rose-800/60 text-rose-300' : 'bg-rose-50/90 border-rose-200 text-rose-600',
         badgeText: 'text-rose-500 dark:text-rose-400',
         dotColor: 'bg-rose-500',
-        label: 'Below Target (<70 mg/dL)',
+        label: `Below Target (<${targetLow} mg/dL)`,
       };
     case 'in-range':
       return {
         badgeBg: isDark ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-700',
         badgeText: 'text-emerald-600 dark:text-emerald-400',
         dotColor: 'bg-emerald-500',
-        label: 'In Range (70–180 mg/dL)',
+        label: `In Range (${targetLow}–${targetHigh} mg/dL)`,
       };
     case 'high':
       return {
         badgeBg: isDark ? 'bg-amber-950/40 border-amber-800/60 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-700',
         badgeText: 'text-amber-600 dark:text-amber-400',
         dotColor: 'bg-amber-500',
-        label: 'Above Target (>180 mg/dL)',
+        label: `Above Target (>${targetHigh} mg/dL)`,
       };
     case 'very-high':
       return {

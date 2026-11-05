@@ -67,7 +67,20 @@ function roundBucketsToHundred(amounts: number[], total: number): number[] {
   return result;
 }
 
-export function calculateDetailedTIR(readings: TimedReading[]): TirBreakdown {
+export function calculateDetailedTIR(
+  readings: TimedReading[],
+  targetLow = 70,
+  targetHigh = 180
+): TirBreakdown {
+  if (
+    !Number.isFinite(targetLow) ||
+    !Number.isFinite(targetHigh) ||
+    targetLow < 20 ||
+    targetHigh > 400 ||
+    targetLow >= targetHigh
+  ) {
+    throw new Error('Target range must be between 20 and 400 mg/dL with a lower value below the upper value.');
+  }
   const uniqueReadings = new Map<string, TimedReading>();
   (readings || []).forEach((reading, index) => {
     if (!Number.isFinite(reading.value) || reading.value < 20 || reading.value > 600) return;
@@ -118,8 +131,8 @@ export function calculateDetailedTIR(readings: TimedReading[]): TirBreakdown {
     maxReading = Math.max(maxReading, value);
 
     if (value < 54) buckets.veryLow += weight;
-    else if (value < 70) buckets.low += weight;
-    else if (value <= 180) buckets.inRange += weight;
+    else if (value < targetLow) buckets.low += weight;
+    else if (value <= targetHigh) buckets.inRange += weight;
     else if (value <= 250) buckets.high += weight;
     else buckets.veryHigh += weight;
   });

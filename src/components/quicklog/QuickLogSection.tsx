@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import {
-  convertGlucose,
   formatUnitLabel,
   parseGlucoseInput,
 } from '@/utils/glucoseUtils';
@@ -18,11 +17,8 @@ import {
   Edit2,
   Check,
   X,
-  Clock,
-  Calendar,
-  AlertCircle,
-  Sparkles,
 } from 'lucide-react';
+import { ActivityLogEntry, InsulinLogEntry, MealLogEntry } from '@/types';
 
 type LogTab = 'all' | 'meals' | 'insulin' | 'glucose' | 'activity';
 
@@ -36,7 +32,6 @@ export default function QuickLogSection() {
     addInsulinLog,
     deleteInsulinLog,
     updateInsulinLog,
-    readings,
     addReading,
     activityLogs,
     addActivityLog,
@@ -57,21 +52,23 @@ export default function QuickLogSection() {
   // Meal form state
   const [mealName, setMealName] = useState('');
   const [mealCarbs, setMealCarbs] = useState('');
-  const [mealType, setMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('lunch');
+  const [mealType, setMealType] = useState<MealLogEntry['mealType']>('lunch');
   const [mealNotes, setMealNotes] = useState('');
 
   // Insulin form state
   const [insulinUnits, setInsulinUnits] = useState('');
-  const [insulinType, setInsulinType] = useState<'rapid' | 'basal'>('rapid');
+  const [insulinType, setInsulinType] = useState<InsulinLogEntry['type']>('rapid');
   const [insulinBrand, setInsulinBrand] = useState('Novorapid');
   const [insulinNotes, setInsulinNotes] = useState('');
+  const [isRepeatingInsulin, setIsRepeatingInsulin] = useState(false);
+  const [pendingInsulinConfirmation, setPendingInsulinConfirmation] = useState(false);
 
   // Glucose form state
   const [glucoseValue, setGlucoseValue] = useState('');
   const [glucoseNotes, setGlucoseNotes] = useState('');
 
   // Activity form state
-  const [activityType, setActivityType] = useState<'walk' | 'run' | 'gym' | 'cycling' | 'yoga' | 'sports'>('walk');
+  const [activityType, setActivityType] = useState<ActivityLogEntry['type']>('walk');
   const [activityDuration, setActivityDuration] = useState('20');
   const [activityIntensity, setActivityIntensity] = useState<'light' | 'moderate' | 'vigorous'>('moderate');
   const [activityNotes, setActivityNotes] = useState('');
@@ -86,6 +83,8 @@ export default function QuickLogSection() {
 
   const resetForms = () => {
     setEditingId(null);
+    setIsRepeatingInsulin(false);
+    setPendingInsulinConfirmation(false);
     setMealName('');
     setMealCarbs('');
     setMealNotes('');
@@ -110,16 +109,16 @@ export default function QuickLogSection() {
     const timestamp = new Date(`${formDate}T${formTime}:00`).toISOString();
 
     if (editingId) {
-      updateMealLog(editingId, {
+      const saved = updateMealLog(editingId, {
         name: mealName || 'Logged Meal',
         totalCarbs: carbsNum,
         mealType,
         notes: mealNotes,
         timestamp,
       });
-      showToast('Meal updated successfully');
+      showToast(saved ? 'Meal updated successfully' : 'Not saved. Export a backup before leaving this page.');
     } else {
-      addMealLog({
+      const saved = addMealLog({
         timestamp,
         mealType,
         name: mealName || 'Logged Meal',
@@ -137,7 +136,7 @@ export default function QuickLogSection() {
         notes: mealNotes,
         isDemo: false,
       });
-      showToast('Meal recorded to local logs');
+      showToast(saved ? 'Meal recorded to local logs' : 'Not saved. Export a backup before leaving this page.');
     }
     resetForms();
   };
@@ -149,20 +148,24 @@ export default function QuickLogSection() {
       alert('Please enter valid insulin units.');
       return;
     }
+    if (isRepeatingInsulin && !pendingInsulinConfirmation) {
+      setPendingInsulinConfirmation(true);
+      return;
+    }
 
     const timestamp = new Date(`${formDate}T${formTime}:00`).toISOString();
 
     if (editingId) {
-      updateInsulinLog(editingId, {
+      const saved = updateInsulinLog(editingId, {
         units: unitsNum,
         type: insulinType,
         brandName: insulinBrand,
         notes: insulinNotes,
         timestamp,
       });
-      showToast('Insulin dose updated');
+      showToast(saved ? 'Insulin dose updated' : 'Not saved. Export a backup before leaving this page.');
     } else {
-      addInsulinLog({
+      const saved = addInsulinLog({
         timestamp,
         type: insulinType,
         units: unitsNum,
@@ -171,9 +174,47 @@ export default function QuickLogSection() {
         notes: insulinNotes,
         isDemo: false,
       });
-      showToast('Insulin dose logged');
+      showToast(saved ? 'Insulin dose logged' : 'Not saved. Export a backup before leaving this page.');
     }
     resetForms();
+  };
+
+  const recentMeals = [...meals]
+    .filter((meal) => !meal.isDemo)
+    .sort((first, second) => Date.parse(second.timestamp) - Date.parse(first.timestamp))
+    .slice(0, 3);
+  const recentInsulin = [...insulinLogs]
+    .filter((entry) => !entry.isDemo)
+    .sort((first, second) => Date.parse(second.timestamp) - Date.parse(first.timestamp))
+    .slice(0, 1)[0];
+
+  const setFormDateTimeToNow = () => {
+    const now = new Date();
+    const pad = (value: number) => String(value).padStart(2, '0');
+    setFormDate(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`);
+    setFormTime(`${pad(now.getHours())}:${pad(now.getMinutes())}`);
+  };
+
+  const prepareRecentMeal = (meal: MealLogEntry) => {
+    setEditingId(null);
+    setMealName(meal.name);
+    setMealCarbs(String(meal.totalCarbs));
+    setMealType(meal.mealType);
+    setMealNotes('');
+    setFormDateTimeToNow();
+    setModalType('meal');
+  };
+
+  const prepareRecentInsulin = (entry: InsulinLogEntry) => {
+    setEditingId(null);
+    setInsulinUnits(String(entry.units));
+    setInsulinType(entry.type);
+    setInsulinBrand(entry.brandName || '');
+    setInsulinNotes('');
+    setIsRepeatingInsulin(true);
+    setPendingInsulinConfirmation(false);
+    setFormDateTimeToNow();
+    setModalType('insulin');
   };
 
   const handleGlucoseSubmit = (e: React.FormEvent) => {
@@ -191,7 +232,7 @@ export default function QuickLogSection() {
       minute: '2-digit',
     });
 
-    addReading({
+    const saved = addReading({
       id: 'g-manual-' + Date.now(),
       timestamp: manualTimestamp.toISOString(),
       timeLabel,
@@ -202,7 +243,7 @@ export default function QuickLogSection() {
       isDemo: false,
     });
 
-    showToast('Manual glucose reading saved');
+    showToast(saved ? 'Manual glucose reading saved' : 'Not saved. Export a backup before leaving this page.');
     resetForms();
   };
 
@@ -216,7 +257,7 @@ export default function QuickLogSection() {
 
     const timestamp = new Date(`${formDate}T${formTime}:00`).toISOString();
 
-    addActivityLog({
+    const saved = addActivityLog({
       timestamp,
       type: activityType,
       durationMinutes: mins,
@@ -225,7 +266,7 @@ export default function QuickLogSection() {
       isDemo: false,
     });
 
-    showToast('Activity logged');
+    showToast(saved ? 'Activity logged' : 'Not saved. Export a backup before leaving this page.');
     resetForms();
   };
 
@@ -329,6 +370,36 @@ export default function QuickLogSection() {
         </div>
       </div>
 
+      {(recentMeals.length > 0 || recentInsulin) && (
+        <section aria-label="Recent entries" className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#131b24]">
+          <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200">Repeat a recent entry</h3>
+          <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+            These buttons prefill a new log with today&apos;s date and time. Review every field before saving.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {recentMeals.map((meal) => (
+              <button
+                key={meal.id}
+                type="button"
+                onClick={() => prepareRecentMeal(meal)}
+                className="min-h-9 rounded-xl border border-amber-200 bg-amber-50 px-3 text-xs font-semibold text-amber-900 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200 dark:hover:bg-amber-950/50"
+              >
+                Repeat meal: {meal.name} · {meal.totalCarbs}g
+              </button>
+            ))}
+            {recentInsulin && (
+              <button
+                type="button"
+                onClick={() => prepareRecentInsulin(recentInsulin)}
+                className="min-h-9 rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+              >
+                Prefill last insulin log · {recentInsulin.units} units
+              </button>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* Toast Banner */}
       {toastMessage && (
         <div className="p-3 bg-emerald-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 animate-fadeIn shadow-sm">
@@ -398,7 +469,7 @@ export default function QuickLogSection() {
                     </div>
                     {log.notes && (
                       <div className="text-xs text-slate-600 dark:text-slate-300 italic pt-0.5">
-                        "{log.notes}"
+                        &quot;{log.notes}&quot;
                       </div>
                     )}
                   </div>
@@ -419,7 +490,7 @@ export default function QuickLogSection() {
                       <button
                         type="button"
                         onClick={() => {
-                          const m = log.raw as any;
+                          const m = log.raw as MealLogEntry;
                           setEditingId(m.id);
                           setMealName(m.name);
                           setMealCarbs(m.totalCarbs.toString());
@@ -438,7 +509,7 @@ export default function QuickLogSection() {
                       <button
                         type="button"
                         onClick={() => {
-                          const ins = log.raw as any;
+                          const ins = log.raw as InsulinLogEntry;
                           setEditingId(ins.id);
                           setInsulinUnits(ins.units.toString());
                           setInsulinType(ins.type);
@@ -456,10 +527,12 @@ export default function QuickLogSection() {
                     <button
                       type="button"
                       onClick={() => {
-                        if (log.kind === 'meal') deleteMealLog(log.id);
-                        else if (log.kind === 'insulin') deleteInsulinLog(log.id);
-                        else if (log.kind === 'activity') deleteActivityLog(log.id);
-                        showToast('Record deleted');
+                        const saved = log.kind === 'meal'
+                          ? deleteMealLog(log.id)
+                          : log.kind === 'insulin'
+                            ? deleteInsulinLog(log.id)
+                            : deleteActivityLog(log.id);
+                        showToast(saved ? 'Record deleted' : 'Delete not saved. Export a backup before leaving this page.');
                       }}
                       className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
                       title="Delete record"
@@ -535,7 +608,7 @@ export default function QuickLogSection() {
                     </label>
                     <select
                       value={mealType}
-                      onChange={(e) => setMealType(e.target.value as any)}
+                      onChange={(e) => setMealType(e.target.value as MealLogEntry['mealType'])}
                       className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
                     >
                       <option value="breakfast">Breakfast</option>
@@ -608,6 +681,11 @@ export default function QuickLogSection() {
                 <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40 rounded-xl text-amber-800 dark:text-amber-300 text-[11px] leading-relaxed">
                   <strong>Safety Notice:</strong> GlucoNest records doses you administer. The app will never calculate or recommend insulin doses. Always follow your endocrinologist’s prescription.
                 </div>
+                {isRepeatingInsulin && (
+                  <p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-[11px] leading-relaxed text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/30 dark:text-amber-200">
+                    Previous details are only a prefill, not a dose recommendation. Check the units, type, and time against your current care plan before recording.
+                  </p>
+                )}
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -630,11 +708,12 @@ export default function QuickLogSection() {
                     </label>
                     <select
                       value={insulinType}
-                      onChange={(e) => setInsulinType(e.target.value as any)}
+                      onChange={(e) => setInsulinType(e.target.value as InsulinLogEntry['type'])}
                       className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
                     >
                       <option value="rapid">Rapid Bolus (Meal / Correction)</option>
                       <option value="basal">Basal (Long-Acting)</option>
+                      <option value="premix">Premixed</option>
                     </select>
                   </div>
                 </div>
@@ -698,12 +777,20 @@ export default function QuickLogSection() {
                   >
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    className="px-5 py-2.5 rounded-xl bg-nest-600 hover:bg-nest-700 text-white font-semibold transition-colors"
-                  >
-                    Save Insulin Record
-                  </button>
+                  {pendingInsulinConfirmation ? (
+                    <>
+                      <span className="mr-auto text-[11px] text-amber-800 dark:text-amber-200">Confirm logging {insulinUnits} units as entered?</span>
+                      <button type="button" onClick={() => setPendingInsulinConfirmation(false)} className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700">Review</button>
+                      <button type="submit" className="px-5 py-2.5 rounded-xl bg-nest-600 hover:bg-nest-700 text-white font-semibold transition-colors">Confirm log</button>
+                    </>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="px-5 py-2.5 rounded-xl bg-nest-600 hover:bg-nest-700 text-white font-semibold transition-colors"
+                    >
+                      {isRepeatingInsulin ? 'Review previous details' : 'Save Insulin Record'}
+                    </button>
+                  )}
                 </div>
               </form>
             )}
@@ -792,7 +879,7 @@ export default function QuickLogSection() {
                     </label>
                     <select
                       value={activityType}
-                      onChange={(e) => setActivityType(e.target.value as any)}
+                      onChange={(e) => setActivityType(e.target.value as ActivityLogEntry['type'])}
                       className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 capitalize"
                     >
                       <option value="walk">Walk</option>

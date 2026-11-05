@@ -37,9 +37,10 @@ export default function OneTapLogModal() {
     itemNote?: string
   ) => {
     const timestamp = new Date().toISOString();
+    let saved: boolean;
 
     if (type === 'carbs') {
-      addMealLog({
+      saved = addMealLog({
         timestamp,
         mealType: 'snack',
         name: itemNote || `${value}g Carbs`,
@@ -58,7 +59,7 @@ export default function OneTapLogModal() {
         isDemo: false,
       });
     } else {
-      addActivityLog({
+      saved = addActivityLog({
         timestamp,
         type: 'walk',
         durationMinutes: value,
@@ -68,7 +69,9 @@ export default function OneTapLogModal() {
       });
     }
 
-    setJustLogged(`${value}${type === 'carbs' ? 'g carbs' : ' min activity'} logged`);
+    setJustLogged(saved
+      ? `${value}${type === 'carbs' ? 'g carbs' : ' min activity'} logged`
+      : 'Not saved. Export a backup before leaving this page.');
     setTimeout(() => {
       setJustLogged(null);
       setIsOneTapModalOpen(false);
@@ -79,7 +82,7 @@ export default function OneTapLogModal() {
 
   const confirmInsulin = () => {
     if (!pendingInsulin) return;
-    addInsulinLog({
+    const saved = addInsulinLog({
       timestamp: new Date().toISOString(),
       type: pendingInsulin.subType,
       units: pendingInsulin.units,
@@ -89,7 +92,9 @@ export default function OneTapLogModal() {
       isDemo: false,
     });
     setPendingInsulin(null);
-    setJustLogged(`${pendingInsulin.units}u insulin logged`);
+    setJustLogged(saved
+      ? `${pendingInsulin.units}u insulin logged`
+      : 'Not saved. Export a backup before leaving this page.');
     setTimeout(() => {
       setJustLogged(null);
       setIsOneTapModalOpen(false);

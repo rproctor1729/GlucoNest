@@ -20,6 +20,7 @@ export default function HypoEmergencyModal() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [carbTaken, setCarbTaken] = useState<string | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [soundError, setSoundError] = useState<string | null>(null);
 
   // The timer only runs while the modal is open. Closing it stops and resets the timer,
   // so no chime can sound later from a hidden modal.
@@ -28,6 +29,7 @@ export default function HypoEmergencyModal() {
       setIsTimerRunning(false);
       setSecondsRemaining(15 * 60);
       setCarbTaken(null);
+      setSoundError(null);
       return;
     }
 
@@ -50,7 +52,10 @@ export default function HypoEmergencyModal() {
           gain.gain.setValueAtTime(0.2, ctx.currentTime);
           osc.start();
           osc.stop(ctx.currentTime + 1.2);
-        } catch {}
+        } catch (error) {
+          console.error('The optional timer chime could not be played.', error);
+          setSoundError('The timer finished, but this browser could not play the optional chime.');
+        }
       }
     }
     return () => clearInterval(interval);
@@ -209,6 +214,7 @@ export default function HypoEmergencyModal() {
             <div className="text-5xl sm:text-6xl font-mono font-bold tracking-tight text-slate-900 dark:text-white my-3">
               {formattedTime}
             </div>
+            {soundError && <p role="status" className="mb-3 text-xs text-amber-700 dark:text-amber-300">{soundError}</p>}
 
             <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto mb-4 leading-relaxed">
               Swallowed sugar takes 12–15 minutes to enter circulation. Over-treating during this window causes severe rebound spikes.

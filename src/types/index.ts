@@ -13,7 +13,8 @@ export type NavigationSection =
   | 'learn-community'
   | 'about'
   | 'feedback'
-  | 'devices';
+  | 'devices'
+  | 'legal';
 
 export interface PatternInsight {
   id: string;
