@@ -10,6 +10,7 @@ import {
   getGlucoseStatusColor,
 } from '@/utils/glucoseUtils';
 import { calculateDetailedTIR } from '@/utils/tirCalculator';
+import { translate } from '@/lib/i18n';
 import {
   ResponsiveContainer,
   LineChart,
@@ -38,13 +39,16 @@ export default function DashboardSection() {
     connectionError,
     refreshNightscout,
     darkMode,
+    targetRange,
+    language,
+    meals,
   } = useApp();
 
   const [timeRange, setTimeRange] = useState<'3h' | '6h' | '12h' | '24h'>('24h');
   const [now, setNow] = useState(Date.now());
   const [glucoseDetailsExpanded, setGlucoseDetailsExpanded] = useState(false);
 
-  const tirStats = calculateDetailedTIR(readings);
+  const tirStats = calculateDetailedTIR(readings, targetRange.low, targetRange.high);
 
   useEffect(() => {
     if (!isNightscoutConnected) return;
@@ -78,8 +82,12 @@ export default function DashboardSection() {
       : reading.timeLabel,
   })), [filteredReadings, glucoseUnit]);
 
-  const targetLow = glucoseUnit === 'mmol/L' ? 3.9 : 70;
-  const targetHigh = glucoseUnit === 'mmol/L' ? 10.0 : 180;
+  const targetLow = glucoseUnit === 'mmol/L'
+    ? Number((targetRange.low / 18.0182).toFixed(1))
+    : targetRange.low;
+  const targetHigh = glucoseUnit === 'mmol/L'
+    ? Number((targetRange.high / 18.0182).toFixed(1))
+    : targetRange.high;
   const yDomainMin = glucoseUnit === 'mmol/L' ? 2.5 : 40;
   const yDomainMax = glucoseUnit === 'mmol/L' ? 16.5 : 300;
 
@@ -124,15 +132,29 @@ export default function DashboardSection() {
   }
 
   const trend = currentReading.trend ? getTrendSymbol(currentReading.trend) : null;
-  const status = getGlucoseStatus(currentReading.value);
-  const statusColors = getGlucoseStatusColor(status, darkMode);
-  const statusLabel = status === 'in-range' ? 'In Range' : status === 'low' || status === 'very-low' ? 'Low' : 'High';
+  const status = getGlucoseStatus(currentReading.value, targetRange.low, targetRange.high);
+  const statusColors = getGlucoseStatusColor(status, darkMode, targetRange.low, targetRange.high);
+  const statusLabel = status === 'in-range'
+    ? translate(language, 'dashboard.inRange')
+    : status === 'low' || status === 'very-low'
+      ? translate(language, 'dashboard.low')
+      : translate(language, 'dashboard.high');
   const latestReadingTime = Number.isFinite(Date.parse(currentReading.timestamp))
     ? new Date(currentReading.timestamp).toLocaleString()
     : currentReading.timeLabel;
   const readingIsStale = isNightscoutConnected &&
     Number.isFinite(Date.parse(currentReading.timestamp)) &&
     now - Date.parse(currentReading.timestamp) > 10 * 60 * 1000;
+  const todayKey = new Date(now).toDateString();
+  const todaysReadings = readings.filter((reading) => {
+    const timestamp = Date.parse(reading.timestamp);
+    return Number.isFinite(timestamp) && new Date(timestamp).toDateString() === todayKey;
+  });
+  const todaysStats = calculateDetailedTIR(todaysReadings, targetRange.low, targetRange.high);
+  const lowsToday = todaysReadings.filter((reading) => reading.value < targetRange.low).length;
+  const latestMealToday = [...meals]
+    .filter((meal) => new Date(meal.timestamp).toDateString() === todayKey)
+    .sort((first, second) => Date.parse(second.timestamp) - Date.parse(first.timestamp))[0];
 
   return (
     <div className="space-y-5 sm:space-y-6 animate-fadeIn">
@@ -194,7 +216,7 @@ export default function DashboardSection() {
         <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 sm:items-center gap-5 sm:gap-8">
           <div>
             <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-              <span>{isNightscoutConnected ? 'Latest glucose' : dataSource === 'manual' ? 'Manual glucose' : 'Sample glucose'}</span>
+              <span>{translate(language, 'dashboard.current')}</span>
               <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${statusColors.badgeBg}`}>
                 {statusLabel}
               </span>
@@ -217,7 +239,7 @@ export default function DashboardSection() {
 
           <div className="sm:border-l sm:border-slate-100 sm:dark:border-slate-800 sm:pl-7">
             <div className="flex items-baseline justify-between gap-2">
-              <span className="text-xs font-medium text-slate-600 dark:text-slate-300">Time in range</span>
+              <span className="text-xs font-medium text-slate-600 dark:text-slate-300">{translate(language, 'dashboard.tir')}</span>
               <span className="text-3xl font-bold font-mono tracking-tight text-emerald-600 dark:text-emerald-400">
                 {tirStats.hasSufficientData ? `${tirStats.inRangePercent}%` : '—'}
               </span>
@@ -260,7 +282,9 @@ export default function DashboardSection() {
             onClick={() => setGlucoseDetailsExpanded((expanded) => !expanded)}
             className="inline-flex min-h-8 items-center gap-2 text-xs font-semibold text-nest-700 dark:text-nest-300 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500"
           >
-            {glucoseDetailsExpanded ? 'Hide glucose details' : 'View glucose details'}
+            {glucoseDetailsExpanded
+              ? translate(language, 'dashboard.hideDetails')
+              : translate(language, 'dashboard.details')}
             <span aria-hidden="true" className={`transition-transform duration-200 ${glucoseDetailsExpanded ? 'rotate-180' : ''}`}>⌄</span>
           </button>
           <div
@@ -317,6 +341,29 @@ export default function DashboardSection() {
         </div>
       </section>
 
+      <section
+        aria-label="Today so far"
+        className="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200/90 bg-white p-4 dark:border-slate-800 dark:bg-[#131b24] sm:grid-cols-3"
+      >
+        <div>
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Today so far · Time in range</div>
+          <div className="mt-1 text-lg font-bold font-mono text-emerald-700 dark:text-emerald-300">
+            {todaysStats.hasSufficientData ? `${todaysStats.inRangePercent}%` : 'Not enough data'}
+          </div>
+        </div>
+        <div>
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Readings below your range</div>
+          <div className="mt-1 text-lg font-bold font-mono text-slate-900 dark:text-white">{lowsToday}</div>
+        </div>
+        <div>
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Last meal logged today</div>
+          <div className="mt-1 truncate text-sm font-semibold text-slate-900 dark:text-white">
+            {latestMealToday?.name ?? 'No meal logged today'}
+          </div>
+          {latestMealToday?.isDemo && <span className="text-[9px] font-bold text-amber-700 dark:text-amber-300">SAMPLE</span>}
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#131b24] p-4 sm:p-6 shadow-subtle space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-0.5">
@@ -347,7 +394,10 @@ export default function DashboardSection() {
           </div>
         </div>
 
-        <div className="h-[320px] sm:h-[420px] lg:h-[480px] w-full">
+        <div id="glucose-chart-description" className="sr-only">
+          {translate(language, 'dashboard.chartSummary')}
+        </div>
+        <div className="h-[320px] sm:h-[420px] lg:h-[480px] w-full" role="region" aria-label="Glucose chart" aria-describedby="glucose-chart-description">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 15, right: 15, left: -20, bottom: 5 }}>
               <XAxis
@@ -394,6 +444,33 @@ export default function DashboardSection() {
             </LineChart>
           </ResponsiveContainer>
         </div>
+
+        <details className="border-t border-slate-100 pt-3 text-xs dark:border-slate-800">
+          <summary className="cursor-pointer font-semibold text-nest-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500 dark:text-nest-300">
+            Text alternative: view chart readings
+          </summary>
+          <div className="mt-3 max-h-64 overflow-auto">
+            <table className="w-full text-left text-[11px]">
+              <caption className="sr-only">Glucose readings shown in the continuous glucose chart</caption>
+              <thead className="sticky top-0 bg-white text-slate-500 dark:bg-[#131b24] dark:text-slate-400">
+                <tr>
+                  <th scope="col" className="p-2">Time</th>
+                  <th scope="col" className="p-2">Glucose ({formatUnitLabel(glucoseUnit)})</th>
+                  <th scope="col" className="p-2">Reading note</th>
+                </tr>
+              </thead>
+              <tbody>
+                {chartData.map((reading, index) => (
+                  <tr key={`${reading.timestamp}-${index}`} className="border-t border-slate-100 dark:border-slate-800">
+                    <td className="p-2 font-mono">{reading.chartTime}</td>
+                    <td className="p-2 font-mono">{reading.displayValue}</td>
+                    <td className="p-2">{reading.notes || 'No note'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800 pt-3 text-xs text-slate-500">
           <div className="flex items-center gap-4">

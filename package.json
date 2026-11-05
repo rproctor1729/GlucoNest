@@ -6,8 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "test:nightscout": "node --test scripts/test-nightscout.cjs"
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test scripts/test-*.cjs",
+    "test:nightscout": "node --test scripts/test-nightscout.cjs",
+    "test:local-data": "node --test scripts/test-local-data.cjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -23,8 +26,13 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^15.5.28",
     "postcss": "^8.5.1",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3"
+  },
+  "overrides": {
+    "postcss": "$postcss"
   }
 }

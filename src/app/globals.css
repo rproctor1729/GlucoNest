@@ -21,6 +21,10 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  html.large-text {
+    font-size: 112.5%;
+  }
+
   button:focus-visible,
   a:focus-visible {
     outline: 2px solid #5c9183;
@@ -51,7 +55,7 @@
     color: #000000 !important;
   }
 
-  header,
+  header:not(.print-keep),
   footer,
   .print\:hidden,
   button,

@@ -4,23 +4,19 @@ import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { CommunityFeedback } from '@/types';
 import {
-  MessageSquare,
   Send,
   CheckCircle2,
   Copy,
   Mail,
-  ExternalLink,
   ShieldCheck,
   Sparkles,
   Download,
-  AlertCircle,
-  HelpCircle,
   Info,
   Check,
 } from 'lucide-react';
 
 export default function FeedbackSection() {
-  const { submitFeedback, feedbackList } = useApp();
+  const { submitFeedback } = useApp();
 
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [nameOrHandle, setNameOrHandle] = useState('');
@@ -50,7 +46,6 @@ export default function FeedbackSection() {
 
   // 6. Features that would make you use regularly
   const [featureWouldUseRegularly, setFeatureWouldUseRegularly] = useState<string[]>([]);
-  const [featureOther, setFeatureOther] = useState('');
 
   // 7. Wish someone built
   const [wishSomeoneBuilt, setWishSomeoneBuilt] = useState('');
@@ -85,13 +80,13 @@ export default function FeedbackSection() {
       indianFoodHelpfulness,
       patternExplanationsHelpfulness,
       featureWouldUseRegularly,
-      featureOther: featureOther || undefined,
       wishSomeoneBuilt,
       additionalSuggestions,
     };
 
-    submitFeedback(submissionData);
-    setSubmittedSuccess(true);
+    if (submitFeedback(submissionData)) {
+      setSubmittedSuccess(true);
+    }
   };
 
   const buildFormattedText = () => {
@@ -115,7 +110,7 @@ ${indianFoodHelpfulness}
 ${patternExplanationsHelpfulness}
 
 6. High-priority desired features:
-${featureWouldUseRegularly.join(', ')} ${featureOther ? `(Other: ${featureOther})` : ''}
+${featureWouldUseRegularly.join(', ')}
 
 7. Wish someone built for T1D:
 ${wishSomeoneBuilt || 'None'}
@@ -448,7 +443,7 @@ ${additionalSuggestions || 'None'}`;
                       type="radio"
                       name="q4"
                       checked={indianFoodHelpfulness === ans}
-                      onChange={() => setIndianFoodHelpfulness(ans as any)}
+                      onChange={() => setIndianFoodHelpfulness(ans as CommunityFeedback['indianFoodHelpfulness'])}
                       className="accent-nest-600"
                     />
                     <span>{ans}</span>
@@ -475,7 +470,7 @@ ${additionalSuggestions || 'None'}`;
                       type="radio"
                       name="q5"
                       checked={patternExplanationsHelpfulness === ans}
-                      onChange={() => setPatternExplanationsHelpfulness(ans as any)}
+                      onChange={() => setPatternExplanationsHelpfulness(ans as CommunityFeedback['patternExplanationsHelpfulness'])}
                       className="accent-nest-600"
                     />
                     <span>{ans}</span>

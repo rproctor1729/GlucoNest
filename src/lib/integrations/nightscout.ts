@@ -12,6 +12,7 @@ export type NightscoutErrorCode =
   | 'invalid-limit'
   | 'unauthorized'
   | 'http-error'
+  | 'server-error'
   | 'cors-or-network'
   | 'timeout'
   | 'malformed-response';
@@ -158,7 +159,7 @@ export async function fetchNightscoutReadings(
         signal: controller.signal,
         cache: 'no-store',
       });
-    } catch (error) {
+    } catch {
       if (controller.signal.aborted) {
         throw new NightscoutError('timeout', 'Nightscout did not respond within 12 seconds. Check the URL and try again.');
       }
@@ -176,7 +177,7 @@ export async function fetchNightscoutReadings(
     }
     if (!response.ok) {
       throw new NightscoutError(
-        'http-error',
+        response.status >= 500 ? 'server-error' : 'http-error',
         `Nightscout returned HTTP ${response.status}. Check the instance URL and its read access.`
       );
     }
@@ -192,5 +193,34 @@ export async function fetchNightscoutReadings(
   } finally {
     clearTimeout(timeout);
     signal?.removeEventListener('abort', abortFromCaller);
+  }
+}
+
+export async function fetchNightscoutReadingsWithRetry(
+  config: NightscoutConfig,
+  signal?: AbortSignal
+): Promise<NormalizedGlucoseReading[]> {
+  const maxRetries = 2;
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await fetchNightscoutReadings(config, signal);
+    } catch (error) {
+      const retryable = error instanceof NightscoutError &&
+        ['timeout', 'cors-or-network', 'server-error'].includes(error.code);
+      if (!retryable || attempt >= maxRetries || signal?.aborted) throw error;
+      const delay = Math.min(400 * (2 ** attempt), 1600);
+      await new Promise<void>((resolve, reject) => {
+        const abort = () => {
+          clearTimeout(timer);
+          reject(new NightscoutError('timeout', 'The Nightscout retry was cancelled.'));
+        };
+        const timer = setTimeout(() => {
+          signal?.removeEventListener('abort', abort);
+          resolve();
+        }, delay);
+        signal?.addEventListener('abort', abort, { once: true });
+        if (signal?.aborted) abort();
+      });
+    }
   }
 }

@@ -3,21 +3,16 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
 import { indianFoodDatabase } from '@/data/indianFoods';
-import { FoodCategory, IndianFoodItem, MealItemSelection } from '@/types';
+import { IndianFoodItem } from '@/types';
 import {
   Utensils,
   Search,
-  Filter,
   Plus,
   Minus,
   Trash2,
   Check,
-  Sparkles,
-  Info,
   Layers,
-  ArrowRight,
   ShieldCheck,
-  ChevronDown,
 } from 'lucide-react';
 
 export default function FoodLibrarySection() {
@@ -34,7 +29,6 @@ export default function FoodLibrarySection() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedFoodForModal, setSelectedFoodForModal] = useState<IndianFoodItem | null>(null);
-  const [servingMultiplier, setServingMultiplier] = useState<number>(1);
   const [customServings, setCustomServings] = useState<string>('1');
   const [savedSuccessBanner, setSavedSuccessBanner] = useState<string | null>(null);
 
@@ -74,7 +68,6 @@ export default function FoodLibrarySection() {
 
   const handleOpenAddModal = (food: IndianFoodItem) => {
     setSelectedFoodForModal(food);
-    setServingMultiplier(1);
     setCustomServings('1');
   };
 
@@ -100,7 +93,7 @@ export default function FoodLibrarySection() {
         ? mealPlate[0].name
         : `${mealPlate[0].name} + ${mealPlate.length - 1} item${mealPlate.length > 2 ? 's' : ''}`;
 
-    addMealLog({
+    const saved = addMealLog({
       timestamp: new Date().toISOString(),
       mealType: 'lunch',
       name: mealTitle,
@@ -110,12 +103,16 @@ export default function FoodLibrarySection() {
       isDemo: false,
     });
 
-    setSavedSuccessBanner(`Meal plate saved (${totalPlateCarbs}g carbs recorded)`);
-    clearMealPlate();
-    setTimeout(() => {
-      setSavedSuccessBanner(null);
-      setActiveSection('quick-log');
-    }, 1500);
+    if (saved) {
+      setSavedSuccessBanner(`Meal plate saved (${totalPlateCarbs}g carbs recorded)`);
+      clearMealPlate();
+      setTimeout(() => {
+        setSavedSuccessBanner(null);
+        setActiveSection('quick-log');
+      }, 1500);
+    } else {
+      setSavedSuccessBanner('Meal is only in this session. Export a backup before leaving this page.');
+    }
   };
 
   return (
@@ -188,7 +185,7 @@ export default function FoodLibrarySection() {
         <div className="lg:col-span-8 space-y-3">
           <div className="flex items-center justify-between text-xs text-slate-500">
             <span>Showing {filteredFoods.length} foods</span>
-            <span className="text-[11px]">Click "+ Add to Plate" to build your meal</span>
+            <span className="text-[11px]">Click &quot;+ Add to Plate&quot; to build your meal</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -277,7 +274,7 @@ export default function FoodLibrarySection() {
               <div className="py-8 text-center space-y-2 text-xs text-slate-400">
                 <Utensils className="w-8 h-8 mx-auto text-slate-300 dark:text-slate-700" />
                 <p>Your meal plate is empty.</p>
-                <p className="text-[11px]">Click "Add" on any food item to calculate meal carbs together.</p>
+                <p className="text-[11px]">Click &quot;Add&quot; on any food item to calculate meal carbs together.</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -384,7 +381,6 @@ export default function FoodLibrarySection() {
                     key={num}
                     type="button"
                     onClick={() => {
-                      setServingMultiplier(num);
                       setCustomServings(num.toString());
                     }}
                     className={`py-1.5 rounded-lg text-xs font-mono font-medium transition-colors ${

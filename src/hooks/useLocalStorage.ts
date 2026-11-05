@@ -6,7 +6,6 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState<T>(initialValue);
-  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     try {
@@ -18,8 +17,6 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
       }
     } catch (error) {
       console.warn(`Error reading localStorage key "${key}":`, error);
-    } finally {
-      setIsInitialized(true);
     }
   }, [key]);
 

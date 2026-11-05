@@ -115,7 +115,7 @@ test('reports authentication, server and browser network/CORS failures without l
   await withMockFetch(async () => ({ ok: false, status: 503 }), async () => {
     await assert.rejects(
       nightscout.fetchNightscoutReadings({ url: 'https://nightscout.example', historyLimit: 10 }),
-      (error) => error.code === 'http-error'
+      (error) => error.code === 'server-error'
     );
   });
 
@@ -124,6 +124,23 @@ test('reports authentication, server and browser network/CORS failures without l
       nightscout.fetchNightscoutReadings({ url: 'https://nightscout.example', historyLimit: 10 }),
       (error) => error.code === 'cors-or-network'
     );
+  });
+
+  test('retries temporary server failures a bounded number of times', async () => {
+    let requests = 0;
+    await withMockFetch(async () => {
+      requests += 1;
+      return requests < 3
+        ? { ok: false, status: 503 }
+        : { ok: true, status: 200, json: async () => fixture };
+    }, async () => {
+      const readings = await nightscout.fetchNightscoutReadingsWithRetry({
+        url: 'https://nightscout.example',
+        historyLimit: 10,
+      });
+      assert.equal(requests, 3);
+      assert.equal(readings.length, 2);
+    });
   });
 });
 

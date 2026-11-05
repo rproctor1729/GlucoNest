@@ -12,7 +12,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="mt-20 border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0c1218] transition-colors">
+    <footer className="mt-20 border-t border-slate-200 bg-white pb-16 transition-colors dark:border-slate-800/80 dark:bg-[#0c1218] xl:pb-0 print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-3 md:col-span-1">
@@ -37,11 +37,6 @@ export default function Footer() {
               <li>
                 <button onClick={() => setActiveSection('my-day')} className="hover:text-slate-900 dark:hover:text-white">
                   My Day
-                </button>
-              </li>
-              <li>
-                <button onClick={() => setActiveSection('devices')} className="hover:text-slate-900 dark:hover:text-white">
-                  Devices &amp; Data Sources
                 </button>
               </li>
               <li>
@@ -80,6 +75,11 @@ export default function Footer() {
               <li>
                 <button onClick={() => setActiveSection('about')} className="hover:text-slate-900 dark:hover:text-white">
                   About GlucoNest
+                </button>
+              </li>
+              <li>
+                <button onClick={() => setActiveSection('legal')} className="hover:text-slate-900 dark:hover:text-white">
+                  Privacy, terms &amp; contact
                 </button>
               </li>
             </ul>
