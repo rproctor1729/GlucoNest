@@ -135,6 +135,14 @@ export default function DashboardSection() {
 
   const trend = currentReading.trend ? getTrendSymbol(currentReading.trend) : null;
   const status = getGlucoseStatus(currentReading.value, targetRange.low, targetRange.high);
+  // Ambient glow follows the status. The status label beside it carries the meaning, so colour is not the only cue.
+  const glowClass = status === 'very-low' || status === 'low'
+    ? 'bg-rose-400/25 dark:bg-rose-500/20'
+    : status === 'high' || status === 'very-high'
+      ? 'bg-amber-300/25 dark:bg-amber-500/15'
+      : 'bg-emerald-300/25 dark:bg-emerald-500/15';
+  // "Live" only for fresh Nightscout data. Demo and manual readings are never presented as live.
+  const showLive = isNightscoutConnected && !readingIsStale;
   const statusColors = getGlucoseStatusColor(status, darkMode, targetRange.low, targetRange.high);
   const statusLabel = status === 'in-range'
     ? translate(language, 'dashboard.inRange')
@@ -160,7 +168,8 @@ export default function DashboardSection() {
 
   return (
     <div className="space-y-5 sm:space-y-6 animate-fadeIn">
-      <section className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#131b24] p-4 sm:p-6 shadow-subtle">
+      <section className="relative overflow-hidden rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#131b24] p-4 sm:p-6 shadow-subtle">
+        <div aria-hidden="true" className={`gn-breathe pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full blur-3xl ${glowClass}`} />
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className={`px-2 py-1 rounded-md text-[10px] font-bold tracking-wider ${
             isNightscoutConnected
@@ -222,6 +231,15 @@ export default function DashboardSection() {
               <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${statusColors.badgeBg}`}>
                 {statusLabel}
               </span>
+              {showLive && (
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-300">
+                  <span className="relative flex h-2 w-2" aria-hidden="true">
+                    <span className="gn-live-dot absolute inline-flex h-full w-full rounded-full bg-emerald-500" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  </span>
+                  Live
+                </span>
+              )}
             </div>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-6xl sm:text-7xl font-bold font-mono tracking-tight text-slate-900 dark:text-white tabular-nums">
