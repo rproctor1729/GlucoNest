@@ -166,6 +166,27 @@ export default function DashboardSection() {
     .filter((meal) => new Date(meal.timestamp).toDateString() === todayKey)
     .sort((first, second) => Date.parse(second.timestamp) - Date.parse(first.timestamp))[0];
 
+  // Marks the newest point on the chart with a slow halo. Only the last point gets it.
+  const newestIndex = chartData.length - 1;
+  const renderNewestDot = (props: { cx?: number; cy?: number; index?: number }) => {
+    if (props.index !== newestIndex || props.cx === undefined || props.cy === undefined) {
+      return <g key={`dot-${props.index ?? 'none'}`} />;
+    }
+    return (
+      <g key={`newest-${props.index}`}>
+        <circle
+          cx={props.cx}
+          cy={props.cy}
+          r={9}
+          fill="#5c9183"
+          className="gn-pulse-ring"
+          style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+        />
+        <circle cx={props.cx} cy={props.cy} r={4.5} fill="#5c9183" stroke="#ffffff" strokeWidth={2} />
+      </g>
+    );
+  };
+
   return (
     <div className="space-y-5 sm:space-y-6 animate-fadeIn">
       <section className="relative overflow-hidden rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#131b24] p-4 sm:p-6 shadow-subtle">
@@ -458,7 +479,7 @@ export default function DashboardSection() {
                 dataKey="displayValue"
                 stroke="#5c9183"
                 strokeWidth={2.75}
-                dot={false}
+                dot={renderNewestDot}
                 activeDot={{ r: 5, fill: '#5c9183', stroke: '#ffffff', strokeWidth: 2 }}
               />
             </LineChart>

@@ -181,6 +181,21 @@
 }
 
 /* The single "live" indicator: a slow ring that fades out. */
+@keyframes gnPulseRing {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+.gn-pulse-ring {
+  animation: gnPulseRing 2.8s ease-out infinite;
+}
+
 @keyframes gnLivePing {
   0% {
     transform: scale(1);
@@ -208,8 +223,13 @@
 
   .gn-float,
   .gn-breathe,
-  .gn-live-dot {
+  .gn-live-dot,
+  .gn-pulse-ring {
     animation: none;
+  }
+
+  .gn-pulse-ring {
+    opacity: 0.3;
   }
 
   .gn-live-dot {
