@@ -1,5 +1,6 @@
 'use client';
 
+import BrandMark from '@/components/brand/BrandMark';
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { NavigationSection } from '@/types';
@@ -68,10 +69,8 @@ export default function Navbar() {
             onClick={() => handleNavClick('my-day')}
             className="flex items-center gap-2.5 text-left group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500 rounded-xl"
           >
-            <div className="w-9 h-9 rounded-xl bg-nest-500/15 dark:bg-nest-500/20 text-nest-600 dark:text-nest-400 flex items-center justify-center border border-nest-500/30 group-hover:scale-105 transition-transform">
-              <span className="font-bold text-lg font-mono">G</span>
-            </div>
-            <span className="font-semibold text-lg tracking-tight text-slate-900 dark:text-white">
+            <BrandMark className="h-9 w-9 shadow-[0_6px_16px_-8px_rgba(47,76,70,0.7)] transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105" />
+            <span className="font-display text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
               GlucoNest
             </span>
           </button>
