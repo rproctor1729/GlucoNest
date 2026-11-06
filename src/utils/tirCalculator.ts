@@ -118,6 +118,10 @@ export function calculateDetailedTIR(
     }
   }
 
+  // When no interval is short enough to count (for example, fingerstick entries hours apart),
+  // every weight would be zero and all percentages would show 0%. Count each reading once instead.
+  if (weights.every((weight) => weight === 0)) weights.fill(1);
+
   const buckets = { veryLow: 0, low: 0, inRange: 0, high: 0, veryHigh: 0 };
   let weightedSum = 0;
   let minReading = Infinity;
