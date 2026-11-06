@@ -142,7 +142,6 @@ export default function DashboardSection() {
       ? 'bg-amber-300/25 dark:bg-amber-500/15'
       : 'bg-emerald-300/25 dark:bg-emerald-500/15';
   // "Live" only for fresh Nightscout data. Demo and manual readings are never presented as live.
-  const showLive = isNightscoutConnected && !readingIsStale;
   const statusColors = getGlucoseStatusColor(status, darkMode, targetRange.low, targetRange.high);
   const statusLabel = status === 'in-range'
     ? translate(language, 'dashboard.inRange')
@@ -155,6 +154,8 @@ export default function DashboardSection() {
   const readingIsStale = isNightscoutConnected &&
     Number.isFinite(Date.parse(currentReading.timestamp)) &&
     now - Date.parse(currentReading.timestamp) > 10 * 60 * 1000;
+  // "Live" only for fresh Nightscout data. Demo and manual readings are never presented as live.
+  const showLive = isNightscoutConnected && !readingIsStale;
   const todayKey = new Date(now).toDateString();
   const todaysReadings = readings.filter((reading) => {
     const timestamp = Date.parse(reading.timestamp);
