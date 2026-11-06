@@ -31,27 +31,6 @@ export interface PatternInsight {
   isDemo?: boolean;
 }
 
-export interface CommunityStory {
-  id: string;
-  title: string;
-  slug: string;
-  authorName: string;
-  authorCity?: string;
-  authorAvatar: string;
-  authorBio: string;
-  authorT1DAge: string;
-  authorGear: string;
-  category: 'Diagnosis' | 'Athletics & Motion' | 'Mental Health & Burnout' | 'Food & Bolusing' | 'Nighttime & Alarms' | 'Hostel & College Life';
-  readTime: string;
-  publishedDate: string;
-  hearts: number;
-  userLiked?: boolean;
-  bookmarked?: boolean;
-  summary: string;
-  fullStory: string[];
-  takeaways: string[];
-}
-
 export interface EducationalGuide {
   id: string;
   title: string;
