@@ -14,7 +14,8 @@ export type NavigationSection =
   | 'about'
   | 'feedback'
   | 'devices'
-  | 'legal';
+  | 'legal'
+  | 'report';
 
 export interface PatternInsight {
   id: string;
