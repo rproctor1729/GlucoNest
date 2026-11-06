@@ -23,6 +23,23 @@ const config: Config = {
           900: "#283f3b",
           950: "#142220",
         },
+        lavender: {
+          50: "#f7f5fc",
+          100: "#eeeaf8",
+          200: "#ddd6f1",
+          300: "#c4bbe6",
+          400: "#a598d6",
+          500: "#8a7bc6", // GlucoNest signature
+          600: "#7564b0",
+          700: "#5f4f95",
+          800: "#4d4179",
+          900: "#3f3664",
+          950: "#281f45",
+        },
+        cream: "#fbf7f0",
+        ink: "#1f1b2e",
+        coral: { 300: "#f9c3ad", 400: "#f4a68a", 500: "#e8866a" },
+        sage: { 300: "#b9d3c3", 400: "#9bbfa9", 500: "#7fa893" },
         glucose: {
           verylow: "#be123c", // < 54 mg/dL (urgent low)
           low: "#f43f5e",     // 54-69 mg/dL (gentle coral/rose)

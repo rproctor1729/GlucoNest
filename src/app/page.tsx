@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
+import type { NavigationSection } from '@/types';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import DashboardSection from '@/components/dashboard/DashboardSection';
@@ -20,9 +21,35 @@ import SectionErrorBoundary from '@/components/layout/SectionErrorBoundary';
 import OnboardingDialog from '@/components/layout/OnboardingDialog';
 import LegalSection from '@/components/legal/LegalSection';
 import LocalReminderManager from '@/components/layout/LocalReminderManager';
+import LandingPage from '@/components/landing/LandingPage';
+
+const LANDING_SEEN_KEY = 'gluconest_landing_seen';
 
 function MainContent() {
-  const { activeSection, setActiveSection, localDataError, dismissLocalDataError } = useApp();
+  const { activeSection, setActiveSection, localDataError, dismissLocalDataError, onboardingComplete } = useApp();
+  // Starts as "seen" so the landing never flashes for returning users before storage is read.
+  const [landingSeen, setLandingSeen] = useState(true);
+
+  useEffect(() => {
+    try {
+      setLandingSeen(window.localStorage.getItem(LANDING_SEEN_KEY) === '1');
+    } catch {
+      // If storage is blocked, skip the landing page rather than showing it on every load.
+    }
+  }, []);
+
+  // First visits see the landing page before onboarding. Once dismissed, it does not return.
+  const showLanding = activeSection === 'my-day' && !onboardingComplete && !landingSeen;
+
+  const enterApp = (section?: NavigationSection) => {
+    setLandingSeen(true);
+    try {
+      window.localStorage.setItem(LANDING_SEEN_KEY, '1');
+    } catch {
+      // Storage unavailable: the landing page simply stays hidden for this visit.
+    }
+    if (section) setActiveSection(section);
+  };
 
   return (
     <div className="min-h-screen flex flex-col text-slate-800 dark:text-slate-100 transition-colors">
@@ -56,6 +83,9 @@ function MainContent() {
       )}
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 pb-20 xl:pb-6">
+        {showLanding ? (
+          <LandingPage onEnter={enterApp} />
+        ) : (
         <SectionErrorBoundary key={activeSection} sectionName={activeSection}>
           {activeSection === 'my-day' && <DashboardSection />}
           {activeSection === 'devices' && <DevicesSection />}
@@ -68,10 +98,11 @@ function MainContent() {
           {activeSection === 'legal' && <LegalSection />}
           {activeSection === 'report' && <DoctorReportSection />}
         </SectionErrorBoundary>
+        )}
       </main>
 
       <Footer />
-      <OnboardingDialog />
+      {!showLanding && <OnboardingDialog />}
       <LocalReminderManager />
 
       {/* Global modals */}
