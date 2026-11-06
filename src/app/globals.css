@@ -128,7 +128,7 @@
 }
 
 .animate-fadeIn > * {
-  animation: riseIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: riseIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 .animate-fadeIn > *:nth-child(2) {
