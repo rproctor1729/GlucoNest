@@ -169,14 +169,71 @@
   animation: gnFloat 7s ease-in-out infinite;
 }
 
+/* Hero glow breathes slowly, on opacity only, so it stays cheap on phones. */
+@keyframes gnBreathe {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* The single "live" indicator: a slow ring that fades out. */
+@keyframes gnPulseRing {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+.gn-pulse-ring {
+  animation: gnPulseRing 2.8s ease-out infinite;
+}
+
+@keyframes gnLivePing {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.gn-breathe {
+  animation: gnBreathe 6s ease-in-out infinite;
+}
+
+.gn-live-dot {
+  animation: gnLivePing 2.4s ease-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gn-draw {
     stroke-dashoffset: 0;
     animation: none;
   }
 
-  .gn-float {
+  .gn-float,
+  .gn-breathe,
+  .gn-live-dot,
+  .gn-pulse-ring {
     animation: none;
+  }
+
+  .gn-pulse-ring {
+    opacity: 0.3;
+  }
+
+  .gn-live-dot {
+    opacity: 0.35;
   }
 
   *,
