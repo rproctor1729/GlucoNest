@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   NavigationSection,
   GlucoseUnit,
@@ -28,6 +28,8 @@ import {
 import { AppLanguage } from '../lib/i18n';
 import { mockGlucoseReadings } from '../data/mockGlucose';
 import { initialMockMeals } from '../data/mockMeals';
+import { getLatestReading } from '../utils/latestReading';
+import { visibleRecords } from '../utils/demoVisibility';
 import { initialMockInsulin } from '../data/mockInsulin';
 import { mockPatternInsights } from '../data/mockInsights';
 import { educationalGuides } from '../data/educationalContent';
@@ -419,7 +421,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     : dataSource === 'manual'
       ? manualReadings
       : demoReadings;
-  const currentReading = readings[readings.length - 1] || null;
+  const currentReading = getLatestReading(readings);
 
   const addReading = (reading: GlucoseReading): boolean => {
     if (reading.source === 'manual') {
@@ -725,6 +727,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const dismissLocalDataError = () => setLocalDataError(null);
 
+  // Sample records are hidden once the user has real ones. The stored lists are not changed.
+  const visibleMeals = useMemo(() => visibleRecords(meals), [meals]);
+  const visibleInsulinLogs = useMemo(() => visibleRecords(insulinLogs), [insulinLogs]);
+
   return (
     <AppContext.Provider
       value={{
@@ -758,11 +764,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         connectNightscout,
         refreshNightscout,
         disconnectNightscout,
-        meals,
+        meals: visibleMeals,
         addMealLog,
         updateMealLog,
         deleteMealLog,
-        insulinLogs,
+        insulinLogs: visibleInsulinLogs,
         addInsulinLog,
         updateInsulinLog,
         deleteInsulinLog,
