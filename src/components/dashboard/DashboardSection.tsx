@@ -242,7 +242,7 @@ export default function DashboardSection() {
               )}
             </div>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-6xl sm:text-7xl font-bold font-mono tracking-tight text-slate-900 dark:text-white tabular-nums">
+              <span className="text-6xl sm:text-7xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-white tabular-nums">
                 {convertGlucose(currentReading.value, glucoseUnit)}
               </span>
               <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{formatUnitLabel(glucoseUnit)}</span>
@@ -260,7 +260,7 @@ export default function DashboardSection() {
           <div className="sm:border-l sm:border-slate-100 sm:dark:border-slate-800 sm:pl-7">
             <div className="flex items-baseline justify-between gap-2">
               <span className="text-xs font-medium text-slate-600 dark:text-slate-300">{translate(language, 'dashboard.tir')}</span>
-              <span className="text-3xl font-bold font-mono tracking-tight text-emerald-600 dark:text-emerald-400">
+              <span className="text-3xl font-bold tabular-nums tracking-tight text-emerald-600 dark:text-emerald-400">
                 {tirStats.hasSufficientData ? `${tirStats.inRangePercent}%` : '—'}
               </span>
             </div>
@@ -281,7 +281,7 @@ export default function DashboardSection() {
                 </>
               )}
             </div>
-            <div className="mt-1.5 flex justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
+            <div className="mt-1.5 flex justify-between text-[10px] tabular-nums text-slate-500 dark:text-slate-400">
               <span className="text-rose-600 dark:text-rose-400">TBR {tirStats.hasSufficientData ? `${tirStats.timeBelowRangePercent}%` : '—'}</span>
               <span className="text-emerald-600 dark:text-emerald-400">TIR {tirStats.hasSufficientData ? `${tirStats.inRangePercent}%` : '—'}</span>
               <span className="text-amber-600 dark:text-amber-400">TAR {tirStats.hasSufficientData ? `${tirStats.timeAboveRangePercent}%` : '—'}</span>
@@ -318,31 +318,31 @@ export default function DashboardSection() {
               <div className="grid grid-cols-2 gap-x-6 gap-y-3 pt-3 sm:grid-cols-3">
                 <div>
                   <div className="text-[10px] text-slate-500 dark:text-slate-400">Average glucose</div>
-                  <div className="text-sm font-semibold font-mono text-slate-900 dark:text-white">
+                  <div className="text-sm font-semibold tabular-nums text-slate-900 dark:text-white">
                     {convertGlucose(tirStats.meanGlucose, glucoseUnit)} {formatUnitLabel(glucoseUnit)}
                   </div>
                 </div>
                 <div>
                   <div className="text-[10px] text-slate-500 dark:text-slate-400">Lowest glucose</div>
-                  <div className="text-sm font-semibold font-mono text-slate-900 dark:text-white">
+                  <div className="text-sm font-semibold tabular-nums text-slate-900 dark:text-white">
                     {convertGlucose(tirStats.minReading, glucoseUnit)} {formatUnitLabel(glucoseUnit)}
                   </div>
                 </div>
                 <div>
                   <div className="text-[10px] text-slate-500 dark:text-slate-400">Highest glucose</div>
-                  <div className="text-sm font-semibold font-mono text-slate-900 dark:text-white">
+                  <div className="text-sm font-semibold tabular-nums text-slate-900 dark:text-white">
                     {convertGlucose(tirStats.maxReading, glucoseUnit)} {formatUnitLabel(glucoseUnit)}
                   </div>
                 </div>
                 <div>
                   <div className="text-[10px] text-slate-500 dark:text-slate-400">Glucose variability (CV)</div>
-                  <div className="text-sm font-semibold font-mono text-slate-900 dark:text-white">
+                  <div className="text-sm font-semibold tabular-nums text-slate-900 dark:text-white">
                     {tirStats.hasSufficientVariabilityData ? `${tirStats.coefficientOfVariation}%` : 'Insufficient data'}
                   </div>
                 </div>
                 <div>
                   <div className="text-[10px] text-slate-500 dark:text-slate-400">Estimated GMI</div>
-                  <div className="text-sm font-semibold font-mono text-slate-900 dark:text-white">
+                  <div className="text-sm font-semibold tabular-nums text-slate-900 dark:text-white">
                     {tirStats.hasSufficientGmiData ? `${tirStats.gmiPercent}%` : 'Insufficient data'}
                   </div>
                 </div>
@@ -367,13 +367,13 @@ export default function DashboardSection() {
       >
         <div>
           <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Today so far · Time in range</div>
-          <div className="mt-1 text-lg font-bold font-mono text-emerald-700 dark:text-emerald-300">
+          <div className="mt-1 text-lg font-bold tabular-nums text-emerald-700 dark:text-emerald-300">
             {todaysStats.hasSufficientData ? `${todaysStats.inRangePercent}%` : 'Not enough data'}
           </div>
         </div>
         <div>
           <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Readings below your range</div>
-          <div className="mt-1 text-lg font-bold font-mono text-slate-900 dark:text-white">{lowsToday}</div>
+          <div className="mt-1 text-lg font-bold tabular-nums text-slate-900 dark:text-white">{lowsToday}</div>
         </div>
         <div>
           <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Last meal logged today</div>
@@ -438,8 +438,8 @@ export default function DashboardSection() {
                     const data = payload[0].payload;
                     return (
                       <div className="bg-slate-900 dark:bg-slate-800 text-white p-3 rounded-xl shadow-xl text-xs space-y-1 border border-slate-700">
-                        <div className="font-mono text-slate-400">{data.timeLabel}</div>
-                        <div className="text-base font-bold font-mono">
+                        <div className="tabular-nums text-slate-400">{data.timeLabel}</div>
+                        <div className="text-base font-bold tabular-nums">
                           {data.displayValue} {formatUnitLabel(glucoseUnit)}
                         </div>
                         {data.notes && <div className="text-amber-300 text-[11px] font-medium">{data.notes}</div>}
@@ -482,8 +482,8 @@ export default function DashboardSection() {
               <tbody>
                 {chartData.map((reading, index) => (
                   <tr key={`${reading.timestamp}-${index}`} className="border-t border-slate-100 dark:border-slate-800">
-                    <td className="p-2 font-mono">{reading.chartTime}</td>
-                    <td className="p-2 font-mono">{reading.displayValue}</td>
+                    <td className="p-2 tabular-nums">{reading.chartTime}</td>
+                    <td className="p-2 tabular-nums">{reading.displayValue}</td>
                     <td className="p-2">{reading.notes || 'No note'}</td>
                   </tr>
                 ))}
