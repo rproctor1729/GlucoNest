@@ -292,9 +292,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
       };
 
-      loadCollection(LOCAL_DATA_KEYS.meals, 'meal', isMealLogEntry, setMeals);
-      loadCollection(LOCAL_DATA_KEYS.insulin, 'insulin', isInsulinLogEntry, setInsulinLogs);
-      loadCollection(LOCAL_DATA_KEYS.activity, 'activity', isActivityLogEntry, setActivityLogs);
+      loadCollection(LOCAL_DATA_KEYS.meals, 'meal', isMealLogEntry, (items) =>
+        setMeals([...items.filter((m) => !m.isDemo), ...initialMockMeals])
+      );
+      loadCollection(LOCAL_DATA_KEYS.insulin, 'insulin', isInsulinLogEntry, (items) =>
+        setInsulinLogs([...items.filter((i) => !i.isDemo), ...initialMockInsulin])
+      );
+      loadCollection(LOCAL_DATA_KEYS.activity, 'activity', isActivityLogEntry, (items) =>
+        setActivityLogs([...items.filter((a) => !a.isDemo), makeDemoActivity()])
+      );
       loadCollection(
         LOCAL_DATA_KEYS.readings,
         'glucose reading',
@@ -526,19 +532,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [newEntry, ...meals];
     setMeals(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated.filter((m) => !m.isDemo));
   };
 
   const updateMealLog = (id: string, updatedFields: Partial<MealLogEntry>): boolean => {
     const updated = meals.map((m) => (m.id === id ? { ...m, ...updatedFields } : m));
     setMeals(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated.filter((m) => !m.isDemo));
   };
 
   const deleteMealLog = (id: string): boolean => {
     const updated = meals.filter((m) => m.id !== id);
     setMeals(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated.filter((m) => !m.isDemo));
   };
 
   // Insulin management
@@ -550,19 +556,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [newEntry, ...insulinLogs];
     setInsulinLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated.filter((i) => !i.isDemo));
   };
 
   const updateInsulinLog = (id: string, updatedFields: Partial<InsulinLogEntry>): boolean => {
     const updated = insulinLogs.map((i) => (i.id === id ? { ...i, ...updatedFields } : i));
     setInsulinLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated.filter((i) => !i.isDemo));
   };
 
   const deleteInsulinLog = (id: string): boolean => {
     const updated = insulinLogs.filter((i) => i.id !== id);
     setInsulinLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated.filter((i) => !i.isDemo));
   };
 
   // Activity management
@@ -574,13 +580,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [newEntry, ...activityLogs];
     setActivityLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.activity, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.activity, updated.filter((a) => !a.isDemo));
   };
 
   const deleteActivityLog = (id: string): boolean => {
     const updated = activityLogs.filter((a) => a.id !== id);
     setActivityLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.activity, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.activity, updated.filter((a) => !a.isDemo));
   };
 
   // Meal Plate management
@@ -657,9 +663,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMeals(nextMeals);
     setInsulinLogs(nextInsulin);
     setActivityLogs(nextActivities);
-    persistLocalValue(LOCAL_DATA_KEYS.meals, nextMeals);
-    persistLocalValue(LOCAL_DATA_KEYS.insulin, nextInsulin);
-    persistLocalValue(LOCAL_DATA_KEYS.activity, nextActivities);
+    persistLocalValue(LOCAL_DATA_KEYS.meals, nextMeals.filter((m) => !m.isDemo));
+    persistLocalValue(LOCAL_DATA_KEYS.insulin, nextInsulin.filter((i) => !i.isDemo));
+    persistLocalValue(LOCAL_DATA_KEYS.activity, nextActivities.filter((a) => !a.isDemo));
   };
 
   const importLocalDataBackup = (backup: LocalDataBackup) => {

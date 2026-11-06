@@ -126,7 +126,7 @@ test('reports authentication, server and browser network/CORS failures without l
     );
   });
 
-  test('retries temporary server failures a bounded number of times', async () => {
+  await test('retries temporary server failures a bounded number of times', async () => {
     let requests = 0;
     await withMockFetch(async () => {
       requests += 1;
