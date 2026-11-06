@@ -18,6 +18,7 @@ const translations: Record<AppLanguage, Record<string, string>> = {
     'nav.learn': 'Learn & Community',
     'nav.about': 'About GlucoNest',
     'nav.feedback': 'Feedback',
+    'nav.report': 'Doctor report',
     'dashboard.title': 'Glucose Summary',
     'dashboard.current': 'Current glucose',
     'dashboard.inRange': 'In Range',

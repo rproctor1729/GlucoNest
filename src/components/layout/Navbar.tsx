@@ -44,6 +44,7 @@ export default function Navbar() {
     { id: 'learn-community', label: translate(language, 'nav.learn') },
     { id: 'about', label: translate(language, 'nav.about') },
     { id: 'feedback', label: translate(language, 'nav.feedback') },
+    { id: 'report', label: translate(language, 'nav.report') },
   ];
   const navGroups = [
     { label: 'Track', items: navItems.filter((item) => ['my-day', 'devices', 'quick-log'].includes(item.id)) },
