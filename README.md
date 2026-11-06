@@ -36,3 +36,12 @@ The app stores user-entered records in browser local storage. Browser storage is
 The `public/_headers` file provides security headers for static hosting providers that support the Cloudflare Pages `_headers` convention. Next.js deployments also receive matching response headers from `next.config.mjs`. Review the CSP if adding a new external integration. The current policy allows HTTPS connections to user-selected Nightscout hosts.
 
 Offline mode is not a real-time glucose monitor. Emergency response should use the user's existing CGM alerts and care plan.
+
+## Changelog
+
+### Phase 1: critical correctness
+- Time in range now counts each reading once when no reading is close enough in time to weight (for example, fingerstick entries hours apart). Previously every percentage showed 0%.
+- The current reading is chosen by timestamp, not by array position.
+- Sample meals and insulin entries are hidden once you have real ones. Your saved data is not changed; clearing your real entries brings the samples back.
+- The hypo timer chime resumes a suspended audio context, closes it after playing, and stops if the modal closes. A refused resume is skipped quietly.
+
