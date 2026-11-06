@@ -61,7 +61,7 @@ export default function TodayCard() {
                 className="rounded-xl border border-slate-200/70 bg-white/70 p-2.5 transition duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-white/5 dark:bg-white/[0.03]"
               >
                 <dt className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">{stat.label}</dt>
-                <dd className={`mt-0.5 font-mono text-base font-semibold tabular-nums ${stat.tone}`}>{stat.value}</dd>
+                <dd className={`mt-0.5 tabular-nums text-base font-semibold tabular-nums ${stat.tone}`}>{stat.value}</dd>
                 {stat.sub && <dd className="text-[10px] text-slate-500 dark:text-slate-400">{stat.sub}</dd>}
               </div>
             ))}
