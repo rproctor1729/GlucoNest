@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { buildReport } from '@/utils/doctorReport';
 import GlossaryTerm from '@/components/common/GlossaryTerm';
+import { GLOSSARY } from '@/utils/glossary';
 
 const PERIODS = [14, 30, 90];
 const MMOL_FACTOR = 18.0182;
@@ -64,7 +65,7 @@ export default function DoctorReportSection() {
         </div>
       </div>
 
-      <article className="print-report rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131b24] p-6 sm:p-8 space-y-6">
+      <article className="print-report nest-card p-6 sm:p-8 space-y-6">
         <header>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white">GlucoNest summary</h3>
           <p className="text-sm text-slate-600 dark:text-slate-400">
@@ -128,7 +129,8 @@ export default function DoctorReportSection() {
         <section className="space-y-1 text-xs text-slate-600 dark:text-slate-400">
           <h4 className="font-semibold text-slate-900 dark:text-white text-sm">Terms</h4>
           <p><GlossaryTerm term="tir">TIR</GlossaryTerm>: share of readings in range. <GlossaryTerm term="tbr">TBR</GlossaryTerm>: share under 70. <GlossaryTerm term="tar">TAR</GlossaryTerm>: share over 180.</p>
-          <p><GlossaryTerm term="gmi">GMI</GlossaryTerm> and <GlossaryTerm term="cv">CV</GlossaryTerm> are described in the app's glossary.</p>
+          <p><GlossaryTerm term="gmi">GMI</GlossaryTerm>: {GLOSSARY.gmi.plain}</p>
+          <p><GlossaryTerm term="cv">CV</GlossaryTerm>: {GLOSSARY.cv.plain}</p>
         </section>
 
         <footer className="text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800 pt-3">

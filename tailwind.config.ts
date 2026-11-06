@@ -31,6 +31,10 @@ const config: Config = {
           veryhigh: "#ea580c",// > 250 mg/dL (soft burnt orange)
         }
       },
+      fontFamily: {
+        sans: ['var(--font-body)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'Georgia', 'serif'],
+      },
       borderRadius: {
         'nest': '11px', // soft 10-12px per design principle #1
       },
