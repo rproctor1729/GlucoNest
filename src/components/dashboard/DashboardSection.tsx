@@ -11,6 +11,7 @@ import {
 } from '@/utils/glucoseUtils';
 import { calculateDetailedTIR } from '@/utils/tirCalculator';
 import { translate } from '@/lib/i18n';
+import TodayCard from '@/components/dashboard/TodayCard';
 import {
   ResponsiveContainer,
   LineChart,
@@ -94,6 +95,7 @@ export default function DashboardSection() {
   if (!currentReading) {
     return (
       <div className="space-y-6 animate-fadeIn">
+        <TodayCard />
         <div className="rounded-2xl border border-nest-200 dark:border-nest-900/60 bg-white dark:bg-[#131b24] p-6 sm:p-8 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>

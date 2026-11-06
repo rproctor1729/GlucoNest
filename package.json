@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test scripts/test-*.cjs",
     "test:nightscout": "node --test scripts/test-nightscout.cjs",
-    "test:local-data": "node --test scripts/test-local-data.cjs"
+    "test:local-data": "node --test scripts/test-local-data.cjs",
+    "test:report": "node --test scripts/test-doctor-report.cjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

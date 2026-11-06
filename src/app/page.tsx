@@ -12,6 +12,7 @@ import LearnCommunitySection from '@/components/community/LearnCommunitySection'
 import AboutSection from '@/components/about/AboutSection';
 import FeedbackSection from '@/components/feedback/FeedbackSection';
 import DevicesSection from '@/components/devices/DevicesSection';
+import DoctorReportSection from '@/components/report/DoctorReportSection';
 import HypoEmergencyModal from '@/components/hypo/HypoEmergencyModal';
 import OneTapLogModal from '@/components/dashboard/OneTapLogModal';
 import { AlertCircle, X } from 'lucide-react';
@@ -65,6 +66,7 @@ function MainContent() {
           {activeSection === 'about' && <AboutSection />}
           {activeSection === 'feedback' && <FeedbackSection />}
           {activeSection === 'legal' && <LegalSection />}
+          {activeSection === 'report' && <DoctorReportSection />}
         </SectionErrorBoundary>
       </main>
 
