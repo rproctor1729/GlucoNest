@@ -25,7 +25,7 @@ function MainContent() {
   const { activeSection, setActiveSection, localDataError, dismissLocalDataError } = useApp();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fafaf9] dark:bg-[#0c1218] text-slate-800 dark:text-slate-100 transition-colors">
+    <div className="min-h-screen flex flex-col text-slate-800 dark:text-slate-100 transition-colors">
       <Navbar />
 
       {localDataError && (

@@ -64,7 +64,7 @@ export default function DoctorReportSection() {
         </div>
       </div>
 
-      <article className="print-report rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131b24] p-6 sm:p-8 space-y-6">
+      <article className="print-report nest-card p-6 sm:p-8 space-y-6">
         <header>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white">GlucoNest summary</h3>
           <p className="text-sm text-slate-600 dark:text-slate-400">
