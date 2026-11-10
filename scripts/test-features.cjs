@@ -44,7 +44,6 @@ async function initialize() {
   };
   components = {
     dashboard: require(path.resolve('src/components/home/previews/DashboardPreview.tsx')).default,
-    blog: require(path.resolve('src/components/home/previews/BlogPreview.tsx')).default,
     food: require(path.resolve('src/components/home/previews/FoodPreview.tsx')).default,
     section: require(path.resolve('src/components/home/FeatureSection.tsx')).default,
     faq: require(path.resolve('src/components/home/FaqSection.tsx')).default,
@@ -70,10 +69,9 @@ async function mount(name, props = {}) {
 
 const dataByPreview = {
   dashboard: { readings: mockGlucoseReadings, meals: initialMockMeals, sample: true },
-  blog: loaders.loadBlogPreview(),
   food: loaders.loadFoodPreview(),
 };
-for (const name of ['dashboard', 'blog', 'food']) {
+for (const name of ['dashboard', 'food']) {
   test(`${name} preview renders its source data`, async () => {
     const view = await mount(name, { load: () => dataByPreview[name] });
     try {
@@ -83,9 +81,6 @@ for (const name of ['dashboard', 'blog', 'food']) {
         assert.ok(text.includes(String(mockGlucoseReadings.at(-1).value)));
         assert.ok(text.includes(initialMockMeals[0].name));
         assert.ok(document.querySelector('polyline').getAttribute('points'));
-      } else if (name === 'blog') {
-        assert.ok(text.includes(dataByPreview.blog.title));
-        assert.ok(text.includes(dataByPreview.blog.readTime));
       } else {
         assert.ok(text.includes(dataByPreview.food.name));
         assert.ok(text.includes(dataByPreview.food.servingDescription));
@@ -146,7 +141,6 @@ test('dashboard shows personal meals without inventing missing glucose readings'
 });
 
 test('source adapters handle empty sources and single/flat glucose traces', () => {
-  assert.equal(loaders.loadBlogPreview([]), null);
   assert.equal(loaders.loadFoodPreview([]), null);
   assert.equal(loaders.sparklinePoints([]), '');
   assert.equal(loaders.sparklinePoints([mockGlucoseReadings[0]]), '160,40');
@@ -159,15 +153,14 @@ test('feature titles/descriptions remain verbatim and every entry is one native 
   const view = await mount('section', { onNavigate: section => { destination = section; } });
   try {
     const { features } = require(path.resolve('src/data/features.ts'));
-    assert.deepEqual(features.map(feature => feature.title), ['See the bigger picture.', 'Find your next small step.', 'Your plate. Your culture. Your everyday.']);
+    assert.deepEqual(features.map(feature => feature.title), ['See the bigger picture.', 'Your plate. Your culture. Your everyday.']);
     assert.deepEqual(features.map(feature => feature.description), [
       'Bring glucose readings, meals, and activity into one place. Give your everyday numbers a little more context.',
-      'Explore practical guides for daily life with type 1, and prepare reading summaries for your next appointment.',
       "Food tracking should feel familiar. Browse Indian meals, adjust your portions, and keep a simple record of what's on your plate.",
     ]);
     const links = [...document.querySelectorAll('#discover > a')];
-    assert.deepEqual(links.map(link => link.getAttribute('href')), ['#my-day', '#knowledge-hub/guide/' + loaders.loadBlogPreview().id, '#food-library']);
-    assert.equal(document.querySelectorAll('#discover a').length, 3);
+    assert.deepEqual(links.map(link => link.getAttribute('href')), ['#my-day', '#food-library']);
+    assert.equal(document.querySelectorAll('#discover a').length, 2);
     assert.equal(document.querySelector('#discover button, #discover input, #discover [tabindex]'), null);
     for (const [index, link] of links.entries()) {
       assert.equal(link.tabIndex, 0);
@@ -176,12 +169,8 @@ test('feature titles/descriptions remain verbatim and every entry is one native 
       assert.equal(document.getElementById(link.getAttribute('aria-labelledby')).textContent, features[index].title);
       const event = new view.dom.window.MouseEvent('click', { bubbles: true, cancelable: true, button: 0 });
       await act(async () => link.dispatchEvent(event));
-      if (features[index].id === 'blog') {
-        assert.equal(event.defaultPrevented, false, 'preserve the full native guide fragment');
-      } else {
-        assert.equal(event.defaultPrevented, true);
-        assert.equal(destination, features[index].href.slice(1));
-      }
+      assert.equal(event.defaultPrevented, true);
+      assert.equal(destination, features[index].href.slice(1));
       const modified = new view.dom.window.MouseEvent('click', { bubbles: true, cancelable: true, button: 0, ctrlKey: true });
       await act(async () => link.dispatchEvent(modified));
       assert.equal(modified.defaultPrevented, false);
@@ -202,7 +191,7 @@ test('feature preview SSR is stable and does not read browser storage', async ()
   await initialize();
   const { renderToString } = require('react-dom/server');
   delete global.window;
-  for (const name of ['dashboard', 'blog', 'food']) {
+  for (const name of ['dashboard', 'food']) {
     const markup = renderToString(React.createElement(components[name]));
     assert.ok(markup.includes(featureCopy.loading));
     assert.ok(!markup.includes('NaN'));
@@ -227,7 +216,7 @@ test('feature text tokens meet AA in light/dark and motion/focus rules are expli
   assert.match(css, /max-width: 767px/);
 });
 
-test('axe finds no structural WCAG A/AA violations across all three populated feature links', async () => {
+test('axe finds no structural WCAG A/AA violations across both populated feature links', async () => {
   const view = await mount('section', { onNavigate: () => {} });
   try {
     // Axe checks for icon ligatures through canvas; jsdom has no canvas renderer.

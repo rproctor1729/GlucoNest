@@ -1,9 +1,8 @@
 import { LOCAL_DATA_KEYS, isManualGlucoseReading, isMealLogEntry } from './localData';
 import { mockGlucoseReadings } from '../data/mockGlucose';
 import { initialMockMeals } from '../data/mockMeals';
-import { educationalGuides } from '../data/educationalContent';
 import { indianFoodDatabase } from '../data/indianFoods';
-import type { EducationalGuide, GlucoseReading, IndianFoodItem, MealLogEntry } from '../types';
+import type { GlucoseReading, IndianFoodItem, MealLogEntry } from '../types';
 
 export interface DashboardPreviewData {
   readings: GlucoseReading[];
@@ -31,11 +30,6 @@ export function loadDashboardPreview(storage: Pick<Storage, 'getItem'> = window.
   if (readings.length || meals.length) return { readings, meals, sample: false };
   if (!mockGlucoseReadings.length && !initialMockMeals.length) return null;
   return { readings: mockGlucoseReadings, meals: initialMockMeals, sample: true };
-}
-
-// Guides have no publication dates; follow the reading room's editorial order.
-export function loadBlogPreview(guides: readonly EducationalGuide[] = educationalGuides): EducationalGuide | null {
-  return guides.find(guide => !guide.isEmergency) ?? null;
 }
 
 export function loadFoodPreview(foods: readonly IndianFoodItem[] = indianFoodDatabase): IndianFoodItem | null {
