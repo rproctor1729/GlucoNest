@@ -18,10 +18,10 @@ export interface TeamMember {
 const members: TeamMember[] = [
   {
     id: 'member-1',
-    firstName: 'Member 1',
+    firstName: 'Vamshi',
     tagline: 'Add tagline here',
-    role: 'Food contributor',
-    diagnosedNote: 'Diagnosed at ___',
+    role: 'Developer',
+    diagnosedNote: 'Diagnosed in 2016',
     story: {
       whoIAm: 'Add story here',
       myJourney: 'Add story here',
@@ -32,7 +32,7 @@ const members: TeamMember[] = [
   },
   {
     id: 'member-2',
-    firstName: 'Member 2',
+    firstName: 'Gayathri',
     tagline: 'Add tagline here',
     role: 'Hypo SOS advisor',
     diagnosedNote: 'Diagnosed at ___',
@@ -46,7 +46,7 @@ const members: TeamMember[] = [
   },
   {
     id: 'member-3',
-    firstName: 'Member 3',
+    firstName: 'Girish',
     tagline: 'Add tagline here',
     role: 'Guide contributor',
     diagnosedNote: 'Diagnosed at ___',
@@ -60,7 +60,7 @@ const members: TeamMember[] = [
   },
   {
     id: 'member-4',
-    firstName: 'Member 4',
+    firstName: 'Varun',
     tagline: 'Add tagline here',
     role: 'Community contributor',
     diagnosedNote: 'Diagnosed at ___',
@@ -74,7 +74,7 @@ const members: TeamMember[] = [
   },
   {
     id: 'member-5',
-    firstName: 'Member 5',
+    firstName: 'Ramya',
     tagline: 'Add tagline here',
     role: 'Community contributor',
     diagnosedNote: 'Diagnosed at ___',
@@ -88,8 +88,8 @@ const members: TeamMember[] = [
   },
   {
     id: 'builder',
-    firstName: 'Builder',
-    tagline: 'Solo developer, T1 since ___',
+    firstName: 'Goutham',
+    tagline: 'T1 since ___',
     role: 'Builder',
     diagnosedNote: 'Diagnosed at ___',
     story: {
