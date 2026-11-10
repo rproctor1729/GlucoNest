@@ -50,7 +50,9 @@ async function mount(options = {}, overrides = {}) {
     Sidebar = require(path.resolve('src/components/layout/Sidebar.tsx')).default;
   }
   const dom = new JSDOM('<!doctype html><html lang="en"><head><title>Sidebar</title></head><body><main><h1>My Day</h1></main><div id="root"></div><button id="outside">Outside</button></body></html>', { url: 'https://gluconest.test/', pretendToBeVisual: true, runScripts: 'outside-only' });
-  global.window = dom.window; global.document = dom.window.document;
+  global.window = dom.window;
+  Object.defineProperty(global, 'navigator', { configurable: true, value: dom.window.navigator });
+  global.document = dom.window.document;
   global.HTMLElement = dom.window.HTMLElement; global.Node = dom.window.Node;
   global.requestAnimationFrame = dom.window.requestAnimationFrame.bind(dom.window);
   global.cancelAnimationFrame = dom.window.cancelAnimationFrame.bind(dom.window);

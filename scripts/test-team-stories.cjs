@@ -47,6 +47,7 @@ test('story cards, modal navigation, keyboard focus and dismissal', async t => {
     url: 'https://gluconest.test/#about', pretendToBeVisual: true, runScripts: 'outside-only',
   });
   global.window = dom.window;
+  Object.defineProperty(global, 'navigator', { configurable: true, value: dom.window.navigator });
   global.document = window.document;
   global.HTMLElement = window.HTMLElement;
   global.Node = window.Node;

@@ -33,6 +33,7 @@ test.before(async () => {
 async function mount(t, blocked = false) {
   const dom = new JSDOM('<main id="root"></main>', { url: 'https://gluconest.test/#food-library', pretendToBeVisual: true });
   global.window = dom.window;
+  Object.defineProperty(global, 'navigator', { configurable: true, value: dom.window.navigator });
   global.document = window.document;
   global.HTMLElement = window.HTMLElement;
   global.requestAnimationFrame = window.requestAnimationFrame.bind(window);

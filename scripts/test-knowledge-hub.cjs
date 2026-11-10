@@ -77,6 +77,7 @@ test('reader navigation, guides, activities and clinical review boundary work th
     url: 'https://gluconest.test/' + HUB, pretendToBeVisual: true, runScripts: 'outside-only',
   });
   global.window = dom.window;
+  Object.defineProperty(global, 'navigator', { configurable: true, value: dom.window.navigator });
   global.document = window.document;
   global.HTMLElement = window.HTMLElement;
   global.IS_REACT_ACT_ENVIRONMENT = true;
@@ -156,6 +157,7 @@ test('reader navigation, guides, activities and clinical review boundary work th
 test('global preferences survive the legacy guide redirect, navigation and a fresh mount', async t => {
   const dom = new JSDOM('<main id="root"></main>', { url: 'https://gluconest.test/#learn-community' });
   global.window = dom.window;
+  Object.defineProperty(global, 'navigator', { configurable: true, value: dom.window.navigator });
   global.document = window.document;
   global.IS_REACT_ACT_ENVIRONMENT = true;
   window.matchMedia = () => ({ matches: false });

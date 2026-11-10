@@ -57,6 +57,7 @@ async function mount(name, props = {}) {
     url: 'https://gluconest.test/', pretendToBeVisual: true, runScripts: 'outside-only',
   });
   global.window = dom.window;
+  Object.defineProperty(global, 'navigator', { configurable: true, value: dom.window.navigator });
   global.document = dom.window.document;
   global.HTMLElement = dom.window.HTMLElement;
   global.Node = dom.window.Node;
