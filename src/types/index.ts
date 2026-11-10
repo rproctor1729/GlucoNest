@@ -11,6 +11,7 @@ export type NavigationSection =
   | 'quick-log'
   | 'insights'
   | 'food-library'
+  | 'learn-community'
   | 'knowledge-hub'
   | 'about'
   | 'feedback'

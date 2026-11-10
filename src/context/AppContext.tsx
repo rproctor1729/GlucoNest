@@ -10,6 +10,8 @@ import {
   ActivityLogEntry,
   CommunityFeedback,
   MealItemSelection,
+  PatternInsight,
+  EducationalGuide,
 } from '../types';
 import {
   isActivityLogEntry,
@@ -26,6 +28,9 @@ import {
 import { APP_LANGUAGES, type AppLanguage } from '../lib/i18n';
 import { sectionFromHash } from '../lib/navigation';
 import type { TeamMember } from '../data/teamMembers';
+import { mockPatternInsights } from '../data/mockInsights';
+import { educationalGuides } from '../data/educationalContent';
+import { getLatestReading } from '../utils/latestReading';
 import { mockGlucoseReadings } from '../data/mockGlucose';
 import { initialMockMeals } from '../data/mockMeals';
 import { initialMockInsulin } from '../data/mockInsulin';
@@ -68,6 +73,8 @@ interface AppContextType {
   setLanguage: (language: AppLanguage) => void;
   targetRange: { low: number; high: number };
   largeText: boolean;
+  toggleLargeText: () => void;
+  saveTargetRange: (low: number, high: number) => boolean;
   onboardingComplete: boolean;
   completeOnboarding: (preferences: {
     language: AppLanguage;
@@ -118,7 +125,14 @@ interface AppContextType {
   clearMealPlate: () => void;
 
   // Pattern Insights
+  patterns: PatternInsight[];
+  activePattern: PatternInsight;
+  setActivePatternId: (id: string) => void;
 
+  // Guides
+  guides: EducationalGuide[];
+  selectedGuide: EducationalGuide | null;
+  setSelectedGuide: (guide: EducationalGuide | null) => void;
 
   // Community Feedback
   feedbackList: CommunityFeedback[];
@@ -128,6 +142,8 @@ interface AppContextType {
   isHypoModalOpen: boolean;
   setIsHypoModalOpen: (open: boolean) => void;
   triggerHypoEmergency: () => void;
+  isOneTapModalOpen: boolean;
+  setIsOneTapModalOpen: (open: boolean) => void;
 
 
   // Demo Reset
@@ -160,7 +176,9 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
 
   useEffect(() => {
     const restoreSection = () => {
-      if (window.location.hash === '#learn-community') window.history.replaceState(window.history.state, '', '#knowledge-hub');
+      if (window.location.hash === '#learn-community') {
+        window.history.replaceState(window.history.state, '', '#knowledge-hub');
+      }
       const section = sectionFromHash(window.location.hash);
       if (section) setActiveSectionState(section);
       else if (!window.location.hash) setActiveSectionState('home');
@@ -206,6 +224,12 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   const [mealPlate, setMealPlate] = useState<MealItemSelection[]>([]);
 
   // Insights & Patterns
+  const [patterns] = useState<PatternInsight[]>(mockPatternInsights);
+  const [activePatternId, setActivePatternId] = useState('pat-01');
+
+  // Guides
+  const [guides] = useState<EducationalGuide[]>(educationalGuides);
+  const [selectedGuide, setSelectedGuide] = useState<EducationalGuide | null>(null);
 
 
   // Community Feedback
@@ -215,6 +239,7 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
 
   // Modals
   const [isHypoModalOpen, setIsHypoModalOpen] = useState(false);
+  const [isOneTapModalOpen, setIsOneTapModalOpen] = useState(false);
 
   const persistLocalValue = useCallback((key: string, value: unknown): boolean => {
     if (blockedLocalDataKeys.current.has(key)) {
@@ -379,6 +404,16 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   }, [darkMode, preferencesLoaded, persistLocalValue]);
 
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
+  const toggleLargeText = () => setLargeText((previous) => !previous);
+
+  const saveTargetRange = (low: number, high: number) => {
+    if (!Number.isFinite(low) || !Number.isFinite(high) || low < 20 || high > 400 || low >= high) {
+      return false;
+    }
+    if (!persistLocalValue('gluconest_target_range', { low, high })) return false;
+    setTargetRange({ low, high });
+    return true;
+  };
 
   const toggleGlucoseUnit = () => {
     const next = glucoseUnit === 'mg/dL' ? 'mmol/L' : 'mg/dL';
@@ -418,7 +453,7 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
     : dataSource === 'manual'
       ? manualReadings
       : demoReadings;
-  const currentReading = readings[readings.length - 1] || null;
+  const currentReading = getLatestReading(readings);
 
   const addReading = (reading: GlucoseReading): boolean => {
     if (reading.source === 'manual') {
@@ -669,6 +704,7 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
     setIsHypoModalOpen(true);
   };
 
+  const activePattern = patterns.find((pattern) => pattern.id === activePatternId) || patterns[0];
 
   // Resets only the sample content. Anything the user logged (isDemo false) is kept.
   const resetDemoData = () => {
@@ -758,8 +794,10 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
         setLanguage,
         targetRange,
         largeText,
+        toggleLargeText,
         onboardingComplete,
         completeOnboarding,
+        saveTargetRange,
         readings,
         manualReadings,
         importManualReadings,
@@ -791,11 +829,19 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
         updateMealPlateItem,
         removeFromMealPlate,
         clearMealPlate,
+        patterns,
+        activePattern,
+        setActivePatternId,
+        guides,
+        selectedGuide,
+        setSelectedGuide,
         feedbackList,
         submitFeedback,
         isHypoModalOpen,
         setIsHypoModalOpen,
         triggerHypoEmergency,
+        isOneTapModalOpen,
+        setIsOneTapModalOpen,
         resetDemoData,
         localDataError,
         dismissLocalDataError,

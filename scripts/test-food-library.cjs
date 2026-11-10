@@ -82,7 +82,7 @@ test('all foods remain reachable across pages and regional search resets paginat
   await change(find('input[type=search]'), 'इडली');
   assert.equal(dishes().length, 1);
   assert.match(dishes()[0].textContent, /Idli/);
-  await change(find('[aria-label="Food category"]'), 'Fruits');
+  await click(Array.from(document.querySelectorAll('[role="radio"]')).find(option => option.textContent === 'Fruits'));
   assert.equal(dishes().length, 0);
   await click(button('Show all foods'));
   assert.equal(dishes().length, 6);

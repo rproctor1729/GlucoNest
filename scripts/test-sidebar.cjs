@@ -132,13 +132,13 @@ test('header preferences work and Escape closes them with focus restored', async
     const trigger = document.querySelector('button[aria-label="Preferences"]');
     await view.click(trigger);
     assert.equal(trigger.getAttribute('aria-expanded'), 'true');
-    const select = document.querySelector('select'); assert.equal(document.activeElement, select);
-    await act(async () => { select.value = 'hi'; select.dispatchEvent(new view.dom.window.Event('change', { bubbles: true })); });
+    const buttons = [...document.querySelectorAll('.preferences-panel button')];
+    const hindi = buttons.find(button => button.textContent.includes('हिन्दी'));
+    await view.click(hindi);
     assert.equal(language, 'hi');
-    const [appearance, glucoseUnit] = [...document.querySelectorAll('.preferences-panel select')].slice(1);
-    for (const select of [appearance, glucoseUnit]) {
-      await act(async () => { select.selectedIndex = 1 - select.selectedIndex; select.dispatchEvent(new view.dom.window.Event('change', { bubbles: true })); });
-    }
+    await view.click(buttons.find(button => button.textContent.includes('Light')));
+    const glucoseUnit = buttons.find(button => button.textContent.trim() === 'mmol/L');
+    await view.click(glucoseUnit);
     assert.equal(theme, 1); assert.equal(units, 1);
     await view.key(glucoseUnit, 'Escape');
     assert.equal(trigger.getAttribute('aria-expanded'), 'false');

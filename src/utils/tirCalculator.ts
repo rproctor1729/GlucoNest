@@ -99,8 +99,8 @@ export function calculateDetailedTIR(
   const hasTimestamps = cleanReadings.length > 1 && cleanReadings.every(
     (reading) => reading.timestamp && Number.isFinite(Date.parse(reading.timestamp))
   );
-  const weights = cleanReadings.map(() => 1);
-  const statisticWeights = cleanReadings.map(() => 1);
+  const weights: number[] = cleanReadings.map(() => 1);
+  const statisticWeights: number[] = cleanReadings.map(() => 1);
   let coverageMinutes = 0;
   if (hasTimestamps) {
     weights.fill(0);
@@ -117,6 +117,10 @@ export function calculateDetailedTIR(
       }
     }
   }
+
+  // When no interval is short enough to count (for example, fingerstick entries hours apart),
+  // every weight would be zero and all percentages would show 0%. Count each reading once instead.
+  if (weights.every((weight): boolean => weight === 0)) weights.fill(1);
 
   const buckets = { veryLow: 0, low: 0, inRange: 0, high: 0, veryHigh: 0 };
   let weightedSum = 0;

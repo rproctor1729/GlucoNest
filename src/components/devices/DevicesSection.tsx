@@ -21,6 +21,8 @@ import {
 } from '@/lib/localData';
 import { parseGlucoseCsv, CsvGlucoseImport } from '@/lib/csvImport';
 import styles from './DevicesSection.module.css';
+import ReminderSettings from './ReminderSettings';
+import TargetRangeSettings from './TargetRangeSettings';
 
 function formatTimestamp(timestamp: string | null) {
   if (!timestamp) return 'Not available';
@@ -201,6 +203,7 @@ export default function DevicesSection() {
           <div><p className={styles.eyebrow}>CURRENT GLUCOSE SOURCE</p>
             <p className={styles.sourceName}>{dataSource === 'nightscout' ? 'Nightscout' : dataSource === 'manual' ? 'Your saved readings' : 'Sample data'}</p>
           </div>
+
         </div>
         <p className={styles.sourceNote}>{manualReadings.length} personal readings saved locally<span>Imports and backups are processed in your browser.</span></p>
       </div>
@@ -217,6 +220,7 @@ export default function DevicesSection() {
                 Connect your existing CGM history. Readings refresh every five minutes while this page is visible.
               </p>
             </div>
+
           </div>
           <span className={`self-start inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
             connectionStatus === 'error'
@@ -500,6 +504,8 @@ export default function DevicesSection() {
         </p>
       </section>
       </div>
+      <ReminderSettings />
+      <TargetRangeSettings />
     </div>
   );
 }

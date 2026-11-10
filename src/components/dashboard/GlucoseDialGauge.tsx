@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { GlucoseTrend, GlucoseUnit, GlucoseStatus } from '@/types';
+import { GlucoseUnit, GlucoseStatus } from '@/types';
 import { convertGlucose, formatUnitLabel } from '@/utils/glucoseUtils';
 
 interface GlucoseDialGaugeProps {

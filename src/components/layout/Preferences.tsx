@@ -29,6 +29,7 @@ export default function Preferences() {
       className="global-preferences"
       onKeyDown={event => {
         if (event.key === 'Escape' && open) {
+          event.preventDefault();
           setOpen(false);
           trigger.current?.focus();
         }

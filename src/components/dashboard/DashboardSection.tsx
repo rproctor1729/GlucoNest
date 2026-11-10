@@ -1,20 +1,23 @@
 'use client';
 
 import React, { useEffect, useId, useMemo, useState } from 'react';
-import { Activity, ArrowUpRight, ChevronDown, Database, RefreshCw, RotateCcw, Utensils, Droplets } from 'lucide-react';
+import { Activity, ArrowUpRight, ChevronDown, Database, Plus, RefreshCw, RotateCcw } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
-import { convertGlucose, formatUnitLabel, getTrendSymbol, getGlucoseStatus, getGlucoseStatusColor } from '@/utils/glucoseUtils';
+import { convertGlucose, formatUnitLabel, getTrendSymbol, getGlucoseStatus } from '@/utils/glucoseUtils';
 import { calculateDetailedTIR } from '@/utils/tirCalculator';
 import { translate } from '@/lib/i18n';
 import { getReadingWindow } from '@/utils/chartWindow';
-import { summarizeToday } from '@/utils/today';
 import TimeInRangeRing from './TimeInRangeRing';
+import TodayCard from './TodayCard';
+import GlucoseDialGauge from './GlucoseDialGauge';
+import OneTapLogModal from './OneTapLogModal';
 import styles from './DashboardSection.module.css';
 import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ReferenceArea, ReferenceLine, Brush } from 'recharts';
 
 export default function DashboardSection() {
   const { readings, currentReading, glucoseUnit, setActiveSection, resetDemoData, dataSource, connectionStatus,
-    isNightscoutConnected, lastSuccessfulFetch, connectionError, refreshNightscout, darkMode, targetRange, language, meals } = useApp();
+    isNightscoutConnected, lastSuccessfulFetch, connectionError, refreshNightscout, darkMode, targetRange, language,
+    setIsOneTapModalOpen } = useApp();
   const [timeRange, setTimeRange] = useState<'3h' | '6h' | '12h' | '24h'>('24h');
   const [now, setNow] = useState(() => Date.now());
   const [glucoseDetailsExpanded, setGlucoseDetailsExpanded] = useState(false);
@@ -75,15 +78,10 @@ export default function DashboardSection() {
 
   const trend = currentReading?.trend ? getTrendSymbol(currentReading.trend) : null;
   const status = currentReading ? getGlucoseStatus(currentReading.value, targetRange.low, targetRange.high) : null;
-  const statusColors = status ? getGlucoseStatusColor(status, darkMode, targetRange.low, targetRange.high) : null;
-  const statusLabel = status === 'in-range' ? translate(language, 'dashboard.inRange')
-    : status === 'low' || status === 'very-low' ? translate(language, 'dashboard.low') : translate(language, 'dashboard.high');
   const latestReadingTime = currentReading && Number.isFinite(Date.parse(currentReading.timestamp))
     ? new Date(currentReading.timestamp).toLocaleString() : currentReading?.timeLabel;
   const readingIsStale = isNightscoutConnected && currentReading && Number.isFinite(Date.parse(currentReading.timestamp)) &&
     now - Date.parse(currentReading.timestamp) > 10 * 60 * 1000;
-  const today = summarizeToday(dataSource === 'demo' ? [] : readings, meals, [], new Date(now), targetRange);
-  const latestMealToday = meals.find(meal => !meal.isDemo && meal.timestamp === today.lastMealTime);
   const rangeRows = [
     { label: 'Below range', value: tirStats.timeBelowRangePercent, color: '#e8979e' },
     { label: 'Within range', value: tirStats.inRangePercent, color: '#739b64' },
@@ -112,6 +110,7 @@ export default function DashboardSection() {
           <div className={styles.sourceActions}>
             {dataSource === 'demo' && <button type="button" className={styles.quietButton + ' text-slate-500 dark:text-slate-400'} onClick={resetDemoData}><RotateCcw size={14} /><span>Reset sample</span></button>}
             {isNightscoutConnected && <button type="button" className={styles.quietButton + ' text-slate-600 dark:text-slate-300'} onClick={() => void refreshNightscout()} disabled={connectionStatus === 'fetching'}><RefreshCw size={14} /><span>{connectionStatus === 'fetching' ? 'Refreshing…' : 'Refresh'}</span></button>}
+            <button type="button" className={styles.quietButton + ' text-slate-600 dark:text-slate-300'} onClick={() => setIsOneTapModalOpen(true)}><Plus size={14} /><span>Quick add</span></button>
             <button type="button" className={styles.dataButton + ' text-nest-800 bg-nest-100 hover:bg-nest-200 dark:text-nest-200 dark:bg-nest-900 dark:hover:bg-nest-800'} onClick={() => setActiveSection('devices')}><span>{dataSource === 'demo' ? 'Connect your data' : 'Manage data source'}</span><ArrowUpRight size={16} /></button>
           </div>
         </div>
@@ -121,9 +120,17 @@ export default function DashboardSection() {
           <div className={styles.snapshotGrid}>
             <div className={styles.spotlight}>
               <div className={styles.spotlightTop}><span>{dataSource === 'demo' ? 'LATEST SAMPLE READING' : translate(language, 'dashboard.current')}</span><Activity size={23} strokeWidth={1.4} /></div>
-              <div className={styles.readingValue}><strong>{convertGlucose(currentReading.value, glucoseUnit)}</strong><span>{formatUnitLabel(glucoseUnit)}</span>{trend && <span className={styles.trendSymbol} aria-label={trend.text}>{trend.symbol}</span>}</div>
-              <div className={styles.readingState}><span className={styles.statusBadge + ' ' + statusColors?.badgeBg}>{statusLabel}</span><span>{trend?.text || 'No trend available'}</span></div>
-              <div className={styles.readingTimestamp}><span>{latestReadingTime}</span><span>{readingIsStale ? 'STALE READING' : dataSource === 'demo' ? 'SAMPLE' : 'LATEST AVAILABLE'}</span></div>
+              <GlucoseDialGauge
+                value={currentReading.value}
+                unit={glucoseUnit}
+                status={status ?? 'in-range'}
+                trend={trend}
+                targetLow={targetRange.low}
+                targetHigh={targetRange.high}
+                timeLabel={latestReadingTime}
+                isStale={Boolean(readingIsStale)}
+              />
+              <div className={styles.readingTimestamp}><span>{dataSource === 'demo' ? 'Illustrative sample data' : 'Latest available reading'}</span><span>{readingIsStale ? 'STALE READING' : dataSource === 'demo' ? 'SAMPLE' : 'LATEST AVAILABLE'}</span></div>
             </div>
             <div className={styles.rangePanel}>
               <div className={styles.rangeHeading}><div><p className={styles.eyebrow + ' text-slate-500 dark:text-slate-400'}>THE BIGGER PICTURE</p><h2>Time in range</h2></div><span className={styles.historyPill + ' text-slate-500 bg-slate-50 dark:text-slate-400 dark:bg-slate-900'}>Available history</span></div>
@@ -267,19 +274,15 @@ export default function DashboardSection() {
           </span>
         </div>
       </div>}
+      <TodayCard />
       {currentReading && <>
-          <div className={styles.todayRow + ' border-slate-100 dark:border-slate-800'}>
-            <div className={styles.todayIntro}><span className={styles.todayIcon + ' bg-nest-50 text-nest-600 dark:bg-nest-950 dark:text-nest-300'}><Droplets size={19} /></span><div><strong>Your own day</strong><small className="text-slate-500 dark:text-slate-400">Personal logs only</small></div></div>
-            <div className={styles.todayMetric}><span className="text-slate-500 dark:text-slate-400">Readings today</span><strong>{today.readingCount}</strong></div>
-            <div className={styles.todayMetric}><span className="text-slate-500 dark:text-slate-400">Below your range</span><strong>{today.lowCount}</strong></div>
-            <div className={styles.lastMeal}><Utensils size={17} className="text-slate-400" /><div><span className="text-slate-500 dark:text-slate-400">Last meal today</span><strong>{latestMealToday?.name || 'Nothing logged yet'}</strong></div></div>
-          </div>
           <div className={styles.detailArea + ' border-slate-100 dark:border-slate-800'}><button type="button" aria-expanded={glucoseDetailsExpanded} aria-controls="glucose-details" className={styles.detailToggle + ' text-nest-700 dark:text-nest-300'} onClick={() => setGlucoseDetailsExpanded(v => !v)}>{glucoseDetailsExpanded ? translate(language,'dashboard.hideDetails') : translate(language,'dashboard.details')}<ChevronDown size={15} style={{transform:glucoseDetailsExpanded ? 'rotate(180deg)' : undefined}} /></button>
             {glucoseDetailsExpanded && <div id="glucose-details" className={styles.detailContent}><dl>{details.map(item => <div key={item.label}><dt className="text-slate-500 dark:text-slate-400">{item.label}</dt><dd>{item.value}</dd></div>)}</dl>{tirStats.hasSufficientGmiData && <p className="text-slate-500 dark:text-slate-400">Estimated GMI is a CGM-derived estimate, not laboratory HbA1c.</p>}</div>}
           </div>
 
       </>}
       </section>
+      <OneTapLogModal />
     </div>
   );
 }

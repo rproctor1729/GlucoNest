@@ -1,6 +1,7 @@
-import { Activity, Utensils, type LucideIcon } from 'lucide-react';
+import { Activity, BookOpen, Utensils, type LucideIcon } from 'lucide-react';
 import type { ComponentType } from 'react';
 import DashboardPreview from '@/components/home/previews/DashboardPreview';
+import BlogPreview from '@/components/home/previews/BlogPreview';
 import FoodPreview from '@/components/home/previews/FoodPreview';
 import type { NavigationSection } from '@/types';
 
@@ -19,6 +20,11 @@ export const features: readonly Feature[] = [
     id: 'dashboard', title: 'See the bigger picture.',
     description: 'Bring glucose readings, meals, and activity into one place. Give your everyday numbers a little more context.',
     href: '#my-day', icon: Activity, cta: 'Open My Day', PreviewComponent: DashboardPreview,
+  },
+  {
+    id: 'blog', title: 'Find your next small step.',
+    description: 'Explore practical guides for daily life with type 1, and prepare reading summaries for your next appointment.',
+    href: '#knowledge-hub/guide/guide-insulin-storage-climate', icon: BookOpen, cta: 'Explore the guides', PreviewComponent: BlogPreview,
   },
   {
     id: 'food', title: 'Your plate. Your culture. Your everyday.',

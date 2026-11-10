@@ -62,7 +62,7 @@ test('FAQ data preserves the requested answer wording', () => {
   const expected = {
     account: 'No. You can explore the sample dashboard and start logging without signing up. Your personal logs are saved in this browser.',
     data: 'Manually entered records stay in local browser storage. This storage is unencrypted and can be cleared, so export private backups in Devices & Data. Nightscout credentials are held in memory only.',
-    dosing: 'No. Saathweft is an educational self-tracking tool. It does not calculate insulin doses, provide medical advice, or replace your care team or CGM alarms.',
+    dosing: 'No. GlucoNest is an educational self-tracking tool. It does not calculate insulin doses, provide medical advice, or replace your care team or CGM alarms.',
   };
   assert.deepEqual(faqItems.map(item => item.id), ['dosing', 'data', 'account']);
   for (const item of faqItems) {

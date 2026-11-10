@@ -40,7 +40,7 @@ Offline mode is not a real-time glucose monitor. Emergency response should use t
 
 The root page introduces Saathweft; the daily workspace starts at `/#my-day`. Each tool has a shareable section hash, including `/#quick-log`, `/#food-library`, `/#insights`, and `/#devices`. Browser back/forward restores the selected section. The T1D Knowledge Hub at `/#knowledge-hub` includes searchable lessons and practical guides with shareable topic, category and guide links. The former `/#learn-community` address opens the Hub.
 
-The responsive workspace uses persistent desktop navigation and mobile quick navigation. Tool bundles load on demand. Dialogs support keyboard focus containment and restore focus to their trigger; dismissible dialogs support Escape. Reduced-motion preferences are respected.
+The responsive workspace uses persistent desktop navigation and mobile quick navigation. Tool bundles load on demand. The T1D Knowledge Hub at `/#knowledge-hub` includes searchable lessons and practical guides with shareable topic, category and guide links. The former `/#learn-community` address opens the Hub. Dialogs support keyboard focus containment and restore focus to their trigger; dismissible dialogs support Escape. Reduced-motion preferences are respected.
 
 Photography is bundled locally under `public/images`; source references are in `public/images/SOURCES.md`. No remote photo requests are needed at runtime. The home carousel uses real diabetes-care photography. Its separate unicorn reading is explicitly labelled as illustrative.
 
@@ -63,3 +63,10 @@ The preview uses `.next-preview`; the main development server uses `.next-dev`. 
 The home-page carousel adapts the supplied React Bits Carousel with its spring-based tilt transition and momentum drag handling. It keeps the local real-photography slides, uses responsive portrait sizing on mobile, and supports autoplay, keyboard navigation, pause/play, and reduced motion. Existing Lucide icons replace the reference's separate icon dependencies.
 
 React Bits attribution and the applicable license are retained in [licenses/react-bits.txt](licenses/react-bits.txt). The carousel is integrated as part of this application.
+
+## Recent correctness updates
+
+- Time in range counts each reading once when readings are too far apart for time-weighted estimation.
+- The current reading is selected by timestamp rather than array position.
+- Sample meals and insulin entries are hidden when personal entries exist, without changing saved data.
+- The optional hypo-timer chime resumes its audio context when possible, closes it after playback, and stops when the modal closes.

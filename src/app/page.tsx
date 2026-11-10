@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useApp } from '@/context/AppContext';
+import type { NavigationSection } from '@/types';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 const DashboardSection = dynamic(() => import('@/components/dashboard/DashboardSection'), { loading: () => <div className="section-loading" role="status">Opening your space…</div> });
@@ -17,14 +18,37 @@ import HypoEmergencyModal from '@/components/hypo/HypoEmergencyModal';
 import { AlertCircle, X } from 'lucide-react';
 import SectionErrorBoundary from '@/components/layout/SectionErrorBoundary';
 import OnboardingDialog from '@/components/layout/OnboardingDialog';
+import LocalReminderManager from '@/components/layout/LocalReminderManager';
+import LandingPage from '@/components/landing/LandingPage';
 const LegalSection = dynamic(() => import('@/components/legal/LegalSection'), { loading: () => <div className="section-loading" role="status">Opening your space…</div> });
 import HomeSection from '@/components/home/HomeSection';
 import WorkspaceHeading from '@/components/layout/WorkspaceHeading';
 const KnowledgeHub = dynamic(() => import('@/components/knowledge/KnowledgeHub'), { loading: () => <div className="section-loading" role="status">Opening the Knowledge Hub…</div> });
+const LearnCommunitySection = dynamic(() => import('@/components/community/LearnCommunitySection'), { loading: () => <div className="section-loading" role="status">Opening the community…</div> });
 
 function MainContent() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { activeSection, setActiveSection, localDataError, dismissLocalDataError } = useApp();
+  const { activeSection, setActiveSection, localDataError, dismissLocalDataError, onboardingComplete } = useApp();
+  const [landingSeen, setLandingSeen] = useState(true);
+
+  useEffect(() => {
+    try {
+      setLandingSeen(window.localStorage.getItem('gluconest_landing_seen') === '1');
+    } catch {
+      setLandingSeen(true);
+    }
+  }, []);
+
+  const showLanding = activeSection === 'my-day' && !onboardingComplete && !landingSeen;
+  const enterApp = (section?: NavigationSection) => {
+    setLandingSeen(true);
+    try {
+      window.localStorage.setItem('gluconest_landing_seen', '1');
+    } catch {
+      // The landing page remains hidden for this visit if storage is unavailable.
+    }
+    if (section) setActiveSection(section);
+  };
 
   return (
     <div data-sidebar-collapsed={sidebarCollapsed} className={`min-h-screen flex flex-col text-[color:var(--foreground)] transition-colors ${activeSection === 'home' ? 'landing-shell' : 'workspace-shell'}`}>
@@ -58,23 +82,29 @@ function MainContent() {
       )}
 
       <main id="main-content" tabIndex={-1} className={activeSection === 'home' ? 'landing-main' : 'workspace-main'}>
-        <SectionErrorBoundary key={activeSection} sectionName={activeSection}>
-          {activeSection === 'home' ? <HomeSection /> : <WorkspaceHeading />}
-          {activeSection === 'my-day' && <DashboardSection />}
-          {activeSection === 'devices' && <DevicesSection />}
-          {activeSection === 'quick-log' && <QuickLogSection />}
-          {activeSection === 'insights' && <InsightsSection />}
-          {activeSection === 'food-library' && <FoodLibrarySection />}
-          {activeSection === 'knowledge-hub' && <KnowledgeHub />}
-          {activeSection === 'about' && <AboutSection />}
-          {activeSection === 'feedback' && <FeedbackSection />}
-          {activeSection === 'legal' && <LegalSection />}
-          {activeSection === 'report' && <DoctorReportSection />}
-        </SectionErrorBoundary>
+        {showLanding ? (
+          <LandingPage onEnter={enterApp} />
+        ) : (
+          <SectionErrorBoundary key={activeSection} sectionName={activeSection}>
+            {activeSection === 'home' ? <HomeSection /> : <WorkspaceHeading />}
+            {activeSection === 'my-day' && <DashboardSection />}
+            {activeSection === 'devices' && <DevicesSection />}
+            {activeSection === 'quick-log' && <QuickLogSection />}
+            {activeSection === 'insights' && <InsightsSection />}
+            {activeSection === 'food-library' && <FoodLibrarySection />}
+            {activeSection === 'learn-community' && <LearnCommunitySection />}
+            {activeSection === 'knowledge-hub' && <KnowledgeHub />}
+            {activeSection === 'about' && <AboutSection />}
+            {activeSection === 'feedback' && <FeedbackSection />}
+            {activeSection === 'legal' && <LegalSection />}
+            {activeSection === 'report' && <DoctorReportSection />}
+          </SectionErrorBoundary>
+        )}
       </main>
 
       <Footer />
-      {['my-day', 'quick-log', 'food-library', 'insights', 'devices', 'report'].includes(activeSection) && <OnboardingDialog />}
+      {!showLanding && ['my-day', 'quick-log', 'food-library', 'insights', 'devices', 'report'].includes(activeSection) && <OnboardingDialog />}
+      <LocalReminderManager />
 
       {/* Global modals */}
       <HypoEmergencyModal />

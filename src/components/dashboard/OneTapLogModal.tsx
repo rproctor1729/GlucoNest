@@ -33,7 +33,6 @@ export default function OneTapLogModal() {
   const handleInstantLog = (
     type: 'carbs' | 'exercise',
     value: number,
-    subType?: string,
     itemNote?: string
   ) => {
     const timestamp = new Date().toISOString();
@@ -116,7 +115,7 @@ export default function OneTapLogModal() {
       requestInsulin(val, insulinSubtype, note);
       return;
     }
-    handleInstantLog(activeTab, val, undefined, note);
+    handleInstantLog(activeTab, val, note);
   };
 
   return (
@@ -214,7 +213,7 @@ export default function OneTapLogModal() {
                   <button
                     key={item.label}
                     type="button"
-                    onClick={() => handleInstantLog('carbs', item.value, 'meal', item.label)}
+                    onClick={() => handleInstantLog('carbs', item.value, item.label)}
                     className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:border-nest-500 hover:bg-nest-50/50 dark:hover:bg-nest-950/20 text-center transition-all group"
                   >
                     <div className="text-xl font-bold font-mono text-slate-900 dark:text-white group-hover:text-nest-600 dark:group-hover:text-nest-400">
@@ -241,7 +240,7 @@ export default function OneTapLogModal() {
                     <button
                       key={rec.label}
                       type="button"
-                      onClick={() => handleInstantLog('carbs', rec.carbs, 'meal', rec.label)}
+                      onClick={() => handleInstantLog('carbs', rec.carbs, rec.label)}
                       className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:border-nest-400 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-300 flex items-center gap-1.5 transition-colors"
                     >
                       <Sparkles className="w-3 h-3 text-nest-500" />
@@ -267,7 +266,7 @@ export default function OneTapLogModal() {
                     className={`px-2.5 py-1 rounded-md transition-colors ${
                       insulinSubtype === 'rapid'
                         ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-medium shadow-sm'
-                        : 'text-slate-500 hover:text-slate-800'
+                        : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
                     }`}
                   >
                     Rapid Bolus
@@ -278,7 +277,7 @@ export default function OneTapLogModal() {
                     className={`px-2.5 py-1 rounded-md transition-colors ${
                       insulinSubtype === 'basal'
                         ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-medium shadow-sm'
-                        : 'text-slate-500 hover:text-slate-800'
+                        : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
                     }`}
                   >
                     Basal / Long
@@ -297,7 +296,7 @@ export default function OneTapLogModal() {
                     key={item.units}
                     type="button"
                     onClick={() => requestInsulin(item.units, insulinSubtype, `${item.units}u ${insulinSubtype}`)}
-                    className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:border-nest-500 hover:bg-nest-50/50 text-center transition-all group"
+                    className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:border-nest-500 hover:bg-nest-50/50 dark:hover:bg-nest-950/40 text-center transition-all group"
                   >
                     <div className="text-xl font-bold font-mono text-slate-900 dark:text-white group-hover:text-nest-600 dark:group-hover:text-nest-400">
                       +{item.units}u
@@ -352,7 +351,7 @@ export default function OneTapLogModal() {
                   <button
                     key={item.label}
                     type="button"
-                    onClick={() => handleInstantLog('exercise', item.mins, 'walk', item.label)}
+                    onClick={() => handleInstantLog('exercise', item.mins, item.label)}
                     className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:border-nest-500 text-left transition-all"
                   >
                     <div className="text-lg">{item.icon}</div>

@@ -2,7 +2,8 @@
 
 import { useModalFocus } from '@/components/common/useModalFocus';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { startTimerChime, type ChimeAudioContext, type TimerChime } from '@/utils/timerChime';
 import { useApp } from '@/context/AppContext';
 import {
   Clock,
@@ -18,9 +19,15 @@ export default function HypoEmergencyModal() {
 
   const [secondsRemaining, setSecondsRemaining] = useState(15 * 60); // 15 min timer
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const chimeRef = useRef<TimerChime | null>(null);
   const [carbTaken, setCarbTaken] = useState<string | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [soundError, setSoundError] = useState<string | null>(null);
+
+  useEffect(() => () => {
+    void chimeRef.current?.cancel();
+    chimeRef.current = null;
+  }, []);
 
   // The timer only runs while the modal is open. Closing it stops and resets the timer,
   // so no chime can sound later from a hidden modal.
@@ -30,6 +37,8 @@ export default function HypoEmergencyModal() {
       setSecondsRemaining(15 * 60);
       setCarbTaken(null);
       setSoundError(null);
+      void chimeRef.current?.cancel();
+      chimeRef.current = null;
       return;
     }
 
@@ -41,21 +50,18 @@ export default function HypoEmergencyModal() {
     } else if (secondsRemaining === 0 && isTimerRunning) {
       setIsTimerRunning(false);
       if (soundEnabled && typeof window !== 'undefined') {
-        try {
-          const ctx = new (window.AudioContext ||
-            (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-          gain.gain.setValueAtTime(0.2, ctx.currentTime);
-          osc.start();
-          osc.stop(ctx.currentTime + 1.2);
-        } catch (error) {
-          console.error('The optional timer chime could not be played.', error);
-          setSoundError('The timer finished, but this browser could not play the optional chime.');
-        }
+        const chime = startTimerChime(() => {
+          const AudioCtor = window.AudioContext ||
+            (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+          return AudioCtor ? new AudioCtor() as unknown as ChimeAudioContext : null;
+        });
+        chimeRef.current = chime;
+        void chime.status.then((result) => {
+          if (result === 'error') {
+            console.error('The optional timer chime could not be played.');
+            setSoundError('The timer finished, but this browser could not play the optional chime.');
+          }
+        });
       }
     }
     return () => clearInterval(interval);
