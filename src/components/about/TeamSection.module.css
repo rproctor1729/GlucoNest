@@ -1,5 +1,5 @@
 :global(html):has(.team) { scrollbar-gutter: stable; }
-.team { margin-top: 32px; border-top: 1px solid var(--border); padding-top: 32px; }
+.team { max-width: 1120px; margin-inline: auto; }
 .heading { margin-top: 8px; font: 400 clamp(2rem, 3vw, 2.875rem)/1.15 var(--font-editorial), Georgia, serif; letter-spacing: -.035em; text-wrap: balance; }
 .heading em { color: var(--accent); }
 .intro, .note { color: var(--muted); line-height: 1.6; }

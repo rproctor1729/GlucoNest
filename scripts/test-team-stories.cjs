@@ -42,6 +42,17 @@ test('only explicitly consented stories enter the public list', () => {
   assert.deepEqual(getPublishedMembers([member, { ...member, consent: false }, { ...member, consent: undefined }]), [member]);
 });
 
+test('About shows the team heading without the introductory panels', () => {
+  const { renderToStaticMarkup } = require('react-dom/server');
+  const { AppProvider } = require('../src/context/AppContext.tsx');
+  const About = require('../src/components/about/AboutSection.tsx').default;
+  const html = renderToStaticMarkup(React.createElement(AppProvider, { teamMembers: [member] }, React.createElement(About)));
+  const page = new JSDOM(html).window.document;
+  assert.equal(page.querySelector('h2').textContent, 'Built with people who live with type 1.');
+  assert.equal(page.querySelector('h2 em').textContent, 'live with type 1');
+  assert.doesNotMatch(page.body.textContent, /Life first|A gentler kind of tracking|Share an idea/i);
+});
+
 test('story cards, modal navigation, keyboard focus and dismissal', async t => {
   const dom = new JSDOM('<html lang="en"><head><title>Stories</title></head><body><main id="root"></main></body></html>', {
     url: 'https://gluconest.test/#about', pretendToBeVisual: true, runScripts: 'outside-only',
