@@ -30,6 +30,7 @@ import { sectionFromHash } from '../lib/navigation';
 import type { TeamMember } from '../data/teamMembers';
 import { mockPatternInsights } from '../data/mockInsights';
 import { educationalGuides } from '../data/educationalContent';
+import { recordId } from '../utils/recordId';
 import { getLatestReading } from '../utils/latestReading';
 import { mockGlucoseReadings } from '../data/mockGlucose';
 import { initialMockMeals } from '../data/mockMeals';
@@ -162,6 +163,17 @@ function readPreference<T extends string>(key: string, choices: readonly T[]): T
   return choices.find(choice => raw === choice || raw === JSON.stringify(choice)) ?? null;
 }
 
+// A successful write is visible to the next handler even before React renders.
+function useCollection<T>(initial: T[] | (() => T[])) {
+  const [items, setItems] = useState(initial);
+  const latest = useRef(items);
+  const replace = useCallback((next: T[]) => {
+    latest.current = next;
+    setItems(next);
+  }, []);
+  return [items, replace, latest] as const;
+}
+
 export function AppProvider({ children, teamMembers = [] }: { children: React.ReactNode; teamMembers?: readonly TeamMember[] }) {
   // Navigation
   const [activeSection, setActiveSectionState] = useState<NavigationSection>('home');
@@ -203,7 +215,7 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
 
   // Readings & Logs
   const [demoReadings, setDemoReadings] = useState<GlucoseReading[]>(mockGlucoseReadings);
-  const [manualReadings, setManualReadings] = useState<GlucoseReading[]>([]);
+  const [manualReadings, setManualReadings, latestManualReadings] = useCollection<GlucoseReading>([]);
   const [nightscoutReadings, setNightscoutReadings] = useState<GlucoseReading[]>([]);
   const [nightscoutCredentials, setNightscoutCredentials] = useState<NightscoutConfig | null>(null);
   const [nightscoutUrl, setNightscoutUrl] = useState('');
@@ -216,9 +228,9 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   const nightscoutAbort = useRef<AbortController | null>(null);
 
   useEffect(() => () => nightscoutAbort.current?.abort(), []);
-  const [meals, setMeals] = useState<MealLogEntry[]>(initialMockMeals);
-  const [insulinLogs, setInsulinLogs] = useState<InsulinLogEntry[]>(initialMockInsulin);
-  const [activityLogs, setActivityLogs] = useState<ActivityLogEntry[]>(() => [makeDemoActivity()]);
+  const [meals, setMeals, latestMeals] = useCollection<MealLogEntry>(initialMockMeals);
+  const [insulinLogs, setInsulinLogs, latestInsulinLogs] = useCollection<InsulinLogEntry>(initialMockInsulin);
+  const [activityLogs, setActivityLogs, latestActivityLogs] = useCollection<ActivityLogEntry>(() => [makeDemoActivity()]);
 
   // Active Food Library Meal Plate Builder
   const [mealPlate, setMealPlate] = useState<MealItemSelection[]>([]);
@@ -233,7 +245,7 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
 
 
   // Community Feedback
-  const [feedbackList, setFeedbackList] = useState<CommunityFeedback[]>([]);
+  const [feedbackList, setFeedbackList, latestFeedbackList] = useCollection<CommunityFeedback>([]);
   const [localDataError, setLocalDataError] = useState<string | null>(null);
   const blockedLocalDataKeys = useRef(new Set<string>());
 
@@ -379,7 +391,7 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
         `Some saved ${labels} data could not be read because it was invalid. Those records were left in browser storage, but were not loaded. Export other available records before clearing browser data.`
       );
     }
-  }, [persistLocalValue]);
+  }, [persistLocalValue, setMeals, setInsulinLogs, setActivityLogs, setManualReadings, setFeedbackList]);
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -458,13 +470,13 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   const addReading = (reading: GlucoseReading): boolean => {
     if (reading.source === 'manual') {
       const updated = [
-        ...manualReadings,
+        ...latestManualReadings.current,
         { ...reading, isDemo: false },
       ].sort((first, second) => Date.parse(first.timestamp) - Date.parse(second.timestamp));
+      if (!persistLocalValue(LOCAL_DATA_KEYS.readings, updated)) return false;
       setManualReadings(updated);
-      const saved = persistLocalValue(LOCAL_DATA_KEYS.readings, updated);
       if (dataSource !== 'nightscout') setDataSource('manual');
-      return saved;
+      return true;
     }
     setDemoReadings((previous) => [
       ...previous,
@@ -474,7 +486,7 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   };
 
   const deleteManualReading = (id: string): boolean => {
-    const updated = manualReadings.filter(reading => (reading.id ?? reading.timestamp) !== id);
+    const updated = latestManualReadings.current.filter(reading => (reading.id ?? reading.timestamp) !== id);
     if (!persistLocalValue(LOCAL_DATA_KEYS.readings, updated)) return false;
     setManualReadings(updated);
     return true;
@@ -482,7 +494,7 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
 
   const importManualReadings = (incoming: GlucoseReading[]) => {
     const existing = new Set(
-      manualReadings.map((reading) => `${Date.parse(reading.timestamp)}:${reading.value}`)
+      latestManualReadings.current.map((reading) => `${Date.parse(reading.timestamp)}:${reading.value}`)
     );
     const additions = incoming.filter((reading) => {
       const signature = `${Date.parse(reading.timestamp)}:${reading.value}`;
@@ -490,7 +502,7 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
       existing.add(signature);
       return true;
     }).map((reading) => ({ ...reading, source: 'manual' as const, isDemo: false }));
-    const updated = [...manualReadings, ...additions]
+    const updated = [...latestManualReadings.current, ...additions]
       .sort((first, second) => Date.parse(first.timestamp) - Date.parse(second.timestamp));
     if (!persistLocalValue(LOCAL_DATA_KEYS.readings, updated)) return null;
     setManualReadings(updated);
@@ -512,6 +524,7 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
       if (requestId !== fetchSequence.current) return;
       setNightscoutReadings(fetchedReadings);
       setDataSource('nightscout');
+      setConnectionError(null);
       setConnectionStatus('connected');
       setLastSuccessfulFetch(new Date().toISOString());
     } catch (error) {
@@ -531,7 +544,10 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   }, []);
 
   const connectNightscout = useCallback(async (config: NightscoutConfig) => {
-    if (fetchInProgress.current) return;
+    if (fetchInProgress.current) {
+      setConnectionError('A Nightscout request is already in progress. Wait for it to finish or cancel it.');
+      return;
+    }
     setNightscoutCredentials(config);
     setNightscoutUrl(config.url.trim());
     await runNightscoutFetch(config);
@@ -549,13 +565,12 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
     fetchInProgress.current = false;
     setNightscoutCredentials(null);
     setNightscoutReadings([]);
-    setDemoReadings(mockGlucoseReadings);
     setNightscoutUrl('');
-    setDataSource(manualReadings.length > 0 ? 'manual' : 'demo');
+    setDataSource(latestManualReadings.current.length > 0 ? 'manual' : 'demo');
     setConnectionStatus('disconnected');
     setLastSuccessfulFetch(null);
     setConnectionError(null);
-  }, [manualReadings]);
+  }, [latestManualReadings]);
 
   const isNightscoutConnected = dataSource === 'nightscout';
 
@@ -576,22 +591,24 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   const addMealLog = (meal: Omit<MealLogEntry, 'id'>): boolean => {
     const newEntry: MealLogEntry = {
       ...meal,
-      id: 'meal-' + Date.now(),
+      id: recordId('meal'),
       isDemo: false,
     };
-    const updated = [newEntry, ...meals];
+    const updated = [newEntry, ...latestMeals.current];
+    if (!persistLocalValue(LOCAL_DATA_KEYS.meals, updated.filter((m) => !m.isDemo))) return false;
     setMeals(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated.filter((m) => !m.isDemo));
+    return true;
   };
 
   const updateMealLog = (id: string, updatedFields: Partial<MealLogEntry>): boolean => {
-    const updated = meals.map((m) => (m.id === id ? { ...m, ...updatedFields } : m));
+    const updated = latestMeals.current.map((m) => (m.id === id ? { ...m, ...updatedFields } : m));
+    if (!persistLocalValue(LOCAL_DATA_KEYS.meals, updated.filter((m) => !m.isDemo))) return false;
     setMeals(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated.filter((m) => !m.isDemo));
+    return true;
   };
 
   const deleteMealLog = (id: string): boolean => {
-    const updated = meals.filter((m) => m.id !== id);
+    const updated = latestMeals.current.filter((m) => m.id !== id);
     if (!persistLocalValue(LOCAL_DATA_KEYS.meals, updated.filter((m) => !m.isDemo))) return false;
     setMeals(updated);
     return true;
@@ -601,22 +618,24 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   const addInsulinLog = (entry: Omit<InsulinLogEntry, 'id'>): boolean => {
     const newEntry: InsulinLogEntry = {
       ...entry,
-      id: 'ins-' + Date.now(),
+      id: recordId('ins'),
       isDemo: false,
     };
-    const updated = [newEntry, ...insulinLogs];
+    const updated = [newEntry, ...latestInsulinLogs.current];
+    if (!persistLocalValue(LOCAL_DATA_KEYS.insulin, updated.filter((i) => !i.isDemo))) return false;
     setInsulinLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated.filter((i) => !i.isDemo));
+    return true;
   };
 
   const updateInsulinLog = (id: string, updatedFields: Partial<InsulinLogEntry>): boolean => {
-    const updated = insulinLogs.map((i) => (i.id === id ? { ...i, ...updatedFields } : i));
+    const updated = latestInsulinLogs.current.map((i) => (i.id === id ? { ...i, ...updatedFields } : i));
+    if (!persistLocalValue(LOCAL_DATA_KEYS.insulin, updated.filter((i) => !i.isDemo))) return false;
     setInsulinLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated.filter((i) => !i.isDemo));
+    return true;
   };
 
   const deleteInsulinLog = (id: string): boolean => {
-    const updated = insulinLogs.filter((i) => i.id !== id);
+    const updated = latestInsulinLogs.current.filter((i) => i.id !== id);
     if (!persistLocalValue(LOCAL_DATA_KEYS.insulin, updated.filter((i) => !i.isDemo))) return false;
     setInsulinLogs(updated);
     return true;
@@ -626,16 +645,17 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   const addActivityLog = (act: Omit<ActivityLogEntry, 'id'>): boolean => {
     const newEntry: ActivityLogEntry = {
       ...act,
-      id: 'act-' + Date.now(),
+      id: recordId('act'),
       isDemo: false,
     };
-    const updated = [newEntry, ...activityLogs];
+    const updated = [newEntry, ...latestActivityLogs.current];
+    if (!persistLocalValue(LOCAL_DATA_KEYS.activity, updated.filter((a) => !a.isDemo))) return false;
     setActivityLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.activity, updated.filter((a) => !a.isDemo));
+    return true;
   };
 
   const deleteActivityLog = (id: string): boolean => {
-    const updated = activityLogs.filter((a) => a.id !== id);
+    const updated = latestActivityLogs.current.filter((a) => a.id !== id);
     if (!persistLocalValue(LOCAL_DATA_KEYS.activity, updated.filter((a) => !a.isDemo))) return false;
     setActivityLogs(updated);
     return true;
@@ -690,10 +710,10 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   const submitFeedback = (fb: Omit<CommunityFeedback, 'id' | 'submittedAt'>): boolean => {
     const newFb: CommunityFeedback = {
       ...fb,
-      id: 'fb-' + Date.now(),
+      id: recordId('fb'),
       submittedAt: new Date().toISOString(),
     };
-    const updated = [newFb, ...feedbackList];
+    const updated = [newFb, ...latestFeedbackList.current];
     if (!persistLocalValue(LOCAL_DATA_KEYS.feedback, updated)) return false;
     setFeedbackList(updated);
     return true;
@@ -710,9 +730,9 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   const resetDemoData = () => {
     setDataSource('demo');
     setDemoReadings(mockGlucoseReadings);
-    const nextMeals = replaceDemoRecords(meals, initialMockMeals);
-    const nextInsulin = replaceDemoRecords(insulinLogs, initialMockInsulin);
-    const nextActivities = replaceDemoRecords(activityLogs, [makeDemoActivity()]);
+    const nextMeals = replaceDemoRecords(latestMeals.current, initialMockMeals);
+    const nextInsulin = replaceDemoRecords(latestInsulinLogs.current, initialMockInsulin);
+    const nextActivities = replaceDemoRecords(latestActivityLogs.current, [makeDemoActivity()]);
     setMeals(nextMeals);
     setInsulinLogs(nextInsulin);
     setActivityLogs(nextActivities);
@@ -723,13 +743,13 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
 
   const importLocalDataBackup = (backup: LocalDataBackup) => {
     const nextManualReadings = mergeRecordsById(
-      manualReadings,
+      latestManualReadings.current,
       backup.data.manualReadings
     ).sort((first, second) => Date.parse(first.timestamp) - Date.parse(second.timestamp));
-    const nextMeals = mergeRecordsById(meals, backup.data.meals);
-    const nextInsulinLogs = mergeRecordsById(insulinLogs, backup.data.insulinLogs);
-    const nextActivityLogs = mergeRecordsById(activityLogs, backup.data.activityLogs);
-    const nextFeedbackList = mergeRecordsById(feedbackList, backup.data.feedbackList);
+    const nextMeals = mergeRecordsById(latestMeals.current, backup.data.meals);
+    const nextInsulinLogs = mergeRecordsById(latestInsulinLogs.current, backup.data.insulinLogs);
+    const nextActivityLogs = mergeRecordsById(latestActivityLogs.current, backup.data.activityLogs);
+    const nextFeedbackList = mergeRecordsById(latestFeedbackList.current, backup.data.feedbackList);
     const nextCollections = [
       [LOCAL_DATA_KEYS.readings, nextManualReadings],
       [LOCAL_DATA_KEYS.meals, nextMeals],

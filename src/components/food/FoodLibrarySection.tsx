@@ -20,7 +20,7 @@ export default function FoodLibrarySection() {
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<IndianFoodItem | null>(null);
   const [announcement, setAnnouncement] = useState('');
-  const [saveResult, setSaveResult] = useState<'saved' | 'session' | null>(null);
+  const [saveResult, setSaveResult] = useState<'saved' | 'failed' | null>(null);
   const search = query.trim().normalize().toLowerCase();
   const results = indianFoodDatabase.filter(food =>
     (!category || food.category === category) &&
@@ -35,12 +35,12 @@ export default function FoodLibrarySection() {
     <section className={styles.library} aria-labelledby="food-title">
       <h1 id="food-title" className={styles.title}>Food library</h1>
       <MealPlate onSave={persisted => {
-        setSaveResult(persisted ? 'saved' : 'session');
+        setSaveResult(persisted ? 'saved' : 'failed');
         setAnnouncement('');
       }} />
       <div className={styles.catalogue}>
         {saveResult && <div role="status" className={styles.notice}>
-          {saveResult === 'saved' ? 'Meal saved.' : 'Meal is only in this session. Export a backup before leaving.'}
+          {saveResult === 'saved' ? 'Meal saved.' : 'Meal could not be saved. Your plate is still available to retry.'}
           <button type="button" className={styles.link} onClick={() => setActiveSection(saveResult === 'saved' ? 'quick-log' : 'devices')}>
             {saveResult === 'saved' ? 'View in Quick Log' : 'Open Devices & Data'}
           </button>

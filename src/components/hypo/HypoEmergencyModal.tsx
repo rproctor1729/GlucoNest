@@ -3,7 +3,7 @@
 import { useModalFocus } from '@/components/common/useModalFocus';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { startTimerChime, type ChimeAudioContext, type TimerChime } from '@/utils/timerChime';
+import { prepareTimerChime, type ChimeAudioContext, type TimerChime } from '@/utils/timerChime';
 import { useApp } from '@/context/AppContext';
 import {
   Clock,
@@ -49,13 +49,9 @@ export default function HypoEmergencyModal() {
       }, 1000);
     } else if (secondsRemaining === 0 && isTimerRunning) {
       setIsTimerRunning(false);
-      if (soundEnabled && typeof window !== 'undefined') {
-        const chime = startTimerChime(() => {
-          const AudioCtor = window.AudioContext ||
-            (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-          return AudioCtor ? new AudioCtor() as unknown as ChimeAudioContext : null;
-        });
-        chimeRef.current = chime;
+      const chime = chimeRef.current;
+      if (soundEnabled && chime) {
+        chime.play();
         void chime.status.then((result) => {
           if (result === 'error') {
             console.error('The optional timer chime could not be played.');
@@ -75,11 +71,25 @@ export default function HypoEmergencyModal() {
   const seconds = secondsRemaining % 60;
   const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
+  const cancelChime = () => {
+    void chimeRef.current?.cancel();
+    chimeRef.current = null;
+  };
+  const armChime = () => {
+    cancelChime();
+    chimeRef.current = prepareTimerChime(() => {
+      const AudioCtor = window.AudioContext ||
+        (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      return AudioCtor ? new AudioCtor() as unknown as ChimeAudioContext : null;
+    });
+  };
   const startTimer = () => {
+    if (soundEnabled) armChime();
     if (secondsRemaining === 0) setSecondsRemaining(15 * 60);
     setIsTimerRunning(true);
   };
   const resetTimer = () => {
+    cancelChime();
     setIsTimerRunning(false);
     setSecondsRemaining(15 * 60);
     setCarbTaken(null);
@@ -124,8 +134,12 @@ export default function HypoEmergencyModal() {
           </section>
 
           <section className="hypo-timer-panel border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900/50" aria-labelledby="hypo-timer-title">
-            <div className="hypo-timer-heading"><div className="hypo-step-heading"><Clock size={16} className="text-rose-600 dark:text-rose-300" /><h3 id="hypo-timer-title">Wait 15 minutes & recheck</h3></div><button type="button" className="hypo-sound text-slate-500 dark:text-slate-400" onClick={() => setSoundEnabled(!soundEnabled)} aria-pressed={soundEnabled} aria-label={soundEnabled ? 'Mute timer chime' : 'Enable timer chime'}>{soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}</button></div>
-            <div className="hypo-timer-main"><div className="hypo-time" role="timer" aria-label="Time until glucose recheck">{formattedTime}</div><div className="hypo-timer-actions"><button type="button" onClick={isTimerRunning ? () => setIsTimerRunning(false) : startTimer} className="hypo-timer-primary bg-rose-600 text-white hover:bg-rose-700">{isTimerRunning ? 'Pause timer' : secondsRemaining === 0 ? 'Restart timer' : secondsRemaining < 15 * 60 ? 'Resume timer' : 'Start 15m timer'}</button><button type="button" onClick={resetTimer} className="hypo-reset border-slate-300 text-slate-600 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800">Reset</button></div></div>
+            <div className="hypo-timer-heading"><div className="hypo-step-heading"><Clock size={16} className="text-rose-600 dark:text-rose-300" /><h3 id="hypo-timer-title">Wait 15 minutes & recheck</h3></div><button type="button" className="hypo-sound text-slate-500 dark:text-slate-400" onClick={() => {
+              if (soundEnabled) cancelChime();
+              else if (isTimerRunning) armChime();
+              setSoundEnabled(!soundEnabled);
+            }} aria-pressed={soundEnabled} aria-label={soundEnabled ? 'Mute timer chime' : 'Enable timer chime'}>{soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}</button></div>
+            <div className="hypo-timer-main"><div className="hypo-time" role="timer" aria-label="Time until glucose recheck">{formattedTime}</div><div className="hypo-timer-actions"><button type="button" onClick={isTimerRunning ? () => { cancelChime(); setIsTimerRunning(false); } : startTimer} className="hypo-timer-primary bg-rose-600 text-white hover:bg-rose-700">{isTimerRunning ? 'Pause timer' : secondsRemaining === 0 ? 'Restart timer' : secondsRemaining < 15 * 60 ? 'Resume timer' : 'Start 15m timer'}</button><button type="button" onClick={resetTimer} className="hypo-reset border-slate-300 text-slate-600 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800">Reset</button></div></div>
             <p className="hypo-recheck text-slate-600 dark:text-slate-300">Recheck after 15 minutes. If still below 70 mg/dL (3.9 mmol/L), repeat with 15g carbs, or follow your care plan.</p>
             {soundError && <p role="status" className="hypo-sound-error text-amber-700 dark:text-amber-300">{soundError}</p>}
           </section>

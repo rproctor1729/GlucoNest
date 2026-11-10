@@ -20,9 +20,10 @@ export default function MealPlate({ onSave }: { onSave: (persisted: boolean) => 
       timestamp: new Date().toISOString(), mealType, name, items: mealPlate, totalCarbs: total,
       notes: 'Logged from Indian Food Library Plate Builder', isDemo: false,
     });
-    // addMealLog retains the session entry even when browser persistence fails.
-    clearMealPlate();
-    setExpanded(false);
+    if (persisted) {
+      clearMealPlate();
+      setExpanded(false);
+    }
     onSave(persisted);
   }
 

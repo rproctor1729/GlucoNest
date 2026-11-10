@@ -14,7 +14,7 @@ export default function LocalReminderManager() {
   useEffect(() => {
     const check = () => {
       try {
-        const settings = readReminderSettings();
+        const settings = readReminderSettings(setMessage);
         const now = Date.now();
         const dueGlucose = settings.glucoseCheckEnabled &&
           settings.nextGlucoseAt &&

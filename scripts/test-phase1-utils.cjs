@@ -19,7 +19,7 @@ const load = (relative) => require(path.join(__dirname, '..', relative));
 const { calculateDetailedTIR } = load('src/utils/tirCalculator.ts');
 const { getLatestReading } = load('src/utils/latestReading.ts');
 const { visibleRecords } = load('src/utils/demoVisibility.ts');
-const { startTimerChime } = load('src/utils/timerChime.ts');
+const { prepareTimerChime } = load('src/utils/timerChime.ts');
 
 const bucketSum = (s) => s.veryLowPercent + s.lowPercent + s.inRangePercent + s.highPercent + s.veryHighPercent;
 const minutesApart = (values, gapMinutes) =>
@@ -147,7 +147,12 @@ function fakeContext(options = {}) {
 
 test('chime plays, then closes its AudioContext once', async () => {
   const { factory, log } = fakeContext({ state: 'suspended' });
-  const chime = startTimerChime(factory);
+  const chime = prepareTimerChime(factory);
+  assert.equal(log.resumed, 1);
+  await Promise.resolve();
+  assert.equal(log.oscillatorStarted, 0, 'arming the timer must be silent');
+  chime.play();
+  chime.play();
   assert.equal(await chime.status, 'played');
   assert.equal(log.resumed, 1, 'suspended context must be resumed before playing');
   assert.equal(log.oscillatorStarted, 1);
@@ -156,22 +161,23 @@ test('chime plays, then closes its AudioContext once', async () => {
 
 test('chime does not throw when resume is refused, and closes the context', async () => {
   const { factory, log } = fakeContext({ state: 'suspended', resumeFails: true });
-  const chime = startTimerChime(factory);
+  const chime = prepareTimerChime(factory);
   assert.equal(await chime.status, 'blocked');
   assert.equal(log.oscillatorStarted, 0);
   assert.equal(log.closed, 1);
 });
 
 test('chime reports unavailable when the browser has no AudioContext', async () => {
-  const chime = startTimerChime(() => null);
+  const chime = prepareTimerChime(() => null);
   assert.equal(await chime.status, 'unavailable');
-  const throwing = startTimerChime(() => { throw new Error('no AudioContext'); });
+  const throwing = prepareTimerChime(() => { throw new Error('no AudioContext'); });
   assert.equal(await throwing.status, 'unavailable');
 });
 
 test('chime reports error and still closes when the audio graph fails', async () => {
   const { factory, log } = fakeContext({ oscillatorFails: true });
-  const chime = startTimerChime(factory);
+  const chime = prepareTimerChime(factory);
+  chime.play();
   assert.equal(await chime.status, 'error');
   assert.equal(log.closed, 1);
 });
@@ -181,7 +187,7 @@ test('cancelling a chime closes its context immediately; repeated open and close
   for (let i = 0; i < 5; i += 1) {
     const { factory, log } = fakeContext();
     contexts.push(log);
-    const chime = startTimerChime(factory);
+    const chime = prepareTimerChime(factory);
     await chime.cancel();
     assert.equal(await chime.status, 'cancelled');
     await chime.cancel(); // Cancelling twice is harmless.

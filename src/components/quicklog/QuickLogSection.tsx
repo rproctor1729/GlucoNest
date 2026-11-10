@@ -4,6 +4,8 @@ import { useModalFocus } from '@/components/common/useModalFocus';
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from '@/context/AppContext';
+import { recordId } from '@/utils/recordId';
+import { visibleRecords } from '@/utils/demoVisibility';
 import { localDateTimeInputs, parseLocalDateTime } from '@/utils/localDateTime';
 import {
   formatUnitLabel,
@@ -257,7 +259,7 @@ export default function QuickLogSection() {
     });
 
     const saved = addReading({
-      id: 'g-manual-' + Date.now(),
+      id: recordId('g-manual'),
       timestamp: manualTimestamp.toISOString(),
       timeLabel,
       value: normalizedMgDl,
@@ -302,7 +304,7 @@ export default function QuickLogSection() {
       title: `${convertGlucose(reading.value, glucoseUnit)} ${formatUnitLabel(glucoseUnit)}`,
       subtitle: 'Personal glucose reading', notes: reading.notes, raw: reading,
     })),
-    ...meals.map((m) => ({
+    ...visibleRecords(meals).map((m) => ({
       id: m.id,
       kind: 'meal' as const,
       timestamp: m.timestamp,
@@ -311,7 +313,7 @@ export default function QuickLogSection() {
       notes: m.notes,
       raw: m,
     })),
-    ...insulinLogs.map((i) => ({
+    ...visibleRecords(insulinLogs).map((i) => ({
       id: i.id,
       kind: 'insulin' as const,
       timestamp: i.timestamp,
@@ -320,7 +322,7 @@ export default function QuickLogSection() {
       notes: i.notes,
       raw: i,
     })),
-    ...activityLogs.map((a) => ({
+    ...visibleRecords(activityLogs).map((a) => ({
       id: a.id,
       kind: 'activity' as const,
       timestamp: a.timestamp,
@@ -552,23 +554,25 @@ export default function QuickLogSection() {
                       </button>
                     )}
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const saved = log.kind === 'meal'
-                          ? deleteMealLog(log.id)
-                          : log.kind === 'insulin'
-                            ? deleteInsulinLog(log.id)
-                            : log.kind === 'glucose'
-                              ? deleteManualReading(log.id)
-                              : deleteActivityLog(log.id);
-                        showToast(saved ? 'Record deleted' : 'Delete not saved. Export a backup before leaving this page.');
-                      }}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
-                      title="Delete record"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    {!log.raw.isDemo && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const saved = log.kind === 'meal'
+                            ? deleteMealLog(log.id)
+                            : log.kind === 'insulin'
+                              ? deleteInsulinLog(log.id)
+                              : log.kind === 'glucose'
+                                ? deleteManualReading(log.id)
+                                : deleteActivityLog(log.id);
+                          showToast(saved ? 'Record deleted' : 'Delete not saved. Export a backup before leaving this page.');
+                        }}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+                        title="Delete record"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

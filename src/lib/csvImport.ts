@@ -1,3 +1,4 @@
+import { recordId } from '../utils/recordId';
 import type { GlucoseReading } from '@/types';
 
 export interface CsvGlucoseImport {
@@ -115,7 +116,7 @@ export function parseGlucoseCsv(source: string): CsvGlucoseImport {
     }
     const timeLabel = new Date(timestamp).toLocaleString();
     readings.push({
-      id: `csv-${Date.parse(timestamp)}-${value}`,
+      id: recordId('csv'),
       timestamp,
       timeLabel,
       value,

@@ -27,6 +27,7 @@ export interface ChimeAudioContext {
 export type ChimeStatus = 'played' | 'blocked' | 'unavailable' | 'error' | 'cancelled';
 
 export interface TimerChime {
+  play(): void;
   status: Promise<ChimeStatus>;
   cancel(): Promise<void>;
 }
@@ -41,7 +42,7 @@ async function closeQuietly(context: ChimeAudioContext): Promise<void> {
   }
 }
 
-export function startTimerChime(createContext: () => ChimeAudioContext | null): TimerChime {
+export function prepareTimerChime(createContext: () => ChimeAudioContext | null): TimerChime {
   let context: ChimeAudioContext | null = null;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let settled = false;
@@ -64,7 +65,7 @@ export function startTimerChime(createContext: () => ChimeAudioContext | null): 
     if (current) await closeQuietly(current);
   };
 
-  const run = async () => {
+  const prepare = async () => {
     let created: ChimeAudioContext | null;
     try {
       created = createContext();
@@ -85,7 +86,16 @@ export function startTimerChime(createContext: () => ChimeAudioContext | null): 
       await settle('blocked');
       return;
     }
-    if (settled) return; // Cancelled while resuming.
+    return created;
+  };
+
+  const ready = prepare(); // Create and request resume synchronously in the tap handler.
+  let requested = false;
+  const play = async () => {
+    if (requested || settled) return;
+    requested = true;
+    const created = await ready;
+    if (!created || settled) return;
 
     try {
       const oscillator = created.createOscillator();
@@ -106,10 +116,9 @@ export function startTimerChime(createContext: () => ChimeAudioContext | null): 
     }, CHIME_DURATION_MS);
   };
 
-  void run();
-
   return {
     status,
+    play: () => { void play(); },
     cancel: () => settle('cancelled'),
   };
 }

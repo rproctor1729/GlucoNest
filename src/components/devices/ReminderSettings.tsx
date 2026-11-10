@@ -1,5 +1,7 @@
 'use client';
 
+import { useApp } from '@/context/AppContext';
+import { translate } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import {
   DEFAULT_REMINDER_SETTINGS,
@@ -17,6 +19,7 @@ function toLocalDateTimeValue(value: string | null): string {
 }
 
 export default function ReminderSettings() {
+  const { language } = useApp();
   const [settings, setSettings] = useState<LocalReminderSettings>(DEFAULT_REMINDER_SETTINGS);
   const [sensorDate, setSensorDate] = useState('');
   const [message, setMessage] = useState<string | null>(null);
@@ -24,7 +27,7 @@ export default function ReminderSettings() {
 
   useEffect(() => {
     try {
-      const saved = readReminderSettings();
+      const saved = readReminderSettings(setError);
       setSettings(saved);
       setSensorDate(toLocalDateTimeValue(saved.sensorChangeAt));
     } catch (reason) {
@@ -72,7 +75,7 @@ export default function ReminderSettings() {
       <div>
         <h3 className="font-semibold text-slate-900 dark:text-white">Optional local reminders</h3>
         <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-          Reminders run only while GlucoNest remains open in this browser. They are not reliable alarms and never replace your CGM alerts or care plan.
+          {translate(language, 'reminders.openOnly')} <span lang="en">They are not reliable alarms and never replace your CGM alerts or care plan.</span>
         </p>
       </div>
 

@@ -12,7 +12,7 @@ function loadTypeScriptModule(relativePath) {
   const loadedModule = { exports: {} };
   new Function('exports', 'require', 'module', javascript)(
     loadedModule.exports,
-    require,
+    (request) => loadTypeScriptModule(path.join(path.dirname(relativePath), request + '.ts')),
     loadedModule
   );
   return loadedModule.exports;

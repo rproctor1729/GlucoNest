@@ -15,10 +15,16 @@ export const DEFAULT_REMINDER_SETTINGS: LocalReminderSettings = {
   sensorChangeAt: null,
 };
 
-export function readReminderSettings(): LocalReminderSettings {
+export function readReminderSettings(reportError: (message: string) => void = console.error): LocalReminderSettings {
   const raw = window.localStorage.getItem(REMINDER_STORAGE_KEY);
-  if (!raw) return DEFAULT_REMINDER_SETTINGS;
-  const value: unknown = JSON.parse(raw);
+  if (raw === null) return DEFAULT_REMINDER_SETTINGS;
+  let value: unknown;
+  try {
+    value = JSON.parse(raw);
+  } catch {
+    reportError('Saved reminder settings are invalid.');
+    return DEFAULT_REMINDER_SETTINGS;
+  }
   if (!value || typeof value !== 'object') throw new Error('Saved reminder settings are invalid.');
   const settings = value as Partial<LocalReminderSettings>;
   const validOptionalTime = (time: unknown) =>

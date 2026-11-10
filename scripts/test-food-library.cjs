@@ -116,14 +116,16 @@ test('portions, plate editing and meal type persist through the real log flow', 
   assert.equal(window.location.hash, '#quick-log');
 });
 
-test('a blocked meal collection keeps one session entry and offers backup', async t => {
+test('a blocked meal save leaves the log unchanged and the plate available to retry', async t => {
   const app = await mount(t, true);
   await click(dishes()[0]);
   await click(button('Add to plate'));
   await click(button('Save meal to Quick Log'));
-  assert.equal(app().meals.filter(meal => !meal.isDemo).length, 1);
+  assert.equal(app().meals.filter(meal => !meal.isDemo).length, 0);
   assert.equal(window.localStorage.getItem('gluconest_meals'), 'invalid');
-  assert.equal(button('Save meal to Quick Log'), undefined);
+  assert.equal(app().mealPlate.length, 1);
+  assert.ok(button('Save meal to Quick Log'));
+  assert.match(document.body.textContent, /Meal could not be saved/);
   await click(button('Open Devices & Data'));
   assert.equal(window.location.hash, '#devices');
 });

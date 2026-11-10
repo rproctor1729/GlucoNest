@@ -10,6 +10,7 @@ export const APP_LANGUAGES: Array<{ code: AppLanguage; label: string; shortLabel
 
 const translations: Record<AppLanguage, Record<string, string>> = {
   en: {
+    'reminders.openOnly': 'Reminders run only while GlucoNest remains open in this browser.',
     'nav.myDay': 'My Day',
     'nav.devices': 'Devices & Data Sources',
     'nav.quickLog': 'Quick Log',
@@ -43,6 +44,7 @@ const translations: Record<AppLanguage, Record<string, string>> = {
     'common.offline': 'Offline · showing the last available app shell',
   },
   hi: {
+    'reminders.openOnly': 'रिमाइंडर तभी काम करते हैं जब इस ब्राउज़र में GlucoNest खुला हो।',
     'nav.myDay': 'मेरा दिन',
     'nav.devices': 'डिवाइस और डेटा स्रोत',
     'nav.quickLog': 'त्वरित लॉग',
@@ -75,6 +77,7 @@ const translations: Record<AppLanguage, Record<string, string>> = {
     'common.offline': 'ऑफ़लाइन · पिछला उपलब्ध ऐप दिखाया जा रहा है',
   },
   ta: {
+    'reminders.openOnly': 'இந்த உலாவியில் GlucoNest திறந்திருக்கும் போது மட்டுமே நினைவூட்டல்கள் செயல்படும்.',
     'nav.myDay': 'எனது நாள்',
     'nav.devices': 'சாதனங்கள் மற்றும் தரவு',
     'nav.quickLog': 'விரைவு பதிவு',
@@ -107,6 +110,7 @@ const translations: Record<AppLanguage, Record<string, string>> = {
     'common.offline': 'ஆஃப்லைன் · கடைசியாக கிடைத்த செயலி காட்டப்படுகிறது',
   },
   kn: {
+    'reminders.openOnly': 'ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ GlucoNest ತೆರೆದಿರುವಾಗ ಮಾತ್ರ ಜ್ಞಾಪನೆಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ.',
     'nav.myDay': 'ನನ್ನ ದಿನ',
     'nav.devices': 'ಸಾಧನಗಳು ಮತ್ತು ಡೇಟಾ',
     'nav.quickLog': 'ತ್ವರಿತ ದಾಖಲೆ',
@@ -139,6 +143,7 @@ const translations: Record<AppLanguage, Record<string, string>> = {
     'common.offline': 'ಆಫ್‌ಲೈನ್ · ಕೊನೆಯ ಲಭ್ಯ ಅಪ್ಲಿಕೇಶನ್ ತೋರಿಸಲಾಗುತ್ತಿದೆ',
   },
   te: {
+    'reminders.openOnly': 'ఈ బ్రౌజర్‌లో GlucoNest తెరిచి ఉన్నప్పుడు మాత్రమే రిమైండర్లు పనిచేస్తాయి.',
     'nav.myDay': 'నా రోజు',
     'nav.devices': 'పరికరాలు మరియు డేటా',
     'nav.quickLog': 'త్వరిత నమోదు',
