@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import {
   AlertCircle,
@@ -20,8 +20,7 @@ import {
   parseLocalDataBackup,
 } from '@/lib/localData';
 import { parseGlucoseCsv, CsvGlucoseImport } from '@/lib/csvImport';
-import ReminderSettings from '@/components/devices/ReminderSettings';
-import TargetRangeSettings from '@/components/devices/TargetRangeSettings';
+import styles from './DevicesSection.module.css';
 
 function formatTimestamp(timestamp: string | null) {
   if (!timestamp) return 'Not available';
@@ -41,8 +40,6 @@ export default function DevicesSection() {
     connectNightscout,
     refreshNightscout,
     disconnectNightscout,
-    setActiveSection,
-    resetDemoData,
     manualReadings,
     importManualReadings,
     meals,
@@ -52,7 +49,11 @@ export default function DevicesSection() {
     importLocalDataBackup,
   } = useApp();
 
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState(nightscoutUrl);
+  const csvSelection = useRef(0);
+  const backupSelection = useRef(0);
+  const [csvLoading, setCsvLoading] = useState(false);
+  const [backupLoading, setBackupLoading] = useState(false);
   const [token, setToken] = useState('');
   const [historyLimit, setHistoryLimit] = useState('288');
   const [now, setNow] = useState(Date.now());
@@ -103,7 +104,7 @@ export default function DevicesSection() {
     const fileUrl = URL.createObjectURL(file);
     const downloadLink = document.createElement('a');
     downloadLink.href = fileUrl;
-    downloadLink.download = `gluconest-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    downloadLink.download = `GlucoNest-backup-${new Date().toISOString().slice(0, 10)}.json`;
     downloadLink.click();
     window.setTimeout(() => URL.revokeObjectURL(fileUrl), 1000);
     setBackupError(null);
@@ -111,20 +112,27 @@ export default function DevicesSection() {
   };
 
   const handleBackupFile = async (event: ChangeEvent<HTMLInputElement>) => {
+    const selection = ++backupSelection.current;
     const file = event.currentTarget.files?.[0];
     event.currentTarget.value = '';
     setPendingBackup(null);
     setBackupError(null);
     setBackupStatus(null);
+    setBackupLoading(false);
     if (!file) return;
+    setBackupLoading(true);
 
     try {
-      const contents: unknown = JSON.parse(await file.text());
+      if (file.size > 10 * 1024 * 1024) throw new Error('Backup files must be 10 MB or smaller.');
+      const text = await file.text();
+      if (selection !== backupSelection.current) return;
+      const contents: unknown = JSON.parse(text);
       setPendingBackup(parseLocalDataBackup(contents));
     } catch (error) {
-      setBackupError(
-        error instanceof Error ? error.message : 'The selected file could not be read.'
-      );
+      if (selection !== backupSelection.current) return;
+      setBackupError(error instanceof Error ? error.message : 'The selected file could not be read.');
+    } finally {
+      if (selection === backupSelection.current) setBackupLoading(false);
     }
   };
 
@@ -143,16 +151,25 @@ export default function DevicesSection() {
   };
 
   const handleCsvFile = async (event: ChangeEvent<HTMLInputElement>) => {
+    const selection = ++csvSelection.current;
     const file = event.currentTarget.files?.[0];
     event.currentTarget.value = '';
     setPendingCsv(null);
     setCsvError(null);
     setCsvStatus(null);
+    setCsvLoading(false);
     if (!file) return;
+    setCsvLoading(true);
     try {
-      setPendingCsv(parseGlucoseCsv(await file.text()));
+      if (file.size > 5 * 1024 * 1024) throw new Error('CSV files must be 5 MB or smaller.');
+      const text = await file.text();
+      if (selection !== csvSelection.current) return;
+      setPendingCsv(parseGlucoseCsv(text));
     } catch (error) {
+      if (selection !== csvSelection.current) return;
       setCsvError(error instanceof Error ? error.message : 'The CSV file could not be read.');
+    } finally {
+      if (selection === csvSelection.current) setCsvLoading(false);
     }
   };
 
@@ -165,7 +182,8 @@ export default function DevicesSection() {
     }
     setCsvStatus(
       `Imported ${result.imported} readings${result.skipped ? `; skipped ${result.skipped} duplicates` : ''}.` +
-      (pendingCsv.rejectedRows.length ? ` ${pendingCsv.rejectedRows.length} invalid rows were excluded.` : '')
+      (pendingCsv.rejectedRows.length ? ` ${pendingCsv.rejectedRows.length} invalid row${pendingCsv.rejectedRows.length === 1 ? ' was' : 's were'} excluded.` : '') +
+      (isNightscoutConnected ? ' Nightscout remains your active source; imported readings are saved locally.' : '')
     );
     setPendingCsv(null);
     setCsvError(null);
@@ -176,17 +194,18 @@ export default function DevicesSection() {
     : 0;
 
   return (
-    <div className="space-y-7 animate-fadeIn">
-      <header className="space-y-1">
-        <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Devices &amp; Data Sources
-        </h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Connect a source you already use, or continue exploring with GlucoNest demo data.
-        </p>
-      </header>
+    <div className={`${styles.workspace} space-y-6 animate-fadeIn`}>
+      <div className={styles.sourceBar} role="status">
+        <div className={styles.sourceIdentity}>
+          <span className={styles.sourceIcon}><Database size={20} aria-hidden="true" /></span>
+          <div><p className={styles.eyebrow}>CURRENT GLUCOSE SOURCE</p>
+            <p className={styles.sourceName}>{dataSource === 'nightscout' ? 'Nightscout' : dataSource === 'manual' ? 'Your saved readings' : 'Sample data'}</p>
+          </div>
+        </div>
+        <p className={styles.sourceNote}>{manualReadings.length} personal readings saved locally<span>Imports and backups are processed in your browser.</span></p>
+      </div>
 
-      <section className="bg-white dark:bg-[#131b24] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-5 sm:p-7 space-y-5">
+      <section className="bg-white dark:bg-[var(--surface)] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-5 sm:p-7 space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-nest-500/10 text-nest-700 dark:text-nest-300 flex items-center justify-center shrink-0">
@@ -195,23 +214,23 @@ export default function DevicesSection() {
             <div>
               <h3 className="font-semibold text-slate-900 dark:text-white">Nightscout</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Read glucose history from your existing Nightscout instance. Temporary network or server errors are retried twice automatically.
+                Connect your existing CGM history. Readings refresh every five minutes while this page is visible.
               </p>
             </div>
           </div>
-          <span className={`self-start inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+          <span className={`self-start inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
             connectionStatus === 'error'
-              ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300'
+              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300'
               : isNightscoutConnected
                 ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300'
           }`}>
             {connectionStatus === 'error' ? (
               <AlertCircle className="w-3.5 h-3.5" />
-            ) : isNightscoutConnected ? (
-              <CheckCircle2 className="w-3.5 h-3.5" />
             ) : loading ? (
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+            ) : isNightscoutConnected ? (
+              <CheckCircle2 className="w-3.5 h-3.5" />
             ) : (
               <Unplug className="w-3.5 h-3.5" />
             )}
@@ -239,7 +258,7 @@ export default function DevicesSection() {
             {isStale && (
               <p className="flex items-start gap-2 rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/30 p-3 text-xs text-amber-800 dark:text-amber-200">
                 <Clock3 className="w-4 h-4 shrink-0" />
-                This reading is over 10 minutes old. It may be stale; do not treat this prototype as a real-time alarm.
+                This reading is over 10 minutes old. Check your meter or CGM for your current glucose.
               </p>
             )}
             {connectionError && (
@@ -249,7 +268,7 @@ export default function DevicesSection() {
               </p>
             )}
             {readings.length === 0 && (
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] text-slate-400">
                 Connected, but Nightscout returned no valid glucose readings. Demo readings are not mixed into this view.
               </p>
             )}
@@ -280,6 +299,7 @@ export default function DevicesSection() {
                 Nightscout URL
                 <input
                   type="url"
+                  disabled={loading}
                   required
                   value={url}
                   onChange={(event) => setUrl(event.target.value)}
@@ -292,6 +312,7 @@ export default function DevicesSection() {
                 History limit
                 <input
                   type="number"
+                  disabled={loading}
                   min="1"
                   max="1000"
                   step="1"
@@ -306,6 +327,7 @@ export default function DevicesSection() {
               Optional read-only access token
               <input
                 type="password"
+                disabled={loading}
                 value={token}
                 onChange={(event) => setToken(event.target.value)}
                 placeholder="Leave blank if your instance allows read access"
@@ -331,103 +353,53 @@ export default function DevicesSection() {
                 {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
                 {loading ? 'Testing connection…' : 'Connect now'}
               </button>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">
+              <span className="text-[11px] text-slate-400">
                 Requests up to {historyLimit || '288'} readings from the last history page.
               </span>
-              {connectionStatus === 'error' && (
+              {(connectionStatus === 'error' || loading) && (
                 <button
                   type="button"
                   onClick={handleDisconnect}
                   className="h-10 px-3 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
-                  Clear failed attempt
+                  {loading ? 'Cancel connection' : 'Clear failed attempt'}
                 </button>
               )}
             </div>
           </form>
         )}
 
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50 p-4 space-y-2 text-xs text-slate-600 dark:text-slate-400">
-          <h4 className="font-semibold text-slate-800 dark:text-slate-200">Privacy and access</h4>
+        <details className={styles.privacy}>
+          <summary><ShieldCheck size={16} aria-hidden="true" /> Privacy &amp; connection help</summary>
+          <div className="space-y-3 pt-4">
           <p>
             A publicly readable instance needs no token. For a protected instance, an administrator can create a Nightscout subject/access token with read-only glucose permission and use the instance&apos;s authorization tool to obtain its bearer token. Never enter your Nightscout administrator API_SECRET.
           </p>
           <p>
-            The URL and optional token stay in this browser&apos;s memory and are cleared on disconnect or reload. They are sent only to the Nightscout URL you enter. Browser-based credentials are accessible within your browser environment; this prototype does not store them or fetched CGM readings permanently. Manual glucose readings remain in this browser until you clear its site data.
+            The URL and optional token stay in this browser&apos;s memory and are cleared on disconnect or reload. They are sent only to the Nightscout URL you enter. Browser-based credentials are accessible within your browser environment; GlucoNest does not store them or fetched CGM readings permanently. Manual glucose readings remain in this browser until you clear its site data.
           </p>
           <p>
             Direct browser requests require your Nightscout server to allow this site through CORS. This is a read-only history viewer, not a safety-critical real-time CGM alarm.
           </p>
-        </div>
+          </div>
+        </details>
       </section>
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className={`rounded-2xl border p-5 space-y-2 ${
-          dataSource === 'demo'
-            ? 'border-amber-200 dark:border-amber-800/60 bg-amber-50/70 dark:bg-amber-950/20'
-            : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131b24]'
-        }`}>
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Demo data</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Sample readings remain available whenever Nightscout is disconnected. Disconnecting restores the demo dashboard.
-          </p>
-          <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-300">
-            {dataSource === 'demo' ? 'ACTIVE SOURCE' : 'AVAILABLE'}
-          </span>
-        </div>
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131b24] p-5 space-y-2">
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">CSV import</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Add readings exported from a glucose meter or CGM file.
-          </p>
-          <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">AVAILABLE BELOW</span>
-        </div>
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131b24] p-5 space-y-2">
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Manual glucose entry</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Record a fingerstick or other manual value in the existing quick log.
-          </p>
-          <button
-            type="button"
-            onClick={() => setActiveSection('quick-log')}
-            className="text-xs font-semibold text-nest-700 dark:text-nest-300 hover:underline"
-          >
-            Open Quick Log
-          </button>
-          {dataSource === 'manual' && (
-            <button
-              type="button"
-              onClick={resetDemoData}
-              className="block text-xs font-semibold text-nest-700 dark:text-nest-300 hover:underline"
-            >
-              Return to demo data
-            </button>
-          )}
-          {dataSource === 'manual' && (
-            <span className="block text-[11px] font-semibold text-slate-400">ACTIVE SOURCE</span>
-          )}
-        </div>
-      </section>
-
-      <p className="text-[11px] text-slate-400 dark:text-slate-500">
-        Dexcom official API, Abbott FreeStyle Libre approved integrations, xDrip+, Medtronic, Android Health Connect, and Apple HealthKit are future possibilities, not currently connected.
-      </p>
-
-      <TargetRangeSettings />
-      <ReminderSettings />
-
-      <section className="bg-white dark:bg-[#131b24] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-5 sm:p-7 space-y-4">
+      <div className={styles.fileGrid}>
+      <section className="bg-white dark:bg-[var(--surface)] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-5 sm:p-7 space-y-4">
         <div>
-          <h3 className="font-semibold text-slate-900 dark:text-white">Import glucose readings from CSV</h3>
+          <span className={styles.fileIcon}><Upload size={22} aria-hidden="true" /></span>
+          <h3 className="font-semibold text-slate-900 dark:text-white">Import glucose readings</h3>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
             Choose a CSV with a timestamp (or date) and glucose/value column. Values in mmol/L are converted to mg/dL. Files are parsed locally; no upload occurs.
           </p>
         </div>
-        <label className="inline-flex h-10 w-fit cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-4 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
+        <label className="focus-within:ring-2 focus-within:ring-nest-500 inline-flex h-10 w-fit cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-4 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
           <Upload className="h-4 w-4" />
           Choose CSV file
           <input type="file" accept=".csv,text/csv" onChange={(event) => void handleCsvFile(event)} className="sr-only" aria-label="Choose glucose CSV file" />
         </label>
+        {csvLoading && <p role="status" className="text-sm text-slate-500 dark:text-slate-400">Checking CSV…</p>}
         {pendingCsv && (
           <div className="space-y-3 rounded-xl border border-amber-200 bg-amber-50/70 p-4 dark:border-amber-800/60 dark:bg-amber-950/20">
             <p className="text-xs text-amber-900 dark:text-amber-100">
@@ -435,7 +407,7 @@ export default function DevicesSection() {
               {pendingCsv.rejectedRows.length > 0 && ` ${pendingCsv.rejectedRows.length} invalid row(s) will be excluded.`}
             </p>
             <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={handleImportCsv} className="h-9 rounded-xl bg-amber-700 px-3 text-xs font-semibold text-white hover:bg-amber-800">
+              <button type="button" onClick={handleImportCsv} className="button-secondary">
                 Import readings
               </button>
               <button type="button" onClick={() => setPendingCsv(null)} className="h-9 rounded-xl border border-amber-300 px-3 text-xs font-semibold text-amber-900 dark:border-amber-800 dark:text-amber-100">
@@ -446,20 +418,18 @@ export default function DevicesSection() {
         )}
         {csvError && <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-300">{csvError}</p>}
         {csvStatus && <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-200">{csvStatus}</p>}
-        <p className="text-[11px] text-slate-400 dark:text-slate-500">
-          Accepted fields are date/time and glucose value, with optional units (mg/dL or mmol/L). Imported readings become part of your manual records.
+        <p className="text-[11px] text-slate-400">
+          Up to 5 MB / 10,000 rows. Use timestamp and glucose columns, or separate date and time columns. Units: mg/dL or mmol/L. Duplicates are skipped.
         </p>
       </section>
 
-      <section className="bg-white dark:bg-[#131b24] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-5 sm:p-7 space-y-4">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-nest-500/10 text-nest-700 dark:text-nest-300 flex items-center justify-center shrink-0">
-            <Database className="w-5 h-5" />
-          </div>
+      <section className="bg-white dark:bg-[var(--surface)] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-5 sm:p-7 space-y-4">
+        <div>
+          <span className={styles.fileIcon}><ShieldCheck size={22} aria-hidden="true" /></span>
           <div>
-            <h3 className="font-semibold text-slate-900 dark:text-white">Your local data</h3>
+            <h3 className="font-semibold text-slate-900 dark:text-white">Keep a private backup</h3>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Export or restore your manual readings, logs, and feedback as a JSON file. Backups stay on this device unless you choose where to save or share them. Demo records and Nightscout credentials or fetched readings are not included.
+              Export your personal readings, meals, insulin, activity, and feedback. Restore a GlucoNest JSON backup without removing existing records. Sample data and Nightscout credentials or readings are excluded.
             </p>
           </div>
         </div>
@@ -468,7 +438,7 @@ export default function DevicesSection() {
           <button
             type="button"
             onClick={handleExport}
-            className="h-10 px-4 rounded-xl bg-nest-600 hover:bg-nest-700 text-white text-xs font-semibold inline-flex items-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500"
+            className="button-secondary"
           >
             <Download className="w-4 h-4" />
             Export JSON backup
@@ -486,12 +456,13 @@ export default function DevicesSection() {
           </label>
         </div>
 
+        {backupLoading && <p role="status" className="text-sm text-slate-500 dark:text-slate-400">Checking backup…</p>}
         {pendingBackup && (
           <div className="rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50/70 dark:bg-amber-950/20 p-4 space-y-3">
             <p className="text-xs text-amber-900 dark:text-amber-100">
               This backup contains {backupRecordCount} personal records: {pendingBackup.data.manualReadings.length} glucose readings, {pendingBackup.data.meals.length} meals, {pendingBackup.data.insulinLogs.length} insulin logs, {pendingBackup.data.activityLogs.length} activity logs, and {pendingBackup.data.feedbackList.length} feedback entries.
             </p>
-            <p className="text-xs text-amber-800 dark:text-amber-200">
+            <p className="text-xs text-amber-900 dark:text-amber-100">
               Confirm to merge by record ID. Matching records will be updated from the backup; records absent from it will be kept.
             </p>
             <div className="flex flex-wrap gap-2">
@@ -515,19 +486,20 @@ export default function DevicesSection() {
         )}
 
         {backupError && (
-          <p role="alert" className="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-3 text-xs text-rose-700 dark:text-rose-300">
+          <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-300">
             {backupError}
           </p>
         )}
         {backupStatus && (
-          <p role="status" className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/30 p-3 text-xs text-emerald-800 dark:text-emerald-200">
+          <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-200">
             {backupStatus}
           </p>
         )}
-        <p className="text-[11px] text-slate-400 dark:text-slate-500">
-          Restoring merges records with those already saved here. Keep backup files private: they may contain sensitive health information.
+        <p className="text-[11px] text-slate-400">
+          JSON files up to 10 MB. Keep backups private: they contain personal health information.
         </p>
       </section>
+      </div>
     </div>
   );
 }

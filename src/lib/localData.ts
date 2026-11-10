@@ -145,12 +145,14 @@ export function isCommunityFeedback(value: unknown): value is CommunityFeedback 
     stringArray(value.dislikedAspects) &&
     isOptionalString(value.dislikedAspectsOther) &&
     [
+      'Not answered',
       'Extremely helpful',
       'Somewhat helpful',
       'Not sure',
       'I already know my counts',
     ].includes(String(value.indianFoodHelpfulness)) &&
     [
+      'Not answered',
       'Yes - helps me understand the why',
       'Sometimes',
       'No - just numbers please',

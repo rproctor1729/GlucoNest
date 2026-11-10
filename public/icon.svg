@@ -1,4 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="GlucoNest">
-  <rect width="512" height="512" rx="112" fill="#5c9183"/>
-  <text x="256" y="352" font-family="Arial, Helvetica, sans-serif" font-size="300" font-weight="700" text-anchor="middle" fill="#ffffff">G</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="GlucoNest">
+  <rect width="40" height="40" rx="11" fill="#155e60"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Nest / leaf shape -->
+    <path d="M12 28c0-10 6-16 16-16" stroke="#9ad5cd" stroke-width="2.5" opacity=".5"/>
+    <path d="M14 28c0-8.5 5-14.5 14-14.5" stroke="#9ad5cd" stroke-width="2.5" opacity=".7"/>
+    <path d="M16 28c0-7 4.5-12.5 12-12.5" stroke="#c8dfcf" stroke-width="2.5"/>
+    <!-- Glucose drop -->
+    <path d="M20 10c-2.5 4-5 7-5 10.5a5 5 0 0 0 10 0C25 17 22.5 14 20 10z" fill="#fff8e7" stroke="#fff8e7" stroke-width=".5"/>
+    <!-- Pulse line inside drop -->
+    <polyline points="17 20 19 20 20 17.5 21 22 22 20 23.5 20" stroke="#155e60" stroke-width="1.8"/>
+  </g>
 </svg>

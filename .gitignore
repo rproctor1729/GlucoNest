@@ -22,3 +22,5 @@ out/
 Thumbs.db
 .vscode/
 .idea/
+.next-dev/
+.next-preview/

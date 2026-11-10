@@ -1,0 +1,337 @@
+[
+  {
+    "id": "what-is-a-cgm",
+    "title": "What is a CGM?",
+    "sourceIds": [
+      "cgm"
+    ],
+    "summary": "A continuous glucose monitor uses a small sensor under the skin to estimate glucose repeatedly.",
+    "why": "A sequence of readings can show direction and timing that a single measurement misses.",
+    "how": "The sensor measures glucose in interstitial fluid and sends estimates to a reader or phone.",
+    "example": "A learner compares a lunch reading with the trace from the following two hours.",
+    "caution": "Gaps, warm-up periods and sensor errors can interrupt readings. Keep the meter and backup plan recommended for your device.",
+    "question": "Can the sensor give a diagnosis on its own?",
+    "answer": "A CGM measures patterns. Diagnosis uses appropriate clinical testing.",
+    "takeaways": [
+      "Know what is being measured",
+      "Read a sequence",
+      "Keep a backup meter"
+    ]
+  },
+  {
+    "id": "interstitial-versus-blood-glucose",
+    "title": "Interstitial versus blood glucose",
+    "sourceIds": [
+      "cgm",
+      "lag"
+    ],
+    "summary": "A fingerstick samples capillary blood, while a CGM estimates glucose in fluid around cells.",
+    "why": "The two readings can differ at the same moment without either instrument being broken.",
+    "how": "Glucose moves between blood and tissue fluid. Differences can become more noticeable during rapid change.",
+    "example": "After exercise a learner sees two different numbers within a few minutes and checks the device guidance.",
+    "caution": "Follow the manufacturer’s confirmation instructions when symptoms and the display disagree.",
+    "question": "Should both numbers always match exactly?",
+    "answer": "No. They reflect different compartments and both measurements have uncertainty.",
+    "takeaways": [
+      "Blood and tissue fluid differ",
+      "Rapid changes matter",
+      "Confirm when instructed"
+    ]
+  },
+  {
+    "id": "cgm-lag-and-accuracy",
+    "title": "CGM lag and accuracy",
+    "sourceIds": [
+      "lag",
+      "sensor"
+    ],
+    "summary": "Lag describes a delay between a blood glucose change and the displayed sensor response.",
+    "why": "It can complicate interpretation just after treating a low or during a rapid rise.",
+    "how": "Movement between compartments and sensor processing both contribute. Pressure on some sensors can also distort readings.",
+    "example": "Someone wakes on their sensor arm to an unexpected low and follows their device’s confirmation procedure.",
+    "caution": "Do not assume that every unexpected low is pressure-related. Treat symptoms and follow your safety plan.",
+    "question": "Can I correct lag by adding a fixed number?",
+    "answer": "No. Direction, speed of change and sensor conditions vary.",
+    "takeaways": [
+      "Lag varies with conditions",
+      "Pressure can affect a sensor",
+      "Avoid fixed numerical adjustments"
+    ]
+  },
+  {
+    "id": "trend-arrows",
+    "title": "Trend arrows",
+    "sourceIds": [
+      "cgm",
+      "sensor"
+    ],
+    "summary": "Arrows summarise how quickly glucose has been moving over recent readings.",
+    "why": "The same displayed value can accompany a rising, steady or falling trace.",
+    "how": "Manufacturers use different windows and thresholds to translate recent movement into an arrow.",
+    "example": "Two sample displays both show 120 mg/dL. One follows a flat stretch, the other a rapid descent.",
+    "caution": "An arrow is not a guaranteed future glucose value or a standalone dosing instruction.",
+    "question": "Do arrows have identical meanings across brands?",
+    "answer": "Check the legend for your own model.",
+    "takeaways": [
+      "Read the direction",
+      "Check the manufacturer’s legend",
+      "Factor in recent movement"
+    ]
+  },
+  {
+    "id": "time-in-range-tir",
+    "title": "Time in Range (TIR)",
+    "sourceIds": [
+      "metrics",
+      "cgm"
+    ],
+    "summary": "TIR is the proportion of monitored time within an agreed glucose band.",
+    "why": "It adds context to an average by showing how much time was spent within the band.",
+    "how": "For many nonpregnant adults, reports use 70–180 mg/dL. Targets and bands vary with circumstances, including pregnancy.",
+    "example": "In an illustrative day with complete data, 18 hours in band corresponds to 75% TIR.",
+    "caution": "Check sensor coverage and time below range alongside TIR. A percentage can hide when lows happen.",
+    "question": "Can two people have the same TIR and different risks?",
+    "answer": "Yes. Their remaining time may be spent at different extremes.",
+    "takeaways": [
+      "Check the target band",
+      "Check the period covered",
+      "Read TBR alongside TIR"
+    ]
+  },
+  {
+    "id": "time-below-range-tbr",
+    "title": "Time Below Range (TBR)",
+    "sourceIds": [
+      "metrics",
+      "low"
+    ],
+    "summary": "TBR is the share of recorded time below a defined glucose boundary.",
+    "why": "It helps identify exposure to lows, including overnight episodes a person might not feel.",
+    "how": "Reports commonly distinguish time below 70 and below 54 mg/dL. A cumulative “below 70” figure includes “below 54”.",
+    "example": "A report looks reassuring overall, yet its overnight segment repeatedly drops below the lower boundary.",
+    "caution": "Check whether a report uses cumulative or separate bands before adding percentages.",
+    "question": "Does TBR count the number of low events?",
+    "answer": "No. It measures duration, so one long event can contribute more than several short ones.",
+    "takeaways": [
+      "Duration differs from event count",
+      "Check band definitions",
+      "Inspect nighttime patterns"
+    ]
+  },
+  {
+    "id": "time-above-range-tar",
+    "title": "Time Above Range (TAR)",
+    "sourceIds": [
+      "metrics"
+    ],
+    "summary": "TAR describes how much monitored time lies above the selected upper boundary.",
+    "why": "It helps focus a review on when high glucose persists.",
+    "how": "A report can separate higher bands, often above 180 and above 250 mg/dL for nonpregnant adults.",
+    "example": "A person sees most above-range time after dinner and brings several meal and timing notes to a review.",
+    "caution": "TAR does not explain the cause. Review illness, meal timing, delivery and missing data.",
+    "question": "Can one brief peak dominate the whole percentage?",
+    "answer": "The metric weights time. Prolonged elevations contribute more.",
+    "takeaways": [
+      "Measure time above the band",
+      "Distinguish brief and sustained rises",
+      "Review missing periods"
+    ]
+  },
+  {
+    "id": "glucose-management-indicator-gmi",
+    "title": "Glucose Management Indicator (GMI)",
+    "sourceIds": [
+      "gmi",
+      "a1c"
+    ],
+    "summary": "GMI converts mean sensor glucose to a percentage for discussion alongside laboratory HbA1c.",
+    "why": "A discrepancy can prompt a closer look at the time window, sensor coverage and red blood cell factors.",
+    "how": "The conversion is a population-based relationship. It does not measure haemoglobin in a blood sample.",
+    "example": "A recent change in routine shifts two weeks of sensor readings before a longer-term laboratory result catches up.",
+    "caution": "A GMI value cannot diagnose diabetes or replace the lab test.",
+    "question": "Is a difference always a sensor fault?",
+    "answer": "No. The measures cover different processes and often different periods.",
+    "takeaways": [
+      "GMI uses sensor averages",
+      "HbA1c is measured in blood",
+      "Compare matching periods"
+    ]
+  },
+  {
+    "id": "glucose-variability-and-cv",
+    "title": "Glucose variability and CV",
+    "sourceIds": [
+      "metrics"
+    ],
+    "summary": "Variability describes how widely glucose moves around its average. Coefficient of variation (CV) expresses the spread relative to the mean.",
+    "why": "A stable trace and a trace with large swings can have the same average.",
+    "how": "CV is standard deviation divided by mean glucose, multiplied by 100. It summarises spread without identifying a time of day.",
+    "example": "Two example weeks average the same glucose. Only one includes frequent low and high excursions.",
+    "caution": "Sparse data can give misleading precision. Look at the trace and time below range as well.",
+    "question": "Does CV tell me whether mornings are the problem?",
+    "answer": "No. Use time-of-day plots for that question.",
+    "takeaways": [
+      "CV describes relative spread",
+      "Averages can hide swings",
+      "Inspect actual times of day"
+    ]
+  },
+  {
+    "id": "ambulatory-glucose-profile-agp",
+    "title": "Ambulatory Glucose Profile (AGP)",
+    "sourceIds": [
+      "metrics"
+    ],
+    "summary": "An AGP places readings from many days on one 24-hour clock.",
+    "why": "It helps separate a recurring pattern from a single unusual day.",
+    "how": "A central line gives the median at each time of day; shaded bands show how widely values vary across days.",
+    "example": "A wide afternoon band prompts a learner to compare school days with weekends.",
+    "caution": "The median is a summary, not a recording of any one day. Check individual traces and data coverage.",
+    "question": "What does a wider band mean?",
+    "answer": "Values at that time varied more between the contributing days.",
+    "takeaways": [
+      "The centre line is a median",
+      "Bands show spread",
+      "Review individual days too"
+    ]
+  },
+  {
+    "id": "fingerstick-confirmation",
+    "title": "Fingerstick confirmation",
+    "sourceIds": [
+      "cgm",
+      "lag"
+    ],
+    "summary": "A fingerstick meter estimates glucose in a small blood sample.",
+    "why": "It provides a backup during sensor warm-up, signal loss or disagreement with symptoms.",
+    "how": "Clean, dry hands and correctly stored, compatible strips matter to the measurement.",
+    "example": "A person with low symptoms but an unexpected sensor value uses their backup plan and meter.",
+    "caution": "Do not delay emergency help for severe symptoms while troubleshooting a device.",
+    "question": "Is calibration the same as confirmation?",
+    "answer": "Confirmation checks a reading. Calibration changes how certain sensors calculate values; follow model instructions.",
+    "takeaways": [
+      "Use clean dry hands",
+      "Check strip storage",
+      "Distinguish calibration from confirmation"
+    ]
+  },
+  {
+    "id": "automated-insulin-delivery-aid",
+    "title": "Automated insulin delivery (AID)",
+    "sourceIds": [
+      "aid"
+    ],
+    "summary": "AID links a compatible CGM, an algorithm and an insulin pump.",
+    "why": "The system can adjust delivery between manual decisions.",
+    "how": "Sensor values inform changes to pump delivery. Many systems still need meal input and cannot remove insulin already absorbed.",
+    "example": "A learner traces how a sensor signal reaches the algorithm and then the pump.",
+    "caution": "Maintain a failure and backup plan. An algorithm cannot detect every infusion or sensor problem.",
+    "question": "Can a sensor alone deliver insulin?",
+    "answer": "No. Delivery requires the pump and compatible control system.",
+    "takeaways": [
+      "Know the sensor, controller and pump",
+      "Understand meal tasks",
+      "Prepare for failures"
+    ]
+  },
+  {
+    "id": "open-source-diabetes-technology",
+    "title": "Open-source diabetes technology",
+    "sourceIds": [
+      "open",
+      "aid"
+    ],
+    "summary": "Open-source diabetes projects publish software or designs that can be inspected by a community.",
+    "why": "They can help people understand data flows and the responsibilities involved in running a system.",
+    "how": "A display project and a closed-loop controller do different things. Read each project’s purpose, supported devices and regulatory context.",
+    "example": "A reader compares the OpenAPS documentation with a commercial pump’s user manual.",
+    "caution": "Public source code does not by itself establish regulatory approval, compatibility or clinical safety.",
+    "question": "Does an open data dashboard automatically control a pump?",
+    "answer": "No. Visualising data and controlling delivery are separate functions.",
+    "takeaways": [
+      "Distinguish display from control",
+      "Read project documentation",
+      "Check compatibility independently"
+    ]
+  },
+  {
+    "id": "nightscout",
+    "title": "Nightscout",
+    "sourceIds": [
+      "night"
+    ],
+    "summary": "Nightscout can make glucose data available through a privately managed website and API.",
+    "why": "It enables remote viewing, but access settings determine who can see sensitive data.",
+    "how": "A viewer requests readings from a configured server. Permissions, tokens and secure transport determine access.",
+    "example": "A learner reads the Nightscout security guide before opening GlucoNest’s Devices & Data Sources screen.",
+    "caution": "Never paste a private URL with a token into a public message. Use least-privilege access and review sharing settings.",
+    "question": "Does this lesson connect to my server?",
+    "answer": "No. Connection settings belong in Devices & Data Sources.",
+    "takeaways": [
+      "Control server access",
+      "Use limited permissions",
+      "Keep credentials private"
+    ]
+  },
+  {
+    "id": "cgm-alarms-and-alarm-fatigue",
+    "title": "CGM alarms and alarm fatigue",
+    "sourceIds": [
+      "cgm",
+      "fear"
+    ],
+    "summary": "Alarm fatigue is the burden of frequent alerts competing for attention.",
+    "why": "Repeated interruptions can disrupt sleep and make important alerts easier to miss.",
+    "how": "Duplicate phone alerts, thresholds and signal-loss notifications can overlap. Each serves a different purpose.",
+    "example": "A household lists which alerts woke each person and reviews them with the diabetes team.",
+    "caution": "Do not silence safety-critical alarms without a safe alternative agreed with the team.",
+    "question": "Can a shared-alert plan help?",
+    "answer": "Agree who responds, when to check in and what to do if contact fails.",
+    "takeaways": [
+      "Identify which alarm sounded",
+      "Agree on shared responses",
+      "Review recurrent overnight alerts"
+    ]
+  },
+  {
+    "id": "sensor-adhesion-and-skin",
+    "title": "Sensor adhesion and skin",
+    "sourceIds": [
+      "sensor",
+      "lag"
+    ],
+    "summary": "Wear time and skin comfort depend on sensor placement, adhesive and the insertion site.",
+    "why": "A lifting sensor or inflamed skin can affect both wear and confidence in readings.",
+    "how": "Approved sites differ by model and age. Sweat, friction and reactions to adhesives can complicate wear.",
+    "example": "Someone notes which patch caused irritation and discusses compatible alternatives with their clinic.",
+    "caution": "Persistent redness, pain, warmth or broken skin needs assessment. Follow the device instructions for removal and replacement.",
+    "question": "Can a sensor go anywhere comfortable?",
+    "answer": "Use the insertion sites approved for that particular device.",
+    "takeaways": [
+      "Use approved sites",
+      "Check skin between sensors",
+      "Discuss persistent irritation"
+    ]
+  },
+  {
+    "id": "device-compatibility-and-privacy",
+    "title": "Device compatibility and privacy",
+    "sourceIds": [
+      "night",
+      "aid",
+      "sensor"
+    ],
+    "summary": "Compatibility means the specific sensor, pump, phone and software versions can work together as intended.",
+    "why": "A phone update or changed sharing permission can interrupt data or expose information.",
+    "how": "A compatible radio connection alone does not establish compatibility for treatment decisions. Check manufacturer support lists.",
+    "example": "Before changing phones, a user checks the exact operating system version and how to transfer alerts.",
+    "caution": "Review data recipients and access tokens. Keep a backup way of checking glucose during a change.",
+    "question": "Does sharing a graph require sharing an administrator password?",
+    "answer": "Use the least privilege supported by the platform rather than giving full control.",
+    "takeaways": [
+      "Check model and software versions",
+      "Review recipients",
+      "Keep a backup during upgrades"
+    ]
+  }
+]

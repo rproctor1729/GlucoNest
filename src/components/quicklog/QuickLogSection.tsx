@@ -1,13 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useModalFocus } from '@/components/common/useModalFocus';
+
+import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from '@/context/AppContext';
+import { localDateTimeInputs, parseLocalDateTime } from '@/utils/localDateTime';
 import {
   formatUnitLabel,
+  convertGlucose,
   parseGlucoseInput,
 } from '@/utils/glucoseUtils';
 import {
-  Plus,
   Utensils,
   Syringe,
   Activity,
@@ -25,6 +28,8 @@ type LogTab = 'all' | 'meals' | 'insulin' | 'glucose' | 'activity';
 export default function QuickLogSection() {
   const {
     meals,
+    manualReadings,
+    deleteManualReading,
     addMealLog,
     deleteMealLog,
     updateMealLog,
@@ -44,9 +49,9 @@ export default function QuickLogSection() {
 
   // Form states
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formDate, setFormDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [formDate, setFormDate] = useState<string>(() => localDateTimeInputs().date);
   const [formTime, setFormTime] = useState<string>(
-    new Date().toTimeString().split(' ')[0].substring(0, 5)
+    localDateTimeInputs().time
   );
 
   // Meal form state
@@ -58,7 +63,7 @@ export default function QuickLogSection() {
   // Insulin form state
   const [insulinUnits, setInsulinUnits] = useState('');
   const [insulinType, setInsulinType] = useState<InsulinLogEntry['type']>('rapid');
-  const [insulinBrand, setInsulinBrand] = useState('Novorapid');
+  const [insulinBrand, setInsulinBrand] = useState('');
   const [insulinNotes, setInsulinNotes] = useState('');
   const [isRepeatingInsulin, setIsRepeatingInsulin] = useState(false);
   const [pendingInsulinConfirmation, setPendingInsulinConfirmation] = useState(false);
@@ -76,9 +81,12 @@ export default function QuickLogSection() {
   // Feedback banner
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
   const showToast = (msg: string) => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
+    toastTimer.current = setTimeout(() => setToastMessage(null), 4000);
   };
 
   const resetForms = () => {
@@ -89,6 +97,7 @@ export default function QuickLogSection() {
     setMealCarbs('');
     setMealNotes('');
     setInsulinUnits('');
+    setInsulinBrand('');
     setInsulinNotes('');
     setGlucoseValue('');
     setGlucoseNotes('');
@@ -101,17 +110,20 @@ export default function QuickLogSection() {
   const handleMealSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const carbsNum = parseFloat(mealCarbs);
-    if (isNaN(carbsNum) || carbsNum <= 0) {
+    if (!Number.isFinite(carbsNum) || carbsNum < 0) {
       alert('Please enter a valid carbohydrate estimate in grams.');
       return;
     }
 
-    const timestamp = new Date(`${formDate}T${formTime}:00`).toISOString();
+    const dateTime = parseLocalDateTime(formDate, formTime);
+    if (!dateTime) { showToast('Choose a valid local date and time.'); return; }
+    const timestamp = dateTime.toISOString();
 
     if (editingId) {
       const saved = updateMealLog(editingId, {
         name: mealName || 'Logged Meal',
         totalCarbs: carbsNum,
+        items: [{ foodId: 'custom-food', name: mealName || 'Logged meal', servings: 1, servingDescription: 'Custom portion', carbsPerServing: carbsNum, totalCarbs: carbsNum }],
         mealType,
         notes: mealNotes,
         timestamp,
@@ -144,7 +156,7 @@ export default function QuickLogSection() {
   const handleInsulinSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const unitsNum = parseFloat(insulinUnits);
-    if (isNaN(unitsNum) || unitsNum <= 0) {
+    if (!Number.isFinite(unitsNum) || unitsNum <= 0) {
       alert('Please enter valid insulin units.');
       return;
     }
@@ -153,7 +165,9 @@ export default function QuickLogSection() {
       return;
     }
 
-    const timestamp = new Date(`${formDate}T${formTime}:00`).toISOString();
+    const dateTime = parseLocalDateTime(formDate, formTime);
+    if (!dateTime) { showToast('Choose a valid local date and time.'); return; }
+    const timestamp = dateTime.toISOString();
 
     if (editingId) {
       const saved = updateInsulinLog(editingId, {
@@ -189,10 +203,15 @@ export default function QuickLogSection() {
     .slice(0, 1)[0];
 
   const setFormDateTimeToNow = () => {
-    const now = new Date();
-    const pad = (value: number) => String(value).padStart(2, '0');
-    setFormDate(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`);
-    setFormTime(`${pad(now.getHours())}:${pad(now.getMinutes())}`);
+    const inputs = localDateTimeInputs();
+    setFormDate(inputs.date);
+    setFormTime(inputs.time);
+  };
+
+  const openNewLog = (type: Exclude<typeof modalType, null>) => {
+    resetForms();
+    setFormDateTimeToNow();
+    setModalType(type);
   };
 
   const prepareRecentMeal = (meal: MealLogEntry) => {
@@ -226,7 +245,12 @@ export default function QuickLogSection() {
     }
 
     const normalizedMgDl = parseGlucoseInput(val, glucoseUnit);
-    const manualTimestamp = new Date(`${formDate}T${formTime}:00`);
+    if (!Number.isFinite(normalizedMgDl) || normalizedMgDl < 20 || normalizedMgDl > 600) {
+      showToast('Enter a glucose value between 20 and 600 mg/dL (1.1–33.3 mmol/L).');
+      return;
+    }
+    const manualTimestamp = parseLocalDateTime(formDate, formTime);
+    if (!manualTimestamp) { showToast('Choose a valid local date and time.'); return; }
     const timeLabel = manualTimestamp.toLocaleTimeString([], {
       hour: '2-digit',
       minute: '2-digit',
@@ -237,7 +261,6 @@ export default function QuickLogSection() {
       timestamp: manualTimestamp.toISOString(),
       timeLabel,
       value: normalizedMgDl,
-      trend: 'FLAT',
       notes: glucoseNotes || 'Manual fingerstick check',
       source: 'manual',
       isDemo: false,
@@ -250,12 +273,14 @@ export default function QuickLogSection() {
   const handleActivitySubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const mins = parseInt(activityDuration, 10);
-    if (isNaN(mins) || mins <= 0) {
+    if (!Number.isFinite(mins) || mins <= 0) {
       alert('Please enter valid duration in minutes.');
       return;
     }
 
-    const timestamp = new Date(`${formDate}T${formTime}:00`).toISOString();
+    const dateTime = parseLocalDateTime(formDate, formTime);
+    if (!dateTime) { showToast('Choose a valid local date and time.'); return; }
+    const timestamp = dateTime.toISOString();
 
     const saved = addActivityLog({
       timestamp,
@@ -272,6 +297,11 @@ export default function QuickLogSection() {
 
   // Build combined list
   const allLogs = [
+    ...manualReadings.map(reading => ({
+      id: reading.id ?? reading.timestamp, kind: 'glucose' as const, timestamp: reading.timestamp,
+      title: `${convertGlucose(reading.value, glucoseUnit)} ${formatUnitLabel(glucoseUnit)}`,
+      subtitle: 'Personal glucose reading', notes: reading.notes, raw: reading,
+    })),
     ...meals.map((m) => ({
       id: m.id,
       kind: 'meal' as const,
@@ -308,34 +338,24 @@ export default function QuickLogSection() {
       ? allLogs.filter((l) => l.kind === 'meal')
       : activeTab === 'insulin'
       ? allLogs.filter((l) => l.kind === 'insulin')
+      : activeTab === 'glucose'
+      ? allLogs.filter((l) => l.kind === 'glucose')
       : activeTab === 'activity'
       ? allLogs.filter((l) => l.kind === 'activity')
       : allLogs;
 
+  const modalRef = useModalFocus(!!modalType, () => setModalType(null));
+
   return (
     <div className="space-y-6 sm:space-y-8 animate-fadeIn">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-nest-500/10 text-nest-600 dark:text-nest-400 flex items-center justify-center">
-              <Plus className="w-4 h-4" />
-            </div>
-            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-              Quick Log & Records
-            </h2>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Functional local logging. All records remain 100% private in browser storage. Never suggests insulin doses.
-          </p>
-        </div>
-
+      <div role="group" aria-label="Record actions" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Quick Log Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={() => setModalType('meal')}
-            className="px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 hover:bg-amber-100 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            onClick={() => openNewLog('meal')}
+            className="px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-xs font-semibold flex items-center gap-1.5 transition-colors"
           >
             <Utensils className="w-3.5 h-3.5" />
             <span>+ Log Meal</span>
@@ -343,8 +363,8 @@ export default function QuickLogSection() {
 
           <button
             type="button"
-            onClick={() => setModalType('insulin')}
-            className="px-3 py-2 rounded-xl bg-nest-50 dark:bg-nest-950/40 border border-nest-200 dark:border-nest-800 text-nest-800 dark:text-nest-300 hover:bg-nest-100 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            onClick={() => openNewLog('insulin')}
+            className="px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-xs font-semibold flex items-center gap-1.5 transition-colors"
           >
             <Syringe className="w-3.5 h-3.5" />
             <span>+ Log Insulin</span>
@@ -352,8 +372,8 @@ export default function QuickLogSection() {
 
           <button
             type="button"
-            onClick={() => setModalType('glucose')}
-            className="px-3 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            onClick={() => openNewLog('glucose')}
+            className="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-xs font-semibold flex items-center gap-1.5 transition-colors"
           >
             <Droplet className="w-3.5 h-3.5" />
             <span>+ Glucose</span>
@@ -361,8 +381,8 @@ export default function QuickLogSection() {
 
           <button
             type="button"
-            onClick={() => setModalType('activity')}
-            className="px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-100 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            onClick={() => openNewLog('activity')}
+            className="px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-xs font-semibold flex items-center gap-1.5 transition-colors"
           >
             <Activity className="w-3.5 h-3.5" />
             <span>+ Activity</span>
@@ -371,9 +391,9 @@ export default function QuickLogSection() {
       </div>
 
       {(recentMeals.length > 0 || recentInsulin) && (
-        <section aria-label="Recent entries" className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#131b24]">
-          <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200">Repeat a recent entry</h3>
-          <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+        <section aria-label="Recent entries" className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[var(--surface)] p-4  ">
+          <h3 className="text-xs font-semibold text-slate-900 dark:text-slate-100 ">Repeat a recent entry</h3>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
             These buttons prefill a new log with today&apos;s date and time. Review every field before saving.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -410,8 +430,8 @@ export default function QuickLogSection() {
 
       {/* Filter Tabs */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-100 dark:border-slate-800">
-        <div className="flex items-center gap-1.5">
-          {(['all', 'meals', 'insulin', 'activity'] as const).map((tab) => (
+        <div className="flex flex-wrap items-center gap-1.5">
+          {(['all', 'meals', 'insulin', 'glucose', 'activity'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -425,21 +445,21 @@ export default function QuickLogSection() {
             </button>
           ))}
         </div>
-        <span className="text-[11px] text-slate-400">
-          {filteredLogs.length} entries stored locally
+        <span className="text-xs text-slate-500 dark:text-slate-400">
+          {filteredLogs.length} records · sample entries are labelled
         </span>
       </div>
 
       {/* Logs Table / Card List */}
-      <div className="bg-white dark:bg-[#131b24] rounded-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-subtle">
+      <div className="bg-white dark:bg-[var(--surface)] rounded-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-subtle">
         {filteredLogs.length === 0 ? (
           <div className="p-12 text-center space-y-2">
             <FileText className="w-8 h-8 text-slate-400 mx-auto" />
             <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300">No logs found</h4>
-            <p className="text-xs text-slate-500">Add a meal, insulin dose, or walk using the buttons above.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Add a meal, glucose reading, insulin entry, or activity using the buttons above.</p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="divide-y border-slate-200 dark:border-slate-800 dark:border-slate-200 dark:border-slate-800">
             {filteredLogs.map((log) => (
               <div
                 key={log.id}
@@ -448,11 +468,13 @@ export default function QuickLogSection() {
                 <div className="flex items-start gap-3.5">
                   <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 mt-0.5">
                     {log.kind === 'meal' ? (
-                      <Utensils className="w-4 h-4 text-amber-500" />
+                      <Utensils className="w-4 h-4 text-nest-500" />
                     ) : log.kind === 'insulin' ? (
                       <Syringe className="w-4 h-4 text-nest-500" />
+                    ) : log.kind === 'glucose' ? (
+                      <Droplet className="w-4 h-4 text-nest-500" />
                     ) : (
-                      <Activity className="w-4 h-4 text-emerald-500" />
+                      <Activity className="w-4 h-4 text-nest-500" />
                     )}
                   </div>
                   <div className="space-y-0.5">
@@ -464,6 +486,7 @@ export default function QuickLogSection() {
                         {log.kind}
                       </span>
                     </div>
+                    {log.raw.isDemo && <span className="inline-flex rounded bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-amber-800 dark:bg-amber-950/40 dark:text-amber-300">SAMPLE RECORD</span>}
                     <div className="text-xs text-slate-500 dark:text-slate-400">
                       {log.subtitle}
                     </div>
@@ -480,44 +503,49 @@ export default function QuickLogSection() {
                     <div className="font-mono text-slate-700 dark:text-slate-300 font-medium">
                       {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
-                    <div className="text-[11px] text-slate-400">
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
                       {new Date(log.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-1">
-                    {log.kind === 'meal' && (
+                    {log.kind === 'meal' && !log.raw.isDemo && (
                       <button
                         type="button"
                         onClick={() => {
                           const m = log.raw as MealLogEntry;
                           setEditingId(m.id);
+                          const inputs = localDateTimeInputs(new Date(m.timestamp));
+                          setFormDate(inputs.date); setFormTime(inputs.time);
                           setMealName(m.name);
                           setMealCarbs(m.totalCarbs.toString());
                           setMealType(m.mealType);
                           setMealNotes(m.notes || '');
                           setModalType('meal');
                         }}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
                         title="Edit record"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                     )}
 
-                    {log.kind === 'insulin' && (
+                    {log.kind === 'insulin' && !log.raw.isDemo && (
                       <button
                         type="button"
                         onClick={() => {
                           const ins = log.raw as InsulinLogEntry;
                           setEditingId(ins.id);
+                          setIsRepeatingInsulin(false); setPendingInsulinConfirmation(false);
+                          const inputs = localDateTimeInputs(new Date(ins.timestamp));
+                          setFormDate(inputs.date); setFormTime(inputs.time);
                           setInsulinUnits(ins.units.toString());
                           setInsulinType(ins.type);
-                          setInsulinBrand(ins.brandName || 'Novorapid');
+                          setInsulinBrand(ins.brandName || '');
                           setInsulinNotes(ins.notes || '');
                           setModalType('insulin');
                         }}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
                         title="Edit record"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
@@ -531,10 +559,12 @@ export default function QuickLogSection() {
                           ? deleteMealLog(log.id)
                           : log.kind === 'insulin'
                             ? deleteInsulinLog(log.id)
-                            : deleteActivityLog(log.id);
+                            : log.kind === 'glucose'
+                              ? deleteManualReading(log.id)
+                              : deleteActivityLog(log.id);
                         showToast(saved ? 'Record deleted' : 'Delete not saved. Export a backup before leaving this page.');
                       }}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
                       title="Delete record"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -549,9 +579,9 @@ export default function QuickLogSection() {
 
       {/* Modal Form for Meal / Insulin / Glucose / Activity */}
       {modalType && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn overflow-y-auto">
-          <div className="w-full max-w-md bg-white dark:bg-[#131b24] text-slate-900 dark:text-slate-100 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden my-auto flex flex-col">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div ref={modalRef} role="dialog" aria-modal="true" aria-label="Add or edit a record" tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn overflow-y-auto">
+          <div className="w-full max-w-md bg-white dark:bg-[var(--surface)] text-slate-900 dark:text-slate-100 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden my-auto flex flex-col">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
               <h3 className="text-base font-bold text-slate-900 dark:text-white capitalize">
                 {editingId ? 'Edit' : 'Add'}{' '}
                 {modalType === 'meal'
@@ -563,8 +593,9 @@ export default function QuickLogSection() {
                   : 'Physical Activity'}
               </h3>
               <button
+                aria-label="Close record form"
                 onClick={resetForms}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-100"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -574,10 +605,10 @@ export default function QuickLogSection() {
             {modalType === 'meal' && (
               <form onSubmit={handleMealSubmit} className="p-5 space-y-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="record-field-1" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Meal Description / Name
                   </label>
-                  <input
+                  <input id="record-field-1"
                     type="text"
                     required
                     placeholder="e.g. 2 Chapatis + Dal Tadka, Dosa"
@@ -589,10 +620,10 @@ export default function QuickLogSection() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-2" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Carbohydrates (Grams)
                     </label>
-                    <input
+                    <input id="record-field-2"
                       type="number"
                       step="any"
                       required
@@ -603,10 +634,10 @@ export default function QuickLogSection() {
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-3" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Meal Type
                     </label>
-                    <select
+                    <select id="record-field-3"
                       value={mealType}
                       onChange={(e) => setMealType(e.target.value as MealLogEntry['mealType'])}
                       className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
@@ -621,10 +652,10 @@ export default function QuickLogSection() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-4" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Date
                     </label>
-                    <input
+                    <input id="record-field-4"
                       type="date"
                       value={formDate}
                       onChange={(e) => setFormDate(e.target.value)}
@@ -632,10 +663,10 @@ export default function QuickLogSection() {
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-5" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Time
                     </label>
-                    <input
+                    <input id="record-field-5"
                       type="time"
                       value={formTime}
                       onChange={(e) => setFormTime(e.target.value)}
@@ -645,10 +676,10 @@ export default function QuickLogSection() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="record-field-6" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Notes (Optional)
                   </label>
-                  <input
+                  <input id="record-field-6"
                     type="text"
                     placeholder="e.g. Pre-bolused 15 min early"
                     value={mealNotes}
@@ -661,7 +692,7 @@ export default function QuickLogSection() {
                   <button
                     type="button"
                     onClick={resetForms}
-                    className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700"
+                    className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                   >
                     Cancel
                   </button>
@@ -678,21 +709,21 @@ export default function QuickLogSection() {
             {/* Insulin Form */}
             {modalType === 'insulin' && (
               <form onSubmit={handleInsulinSubmit} className="p-5 space-y-4 text-xs">
-                <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40 rounded-xl text-amber-800 dark:text-amber-300 text-[11px] leading-relaxed">
+                <div className="p-3 bg-slate-50 dark:bg-slate-900  border border-slate-200 dark:border-slate-800  rounded-xl text-slate-900 dark:text-slate-100  text-xs leading-relaxed">
                   <strong>Safety Notice:</strong> GlucoNest records doses you administer. The app will never calculate or recommend insulin doses. Always follow your endocrinologist’s prescription.
                 </div>
                 {isRepeatingInsulin && (
-                  <p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-[11px] leading-relaxed text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/30 dark:text-amber-200">
+                  <p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/30 dark:text-amber-100">
                     Previous details are only a prefill, not a dose recommendation. Check the units, type, and time against your current care plan before recording.
                   </p>
                 )}
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-7" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Units Administered
                     </label>
-                    <input
+                    <input id="record-field-7"
                       type="number"
                       step="any"
                       required
@@ -703,10 +734,10 @@ export default function QuickLogSection() {
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-8" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Insulin Type
                     </label>
-                    <select
+                    <select id="record-field-8"
                       value={insulinType}
                       onChange={(e) => setInsulinType(e.target.value as InsulinLogEntry['type'])}
                       className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
@@ -719,24 +750,24 @@ export default function QuickLogSection() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="record-field-9" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Brand Name / Description
                   </label>
-                  <input
+                  <input id="record-field-9"
                     type="text"
                     placeholder="e.g. Novorapid, Humalog, Lantus, Tresiba"
                     value={insulinBrand}
                     onChange={(e) => setInsulinBrand(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800  bg-slate-50 dark:bg-slate-900 "
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-10" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Date
                     </label>
-                    <input
+                    <input id="record-field-10"
                       type="date"
                       value={formDate}
                       onChange={(e) => setFormDate(e.target.value)}
@@ -744,10 +775,10 @@ export default function QuickLogSection() {
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-11" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Time
                     </label>
-                    <input
+                    <input id="record-field-11"
                       type="time"
                       value={formTime}
                       onChange={(e) => setFormTime(e.target.value)}
@@ -757,10 +788,10 @@ export default function QuickLogSection() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="record-field-12" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Notes (Optional)
                   </label>
-                  <input
+                  <input id="record-field-12"
                     type="text"
                     placeholder="e.g. Abdomen site, pre-meal"
                     value={insulinNotes}
@@ -773,14 +804,14 @@ export default function QuickLogSection() {
                   <button
                     type="button"
                     onClick={resetForms}
-                    className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700"
+                    className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                   >
                     Cancel
                   </button>
                   {pendingInsulinConfirmation ? (
                     <>
-                      <span className="mr-auto text-[11px] text-amber-800 dark:text-amber-200">Confirm logging {insulinUnits} units as entered?</span>
-                      <button type="button" onClick={() => setPendingInsulinConfirmation(false)} className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700">Review</button>
+                      <span className="mr-auto text-xs text-slate-900 dark:text-slate-100 ">Confirm logging {insulinUnits} units as entered?</span>
+                      <button type="button" onClick={() => setPendingInsulinConfirmation(false)} className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">Review</button>
                       <button type="submit" className="px-5 py-2.5 rounded-xl bg-nest-600 hover:bg-nest-700 text-white font-semibold transition-colors">Confirm log</button>
                     </>
                   ) : (
@@ -799,26 +830,26 @@ export default function QuickLogSection() {
             {modalType === 'glucose' && (
               <form onSubmit={handleGlucoseSubmit} className="p-5 space-y-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="record-field-13" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Glucose Value ({formatUnitLabel(glucoseUnit)})
                   </label>
-                  <input
+                  <input id="record-field-13"
                     type="number"
                     step="any"
                     required
                     placeholder={glucoseUnit === 'mg/dL' ? 'e.g. 125' : 'e.g. 6.9'}
                     value={glucoseValue}
                     onChange={(e) => setGlucoseValue(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-mono text-base"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800  bg-slate-50 dark:bg-slate-900  tabular-nums text-base"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-14" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Date
                     </label>
-                    <input
+                    <input id="record-field-14"
                       type="date"
                       value={formDate}
                       onChange={(e) => setFormDate(e.target.value)}
@@ -826,10 +857,10 @@ export default function QuickLogSection() {
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-15" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Time
                     </label>
-                    <input
+                    <input id="record-field-15"
                       type="time"
                       value={formTime}
                       onChange={(e) => setFormTime(e.target.value)}
@@ -839,10 +870,10 @@ export default function QuickLogSection() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="record-field-16" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Context / Note
                   </label>
-                  <input
+                  <input id="record-field-16"
                     type="text"
                     placeholder="e.g. Fingerstick check before driving"
                     value={glucoseNotes}
@@ -855,7 +886,7 @@ export default function QuickLogSection() {
                   <button
                     type="button"
                     onClick={resetForms}
-                    className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700"
+                    className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                   >
                     Cancel
                   </button>
@@ -874,13 +905,13 @@ export default function QuickLogSection() {
               <form onSubmit={handleActivitySubmit} className="p-5 space-y-4 text-xs">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-17" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Activity Type
                     </label>
-                    <select
+                    <select id="record-field-17"
                       value={activityType}
                       onChange={(e) => setActivityType(e.target.value as ActivityLogEntry['type'])}
-                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 capitalize"
+                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800  bg-slate-50 dark:bg-slate-900  capitalize"
                     >
                       <option value="walk">Walk</option>
                       <option value="run">Jogging / Run</option>
@@ -891,15 +922,15 @@ export default function QuickLogSection() {
                     </select>
                   </div>
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="record-field-18" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                       Duration (Minutes)
                     </label>
-                    <input
+                    <input id="record-field-18"
                       type="number"
                       required
                       value={activityDuration}
                       onChange={(e) => setActivityDuration(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-mono"
+                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800  bg-slate-50 dark:bg-slate-900  tabular-nums"
                     />
                   </div>
                 </div>
@@ -916,8 +947,8 @@ export default function QuickLogSection() {
                         onClick={() => setActivityIntensity(lvl)}
                         className={`py-2 px-2 rounded-xl text-center capitalize transition-colors ${
                           activityIntensity === lvl
-                            ? 'bg-nest-600 text-white font-semibold'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                            ? 'bg-nest-600 text-white font-bold'
+                            : ' bg-nest-50 text-nest-700 dark:bg-nest-950 dark:text-nest-300'
                         }`}
                       >
                         {lvl}
@@ -943,7 +974,7 @@ export default function QuickLogSection() {
                   <button
                     type="button"
                     onClick={resetForms}
-                    className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700"
+                    className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                   >
                     Cancel
                   </button>

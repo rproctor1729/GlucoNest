@@ -1,0 +1,161 @@
+[
+  {
+    "id": "hypoglycemia",
+    "title": "Hypoglycemia",
+    "sourceIds": [
+      "low"
+    ],
+    "summary": "Hypoglycemia means glucose is below the person’s safe range. Symptoms can include sweating, shaking, hunger or confusion.",
+    "why": "The brain needs glucose. A person may lose the ability to recognise a low or treat it independently.",
+    "how": "Insulin can outlast a meal or activity can increase glucose use. Fast-acting carbohydrate is used for a low when the person is awake and can swallow safely. Rechecking is part of the treatment plan.",
+    "example": "Someone feels shaky during a walk, stops in a safe place and uses their low-glucose plan.",
+    "caution": "If someone cannot swallow safely, give nothing by mouth. Use prescribed glucagon if available and call emergency services. Review repeated lows with the care team.",
+    "question": "Is a severe low defined only by a number?",
+    "answer": "Severity also depends on needing another person’s help because thinking or physical function is impaired.",
+    "takeaways": [
+      "Recognise early symptoms",
+      "Follow the low treatment plan",
+      "Unsafe swallowing requires emergency help"
+    ]
+  },
+  {
+    "id": "hypoglycemia-unawareness",
+    "title": "Hypoglycemia unawareness",
+    "sourceIds": [
+      "low",
+      "adult"
+    ],
+    "summary": "With impaired awareness, the usual early warnings of a low may be faint or absent.",
+    "why": "A person can still converse or feel well while glucose is falling to an unsafe level.",
+    "how": "Repeated lows can shift when the body releases warning hormones. A specialist can help develop a plan to reduce exposure to lows.",
+    "example": "A partner notices confusion before the person feels the tremor they usually associate with a low.",
+    "caution": "Discuss missing warnings and recurring lows promptly. CGM alarms can help, but a sensor may lag or lose signal.",
+    "question": "Can symptoms alone confirm recovery?",
+    "answer": "A recovery check is important even when symptoms improve. Use your agreed monitoring plan.",
+    "takeaways": [
+      "Symptoms can fade",
+      "Repeated lows merit review",
+      "Agree on backup monitoring"
+    ]
+  },
+  {
+    "id": "hyperglycemia",
+    "title": "Hyperglycemia",
+    "sourceIds": [
+      "adult",
+      "emergency"
+    ],
+    "summary": "Hyperglycemia is glucose above the person’s target range. Thirst, frequent urination and fatigue can accompany a sustained rise.",
+    "why": "A high after lunch has different possible causes from a high that persists through illness.",
+    "how": "Less insulin than needed, infection, stress hormones or a delivery interruption can leave more glucose in the bloodstream.",
+    "example": "A pump user feeling unwell checks the delivery system and follows their team’s ketone-testing plan.",
+    "caution": "A high with vomiting, ketones or rapid breathing needs urgent assessment. Glucose alone cannot exclude ketoacidosis.",
+    "question": "Can glucose rise without eating?",
+    "answer": "Yes. The liver releases glucose, especially during illness or stress.",
+    "takeaways": [
+      "Consider illness and delivery failure",
+      "Check ketones as planned",
+      "Take concerning symptoms seriously"
+    ]
+  },
+  {
+    "id": "dawn-phenomenon",
+    "title": "Dawn phenomenon",
+    "sourceIds": [
+      "dawn"
+    ],
+    "summary": "The dawn phenomenon is an early-morning rise in glucose as the body prepares to wake.",
+    "why": "The waking value alone cannot tell you whether glucose was steady, falling or already rising overnight.",
+    "how": "Hormonal changes can increase liver glucose output and reduce insulin sensitivity towards morning.",
+    "example": "A learner compares several overnight traces and notices glucose stayed steady until the hours before waking.",
+    "caution": "Late meals, missed insulin and overnight lows can look similar by morning. Review patterns before changing basal insulin.",
+    "question": "Which part of the trace is most informative?",
+    "answer": "The period before the rise, together with meal timing, activity and insulin records.",
+    "takeaways": [
+      "Inspect the hours before waking",
+      "Compare similar nights",
+      "Bring context to a basal review"
+    ]
+  },
+  {
+    "id": "somogyi-effect",
+    "title": "Somogyi effect",
+    "sourceIds": [
+      "rebound",
+      "dawn"
+    ],
+    "summary": "The Somogyi effect is a proposed rebound high after an overnight low. Evidence is weak for it as a common explanation of fasting highs.",
+    "why": "Assuming a rebound from a single high can obscure an actual overnight low or a dawn rise.",
+    "how": "Counter-regulatory hormones can respond to a low, but morning hyperglycemia does not establish that sequence. Overnight CGM or planned checks provide context.",
+    "example": "Two people wake at the same glucose. Only one example trace includes a low earlier in the night.",
+    "caution": "A compression-related sensor low is another possibility. Confirm unexpected readings according to device instructions.",
+    "question": "Does a high at breakfast prove there was a low overnight?",
+    "answer": "No. Look for evidence of the low itself and discuss recurring patterns with the team.",
+    "takeaways": [
+      "A morning high cannot prove a rebound",
+      "Look for evidence of a preceding low",
+      "Consider alternative explanations"
+    ]
+  },
+  {
+    "id": "honeymoon-phase",
+    "title": "Honeymoon phase",
+    "sourceIds": [
+      "honeymoon",
+      "basics"
+    ],
+    "summary": "Partial remission is a temporary period after diagnosis when some pancreatic beta cells still make insulin.",
+    "why": "Insulin needs can change quite quickly, which can feel confusing after learning an initial routine.",
+    "how": "As metabolic stress settles, remaining cells may provide more insulin for a time. The autoimmune process can continue.",
+    "example": "A child needs less insulin than shortly after diagnosis and the family brings the new pattern to the clinic.",
+    "caution": "Do not stop insulin independently. The duration and degree of remission vary, and ending remission is not a personal failure.",
+    "question": "Does partial remission mean the diagnosis was mistaken?",
+    "answer": "No. Residual insulin production can occur in type 1 diabetes.",
+    "takeaways": [
+      "Partial remission varies",
+      "Insulin needs can change",
+      "Keep treatment supervised"
+    ]
+  },
+  {
+    "id": "glucagon-and-counter-regulatory-hormones",
+    "title": "Glucagon and counter-regulatory hormones",
+    "sourceIds": [
+      "low",
+      "basics"
+    ],
+    "summary": "Glucagon signals the liver to release glucose. Adrenaline, cortisol and growth hormone also help the body respond to falling glucose or stress.",
+    "why": "These signals help explain why a sprint or a frightening event can produce a rise even without food.",
+    "how": "The liver can release stored glucose and make new glucose. In T1D, the usual glucagon response to a low may be impaired.",
+    "example": "Before a race, a runner notices a rise despite eating the same breakfast as on a training day.",
+    "caution": "A hormone explanation cannot diagnose the cause of an individual reading. Severe lows still require emergency action.",
+    "question": "Is emergency glucagon the same thing as insulin?",
+    "answer": "No. Rescue glucagon raises glucose through the liver; insulin lowers circulating glucose.",
+    "takeaways": [
+      "The liver can release glucose",
+      "Several hormones contribute",
+      "Rescue glucagon has a distinct role"
+    ]
+  },
+  {
+    "id": "stress-sleep-and-illness",
+    "title": "Stress, sleep and illness",
+    "sourceIds": [
+      "sleep",
+      "period",
+      "sick"
+    ],
+    "summary": "Stress, disrupted sleep, illness and menstrual-cycle changes can alter glucose independently of food.",
+    "why": "Recording a few days of context may explain why a familiar plan gives different results.",
+    "how": "Cortisol and adrenaline can increase liver glucose output. Infection can increase insulin resistance; reduced appetite during illness may pull glucose the other way.",
+    "example": "A student compares glucose during exams with a quieter week and notes shorter sleep.",
+    "caution": "Do not attribute illness or ketones to stress alone. Seek help using your sick-day plan.",
+    "question": "Does everyone see the same change around a period?",
+    "answer": "No. Patterns vary between people and sometimes between cycles.",
+    "takeaways": [
+      "Look beyond meals",
+      "Compare similar days",
+      "Treat illness as a separate safety issue"
+    ]
+  }
+]

@@ -1,0 +1,300 @@
+[
+  {
+    "id": "insulin",
+    "title": "Insulin Fundamentals & Calculations",
+    "short": "Insulin fundamentals",
+    "description": "Meal coverage, background insulin and the language of a prescription.",
+    "tags": [
+      "insulin",
+      "bolus",
+      "basal",
+      "calculations"
+    ],
+    "faq": [
+      [
+        "When should I ask for a settings review?",
+        "Bring repeated patterns and the circumstances around them to your diabetes team."
+      ],
+      [
+        "Can I enter my glucose to get a dose here?",
+        "The walkthroughs use fixed classroom examples. There is no personal dosing tool."
+      ],
+      [
+        "What should I take to an education visit?",
+        "Bring your current written plan, the actual devices you use and a question about a recent meal."
+      ]
+    ]
+  },
+  {
+    "id": "patterns",
+    "title": "Glucose Patterns & Body Physiology",
+    "short": "Glucose patterns",
+    "description": "Read the sequence of events behind a rise or a low.",
+    "tags": [
+      "glucose",
+      "hormones",
+      "highs",
+      "lows"
+    ],
+    "faq": [
+      [
+        "How many traces should I compare?",
+        "Compare several similar days for a routine review. An urgent symptom needs attention immediately."
+      ],
+      [
+        "Which notes give a curve context?",
+        "Meal timing, activity, illness, insulin delivery and whether the sensor signal was reliable."
+      ],
+      [
+        "Can a model trace diagnose my pattern?",
+        "It shows one possible sequence. Your clinician can help assess your actual readings."
+      ]
+    ]
+  },
+  {
+    "id": "injection",
+    "title": "Insulin Administration & Injection Care",
+    "short": "Injection care",
+    "description": "Get familiar with delivery devices, sites and storage.",
+    "tags": [
+      "injection",
+      "needle",
+      "pen",
+      "syringe"
+    ],
+    "faq": [
+      [
+        "Which instructions apply to my device?",
+        "Match the product name, strength and model to the manufacturer’s instructions and your clinic training."
+      ],
+      [
+        "Who can watch me practise?",
+        "Ask a diabetes educator or nurse to observe your technique with your usual equipment."
+      ],
+      [
+        "What if a dose or delivery is uncertain?",
+        "Use your written backup instructions or seek clinical advice rather than guessing how much was delivered."
+      ]
+    ]
+  },
+  {
+    "id": "technology",
+    "title": "Continuous Glucose Monitoring & Diabetes Technology",
+    "short": "Sensors & technology",
+    "description": "Understand a sensor trace and the devices behind it.",
+    "tags": [
+      "CGM",
+      "sensor",
+      "technology",
+      "monitoring"
+    ],
+    "faq": [
+      [
+        "Why does a report need a date range?",
+        "A snapshot, a day and a multiweek summary answer different questions. Check dates and missing data."
+      ],
+      [
+        "What if a reading does not fit my symptoms?",
+        "Follow your device’s meter-confirmation instructions and your care plan."
+      ],
+      [
+        "Where are my actual device settings?",
+        "Open Devices & Data Sources for GlucoNest connections. The examples here use illustrative data."
+      ]
+    ]
+  },
+  {
+    "id": "nutrition",
+    "title": "Food, Nutrition & Indian Carb Counting",
+    "short": "Food & Indian portions",
+    "description": "Explore labels, katoris, home recipes and mixed meals.",
+    "tags": [
+      "Indian",
+      "food",
+      "nutrition",
+      "carbs",
+      "portion"
+    ],
+    "faq": [
+      [
+        "How can I estimate a home recipe?",
+        "Identify the carbohydrate-containing ingredients, estimate the batch total and divide by actual cooked yield."
+      ],
+      [
+        "Where do the example foods come from?",
+        "The estimator uses GlucoNest’s existing Indian Food Library entries and shows their recorded sources. They are recipe estimates."
+      ],
+      [
+        "Why do two servings with the same name differ?",
+        "Portion, water content, grain, fillings and cooking methods can all vary."
+      ]
+    ]
+  },
+  {
+    "id": "activity",
+    "title": "Exercise, Sports & Physical Activity",
+    "short": "Movement & sport",
+    "description": "Explore activity, recovery and preparations for the next session.",
+    "tags": [
+      "exercise",
+      "sport",
+      "activity",
+      "training"
+    ],
+    "faq": [
+      [
+        "What changes the response to the same session?",
+        "Starting glucose, active insulin, intensity, food, sleep and recent activity can all matter."
+      ],
+      [
+        "What belongs in a sports plan?",
+        "Agree on monitoring, fast carbohydrate, access to help, stopping criteria and follow-up after activity."
+      ],
+      [
+        "Can I use the example chart to change insulin?",
+        "No. It illustrates possible directions; adjustments belong in an individual exercise plan."
+      ]
+    ]
+  },
+  {
+    "id": "emergencies",
+    "title": "Sick Days, Ketones & Emergencies",
+    "short": "Sick days & emergencies",
+    "description": "Official guidance on illness, ketones and getting urgent help.",
+    "tags": [
+      "DKA",
+      "urgent",
+      "sick days",
+      "ketones"
+    ],
+    "faq": []
+  },
+  {
+    "id": "wellbeing",
+    "title": "Mental Health & Living with T1D",
+    "short": "Emotional wellbeing",
+    "description": "Make room for distress, relationships and support.",
+    "tags": [
+      "mental health",
+      "distress",
+      "support"
+    ],
+    "faq": [
+      [
+        "Who can I talk to first?",
+        "A trusted member of the diabetes team, primary-care clinician or mental health professional can help plan support."
+      ],
+      [
+        "How can I make an appointment easier?",
+        "Write down one situation that felt difficult and the kind of help you would like. You can bring a supporter."
+      ],
+      [
+        "Can peers replace a clinical safety plan?",
+        "Peers can offer understanding and practical questions. Keep a clinical plan for insulin, illness and emergencies."
+      ]
+    ]
+  },
+  {
+    "id": "prevention",
+    "title": "Long-Term Health & Preventive Care",
+    "short": "Preventive care",
+    "description": "Learn what each check measures and what to ask at review.",
+    "tags": [
+      "screening",
+      "prevention",
+      "complications"
+    ],
+    "faq": [
+      [
+        "When should I book screening?",
+        "Age, diabetes duration, pregnancy, symptoms and earlier findings influence timing. Confirm your own schedule with the clinic."
+      ],
+      [
+        "Does screening only matter when I have symptoms?",
+        "Some early changes cause few symptoms. Scheduled checks can identify them sooner."
+      ],
+      [
+        "What should I ask after a test?",
+        "Ask what the result means, whether it needs confirming and who will arrange the next step."
+      ]
+    ]
+  },
+  {
+    "id": "life-stages",
+    "title": "T1D Across Different Life Stages",
+    "short": "Life stages",
+    "description": "Care from childhood through adulthood, pregnancy and later life.",
+    "tags": [
+      "children",
+      "adults",
+      "caregiver",
+      "life stages"
+    ],
+    "faq": [
+      [
+        "Should glucose targets be the same throughout life?",
+        "Goals can change with development, pregnancy, health, support and the risk of a low."
+      ],
+      [
+        "How can support change without taking over?",
+        "Ask which tasks the person wants to handle, which to share and when help is needed."
+      ],
+      [
+        "What helps at a transition between teams?",
+        "Arrange a named contact and bring a current plan, device details and outstanding questions."
+      ]
+    ]
+  },
+  {
+    "id": "science",
+    "title": "Advanced T1D Science & Research",
+    "short": "Science & research",
+    "description": "Read an evidence claim, from beta cells to trials and approvals.",
+    "tags": [
+      "research",
+      "science",
+      "immune",
+      "trials"
+    ],
+    "faq": [
+      [
+        "How can I tell what evidence a claim describes?",
+        "Check whether it comes from a laboratory, a clinical trial or a regulator. Read the date, population and outcome."
+      ],
+      [
+        "Does approval travel between countries?",
+        "Regulators approve specific indications in their own jurisdictions. Local availability is a separate question."
+      ],
+      [
+        "What belongs in a specialist discussion?",
+        "Bring the study or label and ask about eligibility, known harms, alternatives and length of follow-up."
+      ]
+    ]
+  },
+  {
+    "id": "everyday",
+    "title": "Practical Everyday T1D Life",
+    "short": "Everyday life",
+    "description": "Plan for travel, changing weather, shared meals and work.",
+    "tags": [
+      "practical",
+      "travel",
+      "supplies",
+      "daily life"
+    ],
+    "faq": [
+      [
+        "Why check local arrangements?",
+        "Supply brands, insurance rules, disposal services and travel procedures vary between places."
+      ],
+      [
+        "What makes a backup plan usable?",
+        "Keep exact product names, clinic contacts and a way to monitor glucose readily accessible."
+      ],
+      [
+        "How can I prepare without sharing my entire record?",
+        "Give helpers the minimum information they need for their agreed role and emergency response."
+      ]
+    ]
+  }
+]

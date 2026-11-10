@@ -68,7 +68,7 @@ export default function ReminderSettings() {
   };
 
   return (
-    <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#131b24] sm:p-7">
+    <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#0f1723] sm:p-7">
       <div>
         <h3 className="font-semibold text-slate-900 dark:text-white">Optional local reminders</h3>
         <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">

@@ -1,0 +1,238 @@
+[
+  {
+    "id": "autoimmune-beta-cell-loss",
+    "title": "Autoimmune beta-cell loss",
+    "sourceIds": [
+      "basics",
+      "auto"
+    ],
+    "summary": "In T1D the immune system damages insulin-producing beta cells in pancreatic islets.",
+    "why": "This explains why a person may need insulin even when they eat well and exercise.",
+    "how": "Loss of functioning beta cells reduces the body’s ability to match insulin release to changes in blood glucose.",
+    "example": "A learner compares autoimmunity with a lock-and-key picture of insulin resistance and asks how the two differ.",
+    "caution": "Autoimmunity cannot be diagnosed from a glucose trace alone.",
+    "question": "Is T1D caused by eating too much sugar?",
+    "answer": "No. Its defining process is autoimmune beta-cell damage.",
+    "takeaways": [
+      "Beta cells make insulin",
+      "Autoimmunity can damage them",
+      "Clinical testing establishes diagnosis"
+    ]
+  },
+  {
+    "id": "pancreatic-alpha-and-beta-cells",
+    "title": "Pancreatic alpha and beta cells",
+    "sourceIds": [
+      "basics",
+      "low"
+    ],
+    "summary": "Alpha cells produce glucagon; beta cells make insulin. Both belong to pancreatic islets.",
+    "why": "Understanding their different roles helps explain background glucose regulation and low-glucose rescue.",
+    "how": "Insulin supports glucose use and storage. Glucagon signals the liver to release glucose when fuel is needed.",
+    "example": "During a lesson someone maps the two hormones to the organs that make and respond to them.",
+    "caution": "The body’s response to hypoglycemia in T1D may be impaired. Physiology diagrams cannot predict an individual response.",
+    "question": "Which cells make insulin?",
+    "answer": "Beta cells. Alpha cells have a different role.",
+    "takeaways": [
+      "Alpha and beta cells have different roles",
+      "The liver responds to glucagon",
+      "Rescue plans remain individual"
+    ]
+  },
+  {
+    "id": "c-peptide",
+    "title": "C-peptide",
+    "sourceIds": [
+      "cpep"
+    ],
+    "summary": "C-peptide is released when the body makes its own insulin from a precursor molecule.",
+    "why": "Measuring it can help a clinician assess remaining insulin production.",
+    "how": "Injected insulin does not contain C-peptide. Interpretation depends on timing, glucose at testing and clinical circumstances.",
+    "example": "An adult asks why the clinician requested a glucose measurement alongside C-peptide.",
+    "caution": "A single result cannot determine a treatment change or diabetes type in isolation.",
+    "question": "Does injected insulin directly raise C-peptide?",
+    "answer": "No. C-peptide comes from endogenous insulin production.",
+    "takeaways": [
+      "C-peptide reflects endogenous production",
+      "Check the test context",
+      "Interpret with clinical history"
+    ]
+  },
+  {
+    "id": "islet-autoantibodies",
+    "title": "Islet autoantibodies",
+    "sourceIds": [
+      "auto",
+      "adult"
+    ],
+    "summary": "GAD65, IA-2, ZnT8 and insulin autoantibodies are markers associated with an autoimmune response affecting islets.",
+    "why": "They can help classification and identify people who may need specialist follow-up before symptoms.",
+    "how": "Clinicians consider which antibodies are present, whether findings persist and the person’s glucose status.",
+    "example": "A relative with a positive screen asks about confirmation and follow-up rather than assuming clinical diabetes.",
+    "caution": "An antibody result alone does not establish a personal timeline or a need for insulin today.",
+    "question": "Do autoantibodies measure glucose?",
+    "answer": "No. They answer an immune-system question.",
+    "takeaways": [
+      "Markers include GAD65 and IA-2",
+      "Glucose helps define stage",
+      "Follow-up may be needed"
+    ]
+  },
+  {
+    "id": "insulin-resistance-in-t1d",
+    "title": "Insulin resistance in T1D",
+    "sourceIds": [
+      "india",
+      "basics"
+    ],
+    "summary": "A person with autoimmune insulin deficiency can also have reduced sensitivity to insulin.",
+    "why": "Illness, puberty and other changes may alter requirements without changing the T1D diagnosis.",
+    "how": "Muscle, liver and fat may respond less strongly to the available insulin. Absorption or delivery problems can mimic a change in sensitivity.",
+    "example": "During an illness a clinician reviews delivery and injection sites alongside the glucose record.",
+    "caution": "Do not diagnose resistance from dose size alone. Check possible delivery problems and illness with the team.",
+    "question": "Does insulin resistance automatically turn T1D into type 2?",
+    "answer": "No. Different physiological processes can coexist.",
+    "takeaways": [
+      "Sensitivity can change in T1D",
+      "Rule out delivery problems",
+      "Interpret changes clinically"
+    ]
+  },
+  {
+    "id": "immunotherapy-and-disease-modification",
+    "title": "Immunotherapy and disease modification",
+    "sourceIds": [
+      "tzield",
+      "auto"
+    ],
+    "summary": "Immune therapies aim to alter the autoimmune process at defined stages of T1D.",
+    "why": "Approval for one disease stage, age or country does not imply approval for every person with T1D.",
+    "how": "US evidence snapshot, June 2026: the FDA label for teplizumab includes delaying stage 3 onset in eligible people aged one year and older with stage 2 T1D. A separate accelerated indication addresses decline in endogenous insulin production in eligible recently diagnosed children aged 8–17.",
+    "example": "A family takes an antibody result to a specialist to discuss staging and eligibility under local rules.",
+    "caution": "The US label includes serious viral reactivation warnings and clinical monitoring requirements. This is specialist treatment, not an insulin substitute.",
+    "question": "Does a US approval establish availability in India?",
+    "answer": "No. Local approval, eligibility and access must be checked independently.",
+    "takeaways": [
+      "Read the indication and date",
+      "Check approval region",
+      "Discuss specialist monitoring"
+    ]
+  },
+  {
+    "id": "islet-cell-transplantation",
+    "title": "Islet cell transplantation",
+    "sourceIds": [
+      "islet"
+    ],
+    "summary": "Donor islet transplantation transfers insulin-producing islets from a deceased donor into a recipient.",
+    "why": "It is an option for a narrowly defined group, with substantial risks and long-term follow-up.",
+    "how": "US FDA approval in 2023 covered donislecel for selected adults with T1D and repeated severe hypoglycemia despite intensive management. Maintaining donor cells generally requires immunosuppression.",
+    "example": "A reader checks the indication and risks in the FDA label after seeing a transplant headline.",
+    "caution": "Insulin independence is not guaranteed. Immunosuppression can increase infection and other risks.",
+    "question": "Are donor islets and stem-cell-derived islets the same product?",
+    "answer": "No. They differ in cell source, evidence and regulatory status.",
+    "takeaways": [
+      "Donor cells need specialist care",
+      "Immunosuppression carries risks",
+      "Eligibility is narrow"
+    ]
+  },
+  {
+    "id": "stem-cell-derived-islet-research",
+    "title": "Stem-cell-derived islet research",
+    "sourceIds": [
+      "stem"
+    ],
+    "summary": "Researchers can grow insulin-producing islet-like cells from stem cells for study as a replacement therapy.",
+    "why": "A renewable source of cells could address some limitations of donor supply.",
+    "how": "A 2025 early-phase study of zimislecel assessed transplanted cells in people with T1D receiving immunosuppression. It provided evidence of function in a selected trial population.",
+    "example": "A reader checks participant numbers, follow-up duration and whether immunosuppression was required before interpreting a headline.",
+    "caution": "This is a dated research example. A trial result alone does not establish routine approval, long-term safety or local access.",
+    "question": "What evidence would strengthen an early result?",
+    "answer": "Larger studies, longer follow-up, safety data and regulatory assessment.",
+    "takeaways": [
+      "Identify the trial population",
+      "Check follow-up and harms",
+      "Distinguish research from approval"
+    ]
+  },
+  {
+    "id": "artificial-pancreas-systems",
+    "title": "Artificial pancreas systems",
+    "sourceIds": [
+      "aid"
+    ],
+    "summary": "An artificial pancreas system links sensing, decision software and insulin delivery in a feedback loop.",
+    "why": "It illustrates both the possibilities and limits of replacing a biological control system.",
+    "how": "The algorithm reacts to estimated glucose changes, while insulin absorption and sensor lag introduce delays. User tasks depend on the device.",
+    "example": "A learner draws three arrows between the CGM, controller and pump and identifies where a lost signal matters.",
+    "caution": "Marketing terms do not specify compatibility or how much meal input is needed. Read the actual device instructions.",
+    "question": "Does “closed loop” mean no human input?",
+    "answer": "Many systems are hybrid and still require meal announcements and maintenance.",
+    "takeaways": [
+      "Identify each system component",
+      "Check required user inputs",
+      "Know the backup plan"
+    ]
+  },
+  {
+    "id": "emerging-cgm-and-insulin-technology",
+    "title": "Emerging CGM and insulin technology",
+    "sourceIds": [
+      "aid",
+      "cgm"
+    ],
+    "summary": "New devices and formulations are evaluated for accuracy, usability, safety and clinical outcomes.",
+    "why": "A promising prototype, a cleared product and a locally supported product are different milestones.",
+    "how": "Technology studies specify a population, comparator and outcome. Accuracy under study conditions is only one part of real-world use.",
+    "example": "A reader compares a research announcement with the manufacturer’s current instructions in their country.",
+    "caution": "Check the evidence date, approval region, device version and whether the claim comes from a trial or an advertisement.",
+    "question": "Does a new feature work with every phone or pump?",
+    "answer": "Compatibility is specific to a model and software version.",
+    "takeaways": [
+      "Check the device version",
+      "Read the evidence date",
+      "Verify local approval and compatibility"
+    ]
+  },
+  {
+    "id": "prevention-and-screening-research",
+    "title": "Prevention and screening research",
+    "sourceIds": [
+      "auto",
+      "tzield"
+    ],
+    "summary": "Screening can identify markers of early autoimmune T1D before clinical symptoms appear.",
+    "why": "Follow-up can support education and timely recognition of progression.",
+    "how": "Staging combines immune markers and glucose findings. Some studies recruit only people at a particular stage or level of risk.",
+    "example": "A relative considering screening asks what follow-up is available after each possible result.",
+    "caution": "A negative screen is not a lifetime guarantee. Research participation and approved treatment have different eligibility rules.",
+    "question": "Is screening itself a preventive treatment?",
+    "answer": "No. It identifies risk or disease stage and may guide follow-up.",
+    "takeaways": [
+      "Understand what screening measures",
+      "Ask about confirmation",
+      "Arrange follow-up"
+    ]
+  },
+  {
+    "id": "type-1-type-2-and-other-diabetes-types",
+    "title": "Type 1, type 2 and other diabetes types",
+    "sourceIds": [
+      "basics",
+      "adult"
+    ],
+    "summary": "Diabetes can result from different mechanisms, including autoimmune insulin deficiency, insulin resistance, genetic changes or pancreatic disease.",
+    "why": "Classification can affect treatment and whether relatives should be offered testing.",
+    "how": "History, examination and selected laboratory tests help distinguish aetiologies. Symptoms and body size overlap.",
+    "example": "A newly diagnosed adult asks what supports the proposed type and what would prompt reassessment.",
+    "caution": "Never stop insulin while seeking a second opinion about classification.",
+    "question": "Can a single glucose measurement show diabetes type?",
+    "answer": "No. It measures glucose, not the cause.",
+    "takeaways": [
+      "Age alone cannot classify diabetes",
+      "Different mechanisms can overlap",
+      "Seek reassessment when uncertain"
+    ]
+  }
+]

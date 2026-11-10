@@ -15,6 +15,7 @@ export type NightscoutErrorCode =
   | 'server-error'
   | 'cors-or-network'
   | 'timeout'
+  | 'cancelled'
   | 'malformed-response';
 
 export class NightscoutError extends Error {
@@ -131,6 +132,7 @@ export async function fetchNightscoutReadings(
   config: NightscoutConfig,
   signal?: AbortSignal
 ): Promise<NormalizedGlucoseReading[]> {
+  if (signal?.aborted) throw new NightscoutError('cancelled', 'The Nightscout request was cancelled.');
   const limit = Number(config.historyLimit);
   if (!Number.isInteger(limit) || limit < 1 || limit > 1000) {
     throw new NightscoutError('invalid-limit', 'Choose a history limit between 1 and 1000 readings.');
@@ -160,6 +162,7 @@ export async function fetchNightscoutReadings(
         cache: 'no-store',
       });
     } catch {
+      if (signal?.aborted) throw new NightscoutError('cancelled', 'The Nightscout request was cancelled.');
       if (controller.signal.aborted) {
         throw new NightscoutError('timeout', 'Nightscout did not respond within 12 seconds. Check the URL and try again.');
       }
@@ -186,6 +189,8 @@ export async function fetchNightscoutReadings(
     try {
       payload = await response.json();
     } catch {
+      if (signal?.aborted) throw new NightscoutError('cancelled', 'The Nightscout request was cancelled.');
+      if (controller.signal.aborted) throw new NightscoutError('timeout', 'Nightscout did not respond within 12 seconds. Check the URL and try again.');
       throw new NightscoutError('malformed-response', 'Nightscout returned data that was not valid JSON.');
     }
 
@@ -212,7 +217,8 @@ export async function fetchNightscoutReadingsWithRetry(
       await new Promise<void>((resolve, reject) => {
         const abort = () => {
           clearTimeout(timer);
-          reject(new NightscoutError('timeout', 'The Nightscout retry was cancelled.'));
+          signal?.removeEventListener('abort', abort);
+          reject(new NightscoutError('cancelled', 'The Nightscout retry was cancelled.'));
         };
         const timer = setTimeout(() => {
           signal?.removeEventListener('abort', abort);

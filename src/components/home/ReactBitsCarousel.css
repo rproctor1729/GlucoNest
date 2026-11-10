@@ -1,0 +1,380 @@
+/* React Bits Carousel. Copyright (c) 2026 David Haz. See licenses/react-bits.txt. */
+.rb-carousel-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rb-carousel-container.has-frame {
+  gap: 16px;
+}
+
+.rb-carousel-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+  gap: 12px;
+  box-sizing: border-box;
+  border-radius: var(--rb-carousel-radius);
+}
+
+.rb-carousel-container:focus-visible .rb-carousel-stage {
+  outline: 2px solid var(--rb-carousel-ink);
+  outline-offset: 4px;
+}
+
+.rb-carousel-container.has-frame .rb-carousel-stage {
+  padding: 10px;
+  border-radius: calc(var(--rb-carousel-radius) + 10px);
+  background: var(--rb-carousel-frame);
+  box-shadow: var(--rb-carousel-frame-shadow);
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  backdrop-filter: blur(20px) saturate(1.6);
+}
+
+.rb-carousel-container.has-frame.is-round .rb-carousel-stage {
+  border-radius: 50%;
+}
+
+.rb-carousel-frame-rim {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px var(--rb-carousel-frame-edge),
+    inset 0 1px 0 var(--rb-carousel-frame-highlight);
+  pointer-events: none;
+}
+
+.rb-carousel-viewport {
+  position: relative;
+  align-self: stretch;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.rb-carousel-viewport[data-draggable='true'] {
+  cursor: grab;
+}
+
+.rb-carousel-viewport[data-dragging='true'] {
+  cursor: grabbing;
+}
+
+.rb-carousel-slide {
+  position: absolute;
+  top: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.rb-carousel-slide:not([data-current]) {
+  cursor: pointer;
+}
+
+.rb-carousel-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  height: 100%;
+  padding: calc(20px * var(--rb-carousel-scale, 1));
+  box-sizing: border-box;
+  border-radius: var(--rb-carousel-radius);
+  background: var(--rb-carousel-tile);
+  box-shadow: var(--rb-carousel-tile-shadow);
+  color: var(--rb-carousel-ink);
+  overflow: hidden;
+  transition: filter 0.25s ease;
+}
+
+.rb-carousel-card-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px var(--rb-carousel-tile-edge),
+    inset 0 1px 0 var(--rb-carousel-tile-highlight);
+  pointer-events: none;
+}
+
+.rb-carousel-card.is-custom {
+  display: block;
+  padding: 0;
+}
+
+.rb-carousel-card.is-round {
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 14%;
+  text-align: center;
+}
+
+.rb-carousel-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.rb-carousel-scrim {
+  position: absolute;
+  inset: 0;
+  opacity: var(--rb-carousel-focus, 1);
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.62) 0%,
+    rgba(0, 0, 0, 0.6) 8%,
+    rgba(0, 0, 0, 0.54) 17%,
+    rgba(0, 0, 0, 0.45) 26%,
+    rgba(0, 0, 0, 0.34) 36%,
+    rgba(0, 0, 0, 0.22) 46%,
+    rgba(0, 0, 0, 0.11) 56%,
+    rgba(0, 0, 0, 0.04) 64%,
+    rgba(0, 0, 0, 0) 72%
+  );
+}
+
+.rb-carousel-card.is-round .rb-carousel-scrim {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.rb-carousel-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--rb-carousel-badge);
+  color: var(--rb-carousel-ink);
+}
+
+.rb-carousel-card.has-image .rb-carousel-icon {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.rb-carousel-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.rb-carousel-text {
+  position: relative;
+  margin-top: auto;
+  opacity: var(--rb-carousel-focus, 1);
+}
+
+.rb-carousel-card.is-round .rb-carousel-text {
+  margin-top: 0;
+}
+
+.rb-carousel-title {
+  font-size: calc(18px * var(--rb-carousel-scale, 1));
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.rb-carousel-description {
+  margin: 4px 0 0;
+  font-size: calc(14px * var(--rb-carousel-scale, 1));
+  line-height: 1.45;
+  color: var(--rb-carousel-muted);
+}
+
+.rb-carousel-card.has-image .rb-carousel-title {
+  color: #ffffff;
+}
+
+.rb-carousel-card.has-image .rb-carousel-description {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.rb-carousel-shade {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--rb-carousel-radius);
+  background: #000000;
+  pointer-events: none;
+}
+
+.rb-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  max-width: 100%;
+}
+
+.rb-carousel-arrow {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--rb-carousel-tile);
+  box-shadow:
+    inset 0 0 0 1px var(--rb-carousel-tile-edge),
+    inset 0 1px 0 var(--rb-carousel-tile-highlight),
+    var(--rb-carousel-tile-shadow);
+  color: var(--rb-carousel-ink);
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    filter 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rb-carousel-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.rb-carousel-arrow:not(:disabled):active {
+  filter: var(--rb-carousel-press);
+  transform: scale(0.92);
+  transition-duration: 0s;
+}
+
+.rb-carousel-arrow:focus-visible,
+.rb-carousel-dot:focus-visible,
+.rb-carousel-bar:focus-visible {
+  outline: 2px solid var(--rb-carousel-ink);
+  outline-offset: 2px;
+}
+
+.rb-carousel-dots {
+  display: flex;
+  align-items: center;
+}
+
+.rb-carousel-dot {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+
+.rb-carousel-dot-mark {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rb-carousel-faint);
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rb-carousel-dot.is-active .rb-carousel-dot-mark {
+  background: var(--rb-carousel-ink);
+  transform: scale(1.2);
+}
+
+.rb-carousel-bars {
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+}
+
+.rb-carousel-bar {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.rb-carousel-bar-track {
+  position: relative;
+  width: 100%;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--rb-carousel-faint);
+  overflow: hidden;
+  transition: background-color 0.2s ease;
+}
+
+.rb-carousel-bar-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--rb-carousel-ink);
+  transform-origin: left center;
+}
+
+.rb-carousel-counter {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  overflow: hidden;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--rb-carousel-muted);
+}
+
+.rb-carousel-counter-current {
+  display: inline-block;
+  color: var(--rb-carousel-ink);
+}
+
+@media (hover: hover) {
+  .rb-carousel-slide:hover .rb-carousel-card {
+    filter: var(--rb-carousel-hover);
+  }
+
+  .rb-carousel-arrow:not(:disabled):hover {
+    filter: var(--rb-carousel-hover);
+  }
+
+  .rb-carousel-arrow:not(:disabled):hover:active {
+    filter: var(--rb-carousel-press);
+  }
+
+  .rb-carousel-dot:not(.is-active):hover .rb-carousel-dot-mark,
+  .rb-carousel-bar:hover .rb-carousel-bar-track {
+    background: var(--rb-carousel-soft);
+  }
+}
+
+
+/* Integration: comfortable targets and reduced-motion behavior. */
+.rb-carousel-controls { width: 100%; min-height: 44px; }
+.rb-carousel-arrow { width: 40px; height: 40px; }
+.rb-carousel-bar { min-height: 40px; }
+@media (max-width: 767px) { .rb-carousel-arrow { width: 44px; height: 44px; } .rb-carousel-bar { min-height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .rb-carousel-card, .rb-carousel-arrow, .rb-carousel-dot-mark, .rb-carousel-bar-track { transition: none; } }

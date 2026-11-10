@@ -1,0 +1,41 @@
+.carousel { --hero-carousel-ratio: 1.08; width: 100%; min-width: 0; max-width: 540px; margin-inline: auto; padding-left: 12px; }
+.scene { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: inherit; }
+.photo { object-fit: cover; pointer-events: none; }
+.shade { position: absolute; inset: 0; background: linear-gradient(180deg, #161b1b05 35%, #161b1b30 62%, #101515e0 100%); }
+.caption { position: absolute; z-index: 2; left: 30px; right: 25px; bottom: 31px; color: #ffffff; }
+.caption > span { display: block; font-size: 8px; letter-spacing: .17em; font-weight: 600; color: #f0f2ee; }
+.caption p { font-family: var(--font-display), Georgia, serif; font-size: clamp(27px, 2.8vw, 39px); font-weight: 400; line-height: 1.16; letter-spacing: -.025em; white-space: pre-line; margin-top: 11px; text-shadow: 0 2px 12px #09180b20; }
+.unicorn::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, #faf9f6f5 0, #faf9f6bf 23%, #faf9f600 60%); pointer-events: none; }
+.unicornReading { position: absolute; z-index: 2; top: 44px; left: 32px; color: #213b3b; }
+.unicornLabel { display: flex; align-items: center; gap: 8px; font-size: 8px; letter-spacing: .12em; font-weight: 650; }
+.unicornLabel > span { font-size: 23px; line-height: 1; }
+.unicornReading > div { display: flex; align-items: baseline; gap: 8px; margin-top: 10px; }
+.unicornReading strong { font-size: 88px; line-height: 1; letter-spacing: -.075em; font-weight: 450; font-variant-numeric: tabular-nums; }
+.unicornReading > div > span { font-size: 12px; }
+.unicornReading small { display: block; font-size: 9px; color: #42504f; margin-top: 7px; }
+.carousel :global(.rb-carousel-stage) { --rb-carousel-frame-shadow: 0 18px 50px -30px #243c2c55; }
+.carousel :global(.rb-carousel-arrow) { background: transparent; box-shadow: none; border: 1px solid var(--rb-carousel-faint); }
+.carousel :global(.rb-carousel-controls) { gap: 10px; }
+.carousel :global(.rb-carousel-slide) { outline: none; }
+@media (max-width: 1150px) {
+  .carousel { --hero-carousel-ratio: 1; padding-left: 0; }
+  .caption { left: 25px; bottom: 27px; }
+  .caption p { font-size: 31px; }
+  .unicornReading { left: 27px; top: 35px; }
+  .unicornReading strong { font-size: 78px; }
+}
+@media (max-width: 767px) {
+  .carousel { --hero-carousel-ratio: .88; }
+  .caption { left: 24px; right: 20px; bottom: 28px; }
+  .caption p { font-size: clamp(29px, 8vw, 39px); }
+  .unicornReading { top: 36px; }
+}
+@media (max-width: 370px) {
+  .carousel { --hero-carousel-ratio: .8; }
+  .caption { left: 20px; bottom: 24px; }
+  .caption p { font-size: 28px; }
+  .unicornReading { left: 22px; top: 30px; }
+  .unicornReading strong { font-size: 69px; }
+  .unicornLabel { font-size: 7px; }
+  .carousel :global(.rb-carousel-controls) { gap: 7px; }
+}

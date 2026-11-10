@@ -90,11 +90,8 @@ export function parseGlucoseCsv(source: string): CsvGlucoseImport {
   for (let index = 1; index < rows.length; index += 1) {
     const row = rows[index];
     const rawValue = Number(row[valueIndex]?.trim());
-    const rawUnit = unitIndex >= 0
-      ? row[unitIndex]?.trim().toLowerCase()
-      : headers[valueIndex].includes('mmol')
-        ? 'mmol/l'
-        : 'mg/dl';
+    const inferredUnit = headers[valueIndex].includes('mmol') ? 'mmol/l' : 'mg/dl';
+    const rawUnit = (unitIndex >= 0 ? row[unitIndex]?.trim().toLowerCase() : '') || inferredUnit;
     const timestampText = timestampIndex >= 0
       ? row[timestampIndex] ?? ''
       : timeIndex >= 0 && row[timeIndex]?.trim()

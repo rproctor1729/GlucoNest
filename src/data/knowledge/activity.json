@@ -1,0 +1,200 @@
+[
+  {
+    "id": "aerobic-versus-anaerobic-activity",
+    "title": "Aerobic versus anaerobic activity",
+    "sourceIds": [
+      "exerciseAdult",
+      "exercise"
+    ],
+    "summary": "Sustained aerobic movement and short bursts of intense effort use energy differently.",
+    "why": "The glucose direction in a gentle walk may differ from that during a sprint.",
+    "how": "Working muscles take up glucose. Intense effort can also trigger liver glucose release through stress hormones.",
+    "example": "A learner compares a steady jog with a short hill sprint at the same time of day.",
+    "caution": "Exercise responses vary with insulin on board, fuel and fitness. The activity name is never a dosing rule.",
+    "question": "Can glucose rise during exercise?",
+    "answer": "Yes, particularly during intense or competitive effort.",
+    "takeaways": [
+      "Consider effort as well as duration",
+      "Intense activity can raise glucose",
+      "Responses vary"
+    ]
+  },
+  {
+    "id": "walking-running-cycling-and-swimming",
+    "title": "Walking, running, cycling and swimming",
+    "sourceIds": [
+      "exerciseAdult",
+      "exercise"
+    ],
+    "summary": "These activities can involve sustained use of large muscles, with very different intensity and access to supplies.",
+    "why": "Swimming and cycling can make it harder to stop and check a reading quickly.",
+    "how": "Glucose use depends on pace, duration and recent insulin. Water may interrupt device communication.",
+    "example": "A swimmer arranges poolside access to a meter and low treatment before entering the water.",
+    "caution": "Check device water ratings and use your own safety plan. Do not rely on a distant phone alarm underwater.",
+    "question": "Is every walk a low-intensity session?",
+    "answer": "Terrain, pace and fitness can substantially alter effort.",
+    "takeaways": [
+      "Plan monitoring access",
+      "Check water ratings",
+      "Consider pace and terrain"
+    ]
+  },
+  {
+    "id": "strength-training",
+    "title": "Strength training",
+    "sourceIds": [
+      "exerciseAdult"
+    ],
+    "summary": "Resistance exercise uses muscles against a load, often in short sets with rest periods.",
+    "why": "The glucose curve during lifting can differ from the hours after training.",
+    "how": "Short intense sets may raise glucose temporarily while recovering muscles later take up glucose.",
+    "example": "Someone records sets and rest times alongside their reading after a gym session.",
+    "caution": "Avoid reacting to a brief rise with unplanned corrections. Discuss repeated patterns.",
+    "question": "Can a strength session still be followed by a low?",
+    "answer": "Yes. Later sensitivity can increase even after a stable or rising session.",
+    "takeaways": [
+      "Record sets and rest",
+      "Allow for recovery",
+      "Look for patterns after sessions"
+    ]
+  },
+  {
+    "id": "high-intensity-exercise",
+    "title": "High-intensity exercise",
+    "sourceIds": [
+      "exerciseAdult",
+      "exercise"
+    ],
+    "summary": "Hard intervals and competition can briefly raise glucose despite high energy use.",
+    "why": "A post-session high does not necessarily mean there was too little insulin throughout the activity.",
+    "how": "Adrenaline helps mobilise glucose faster than muscles take it up during some intense efforts.",
+    "example": "A footballer compares a competitive match with a relaxed practice session.",
+    "caution": "Illness or ketones are different from an exercise-related rise. Follow the ketone and activity plan if unwell.",
+    "question": "Should everyone expect a spike after intervals?",
+    "answer": "No. Starting glucose, insulin, food and intensity all matter.",
+    "takeaways": [
+      "Competition adds stress hormones",
+      "A temporary rise has several causes",
+      "Check illness separately"
+    ]
+  },
+  {
+    "id": "delayed-hypoglycemia-after-activity",
+    "title": "Delayed hypoglycemia after activity",
+    "sourceIds": [
+      "exercise",
+      "low"
+    ],
+    "summary": "A low may occur hours after an activity has finished.",
+    "why": "Feeling well immediately after a session does not remove the later risk.",
+    "how": "Recovering muscles replenish stored fuel, and insulin sensitivity can remain higher.",
+    "example": "A learner notes a late-afternoon low following a longer-than-usual morning walk.",
+    "caution": "Discuss recurring delayed lows and the follow-up monitoring window with the team.",
+    "question": "Is finishing exercise the end of glucose monitoring?",
+    "answer": "The recovery period matters too.",
+    "takeaways": [
+      "Monitor the recovery period",
+      "Note changes in duration",
+      "Review recurring late lows"
+    ]
+  },
+  {
+    "id": "nighttime-lows-after-exercise",
+    "title": "Nighttime lows after exercise",
+    "sourceIds": [
+      "exercise",
+      "low"
+    ],
+    "summary": "Late-day activity may affect glucose during sleep.",
+    "why": "A sleeping person may miss the usual early warnings.",
+    "how": "Greater sensitivity and muscle recovery can continue overnight. Basal insulin remains active during sleep.",
+    "example": "After evening badminton a family follows their agreed overnight monitoring plan.",
+    "caution": "Review frequent overnight alarms or lows with the team. Do not assume every low trace is an artefact.",
+    "question": "What should I record for a review?",
+    "answer": "Activity timing, intensity, meals, insulin and the overnight trace.",
+    "takeaways": [
+      "Include overnight planning",
+      "Check genuine alarms",
+      "Review patterns with the team"
+    ]
+  },
+  {
+    "id": "exercise-and-insulin-sensitivity",
+    "title": "Exercise and insulin sensitivity",
+    "sourceIds": [
+      "exerciseAdult"
+    ],
+    "summary": "Insulin sensitivity describes how strongly tissues respond to available insulin.",
+    "why": "After some activities, usual routines can produce different glucose responses.",
+    "how": "Muscle contraction and insulin both promote glucose uptake. Training and recovery can change that balance over time.",
+    "example": "A person compares the day after a hike with a typical office day.",
+    "caution": "Changes are individual. Avoid copying someone else’s percentage adjustment.",
+    "question": "Does improved sensitivity have a fixed duration?",
+    "answer": "No. Duration depends on the session and the person.",
+    "takeaways": [
+      "Sensitivity can persist after activity",
+      "Responses vary",
+      "Avoid borrowing dose adjustments"
+    ]
+  },
+  {
+    "id": "reading-a-cgm-during-activity",
+    "title": "Reading a CGM during activity",
+    "sourceIds": [
+      "exercise",
+      "sensor"
+    ],
+    "summary": "A CGM shows a trend during movement, with limits when glucose is changing quickly.",
+    "why": "A falling arrow during exercise can matter even before an alarm sounds.",
+    "how": "Interstitial readings can lag blood glucose. Water, pressure or lost signal may affect what reaches the display.",
+    "example": "A runner with symptoms inconsistent with the sensor stops safely and follows the meter-confirmation plan.",
+    "caution": "Keep backup monitoring accessible. A trend arrow is not a guaranteed forecast.",
+    "question": "Can I rely on the last number during signal loss?",
+    "answer": "An old number may not describe current glucose. Follow the backup plan.",
+    "takeaways": [
+      "Consider lag",
+      "Keep backup monitoring",
+      "Stop safely when symptoms disagree"
+    ]
+  },
+  {
+    "id": "trekking-and-endurance",
+    "title": "Trekking and endurance",
+    "sourceIds": [
+      "exerciseAdult",
+      "travel"
+    ],
+    "summary": "Long activities add challenges of distance, variable pace and delayed access to food or help.",
+    "why": "A supply that is enough for a usual gym session may be insufficient on a remote trail.",
+    "how": "Heat, altitude, effort and changing meal times can affect monitoring, insulin storage and glucose response.",
+    "example": "A trekking group identifies rest points, a turnaround plan and the person carrying spare supplies.",
+    "caution": "Plan remote trips with the care team. Keep rescue carbohydrate within reach rather than in checked or distant luggage.",
+    "question": "What can a companion help with?",
+    "answer": "Knowing where supplies are, how to recognise trouble and how to summon help.",
+    "takeaways": [
+      "Build in rest points",
+      "Plan for delayed help",
+      "Keep supplies reachable"
+    ]
+  },
+  {
+    "id": "sports-safety-preparation",
+    "title": "Sports safety preparation",
+    "sourceIds": [
+      "exercise",
+      "low"
+    ],
+    "summary": "A sports plan brings monitoring, low treatment, hydration and emergency contacts together.",
+    "why": "A written plan makes it easier to respond when a game or event becomes hectic.",
+    "how": "Discuss starting conditions, symptoms, ketones, equipment and when to pause with the team.",
+    "example": "A coach learns where the athlete keeps rescue supplies and who to call if they cannot self-treat.",
+    "caution": "Do not begin or continue activity through suspected ketoacidosis or a severe low.",
+    "question": "What is worth practising before competition?",
+    "answer": "Stopping safely, accessing monitoring and getting help from a teammate.",
+    "takeaways": [
+      "Prepare monitoring and rescue supplies",
+      "Agree on stopping criteria",
+      "Practise with a companion"
+    ]
+  }
+]

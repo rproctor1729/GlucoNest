@@ -6,15 +6,17 @@ export * from './food';
 export * from './feedback';
 
 export type NavigationSection =
+  | 'home'
   | 'my-day'
   | 'quick-log'
   | 'insights'
   | 'food-library'
-  | 'learn-community'
+  | 'knowledge-hub'
   | 'about'
   | 'feedback'
   | 'devices'
-  | 'legal';
+  | 'legal'
+  | 'report';
 
 export interface PatternInsight {
   id: string;
@@ -30,34 +32,16 @@ export interface PatternInsight {
   isDemo?: boolean;
 }
 
-export interface CommunityStory {
-  id: string;
-  title: string;
-  slug: string;
-  authorName: string;
-  authorCity?: string;
-  authorAvatar: string;
-  authorBio: string;
-  authorT1DAge: string;
-  authorGear: string;
-  category: 'Diagnosis' | 'Athletics & Motion' | 'Mental Health & Burnout' | 'Food & Bolusing' | 'Nighttime & Alarms' | 'Hostel & College Life';
-  readTime: string;
-  publishedDate: string;
-  hearts: number;
-  userLiked?: boolean;
-  bookmarked?: boolean;
-  summary: string;
-  fullStory: string[];
-  takeaways: string[];
-}
-
 export interface EducationalGuide {
+  hubCategory?: string;
+  illustration?: { src: string; alt: string };
   id: string;
   title: string;
   category: 'Emergency' | 'Daily Life' | 'Food & Carbs' | 'Clinic & Endo' | 'Technology' | 'Climate & Storage';
   readTime: string;
   summary: string;
   isEmergency?: boolean;
+  references?: { label: string; url: string }[];
   checklistItems?: string[];
   bodySections: {
     heading: string;

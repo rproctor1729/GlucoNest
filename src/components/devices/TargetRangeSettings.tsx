@@ -23,7 +23,7 @@ export default function TargetRangeSettings() {
   };
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#131b24] sm:p-7">
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#0f1723] sm:p-7">
       <h3 className="font-semibold text-slate-900 dark:text-white">Personal target range</h3>
       <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
         Use the range recommended by your clinician. GlucoNest does not set or recommend a personal target.

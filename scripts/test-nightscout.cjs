@@ -126,7 +126,7 @@ test('reports authentication, server and browser network/CORS failures without l
     );
   });
 
-  test('retries temporary server failures a bounded number of times', async () => {
+  await test('retries temporary server failures a bounded number of times', async () => {
     let requests = 0;
     await withMockFetch(async () => {
       requests += 1;
@@ -157,6 +157,49 @@ test('reports request timeout', async () => {
       (error) => error.code === 'timeout'
     );
   });
+});
+
+test('cancelled requests never start or retry a network request', async () => {
+  const controller = new AbortController();
+  controller.abort();
+  let requests = 0;
+  await withMockFetch(async () => { requests += 1; throw new Error('must not fetch'); }, async () => {
+    await assert.rejects(nightscout.fetchNightscoutReadingsWithRetry({
+      url: 'https://nightscout.example', historyLimit: 10,
+    }, controller.signal), (error) => error.code === 'cancelled');
+    assert.equal(requests, 0);
+  });
+});
+
+test('cancellation interrupts an in-flight request without retrying', async () => {
+  const controller = new AbortController();
+  let requests = 0;
+  await withMockFetch((_url, options) => new Promise((_resolve, reject) => {
+    requests += 1;
+    options.signal.addEventListener('abort', () => reject(new Error('aborted')));
+    controller.abort();
+  }), async () => {
+    await assert.rejects(nightscout.fetchNightscoutReadingsWithRetry({
+      url: 'https://nightscout.example', historyLimit: 10,
+    }, controller.signal), (error) => error.code === 'cancelled');
+    assert.equal(requests, 1);
+  });
+});
+
+test('authentication errors and malformed responses are never retried', async () => {
+  for (const [response, code] of [
+    [{ ok: false, status: 403 }, 'unauthorized'],
+    [{ ok: true, status: 200, json: async () => { throw new Error('bad JSON'); } }, 'malformed-response'],
+    [{ ok: true, status: 200, json: async () => ({ invalid: true }) }, 'malformed-response'],
+  ]) {
+    let requests = 0;
+    await withMockFetch(async () => { requests += 1; return response; }, async () => {
+      await assert.rejects(nightscout.fetchNightscoutReadingsWithRetry({
+        url: 'https://nightscout.example', historyLimit: 10,
+      }), (error) => error.code === code);
+      assert.equal(requests, 1);
+    });
+  }
 });
 
 test('calculates time-in-range from usable intervals and excludes duplicates, gaps and invalid values', () => {

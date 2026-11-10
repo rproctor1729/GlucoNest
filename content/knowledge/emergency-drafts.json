@@ -1,0 +1,162 @@
+[
+  {
+    "id": "sick-day-management",
+    "title": "Sick-day management",
+    "sourceIds": [
+      "sick"
+    ],
+    "summary": "Illness can raise glucose or reduce food intake, and insulin needs can change in either direction.",
+    "why": "A written plan addresses monitoring, hydration, ketones and when to contact the team.",
+    "how": "Infection may increase stress hormone release, while reduced intake can increase the risk of a low.",
+    "example": "Before illness, a person reviews whom to call if their usual clinic is closed.",
+    "caution": "Do not stop insulin during illness without professional guidance. Obtain urgent help if unable to keep fluids down.",
+    "question": "Should illness planning wait until someone is sick?",
+    "answer": "Arrange a written plan and supplies in advance."
+  },
+  {
+    "id": "blood-and-urine-ketone-tests",
+    "title": "Blood and urine ketone tests",
+    "sourceIds": [
+      "emergency",
+      "sick"
+    ],
+    "summary": "Ketone tests look for substances produced as the body breaks down fat for fuel.",
+    "why": "An elevated result during illness or interrupted delivery can signal insulin deficiency.",
+    "how": "Blood and urine tests measure different ketone bodies. Urine results may lag behind current blood levels.",
+    "example": "Someone checks which type of strips their sick-day plan specifies and whether they are in date.",
+    "caution": "Significant ketones or DKA symptoms need urgent assessment. Do not wait for a second test if seriously unwell.",
+    "question": "Are urine colours and blood numbers interchangeable?",
+    "answer": "No. Use the scale and instructions for the actual test."
+  },
+  {
+    "id": "diabetic-ketoacidosis-dka",
+    "title": "Diabetic ketoacidosis (DKA)",
+    "sourceIds": [
+      "emergency",
+      "eglu"
+    ],
+    "summary": "DKA is a serious complication involving insulin deficiency, ketone accumulation and acidosis.",
+    "why": "It requires urgent medical treatment and can progress rapidly.",
+    "how": "When there is insufficient effective insulin, the body breaks down fat, produces ketones and loses fluid.",
+    "example": "During training a family identifies the nearest emergency department and how to reach it.",
+    "caution": "Vomiting, significant ketones, rapid breathing, altered consciousness or suspected DKA require urgent medical assessment.",
+    "question": "Can DKA be managed from a generic online dose example?",
+    "answer": "No. Suspected DKA needs emergency medical assessment."
+  },
+  {
+    "id": "dka-warning-signs",
+    "title": "DKA warning signs",
+    "sourceIds": [
+      "emergency"
+    ],
+    "summary": "Warning signs can include thirst, frequent urination, abdominal pain, vomiting, deep or rapid breathing and drowsiness.",
+    "why": "Recognising a cluster of symptoms can shorten a dangerous delay.",
+    "how": "Ketones and dehydration affect multiple organs. Symptoms can worsen even if someone initially remains alert.",
+    "example": "A parent notices vomiting and unusually deep breathing and seeks emergency assessment.",
+    "caution": "Do not wait until all signs are present or for a very high glucose value.",
+    "question": "Does everyone have fruity-smelling breath?",
+    "answer": "No. Its absence does not exclude DKA."
+  },
+  {
+    "id": "euglycemic-dka",
+    "title": "Euglycemic DKA",
+    "sourceIds": [
+      "eglu"
+    ],
+    "summary": "Euglycemic DKA is ketoacidosis with glucose that is lower than people typically associate with DKA.",
+    "why": "A relatively modest glucose value may falsely reassure someone who is seriously ill.",
+    "how": "Ketone accumulation and acidosis can occur during reduced intake or in association with certain medicines, including SGLT2 inhibitors.",
+    "example": "A clinician is told about vomiting and the person’s full medication list even though glucose is not very high.",
+    "caution": "Symptoms of DKA require urgent assessment regardless of the displayed glucose.",
+    "question": "Does normal-looking CGM data exclude ketoacidosis?",
+    "answer": "No. CGM measures glucose, not blood acidity or ketones."
+  },
+  {
+    "id": "vomiting-and-dehydration",
+    "title": "Vomiting and dehydration",
+    "sourceIds": [
+      "sick",
+      "emergency"
+    ],
+    "summary": "Vomiting can prevent replacement of fluid and carbohydrate during illness.",
+    "why": "Dehydration and ketones can worsen while keeping medicines and food down becomes difficult.",
+    "how": "Fluid loss and reduced intake can coexist with increased insulin requirements from illness.",
+    "example": "A caregiver notes when the person last kept fluid down and contacts urgent care.",
+    "caution": "Persistent vomiting, inability to retain fluids or altered consciousness requires urgent medical help.",
+    "question": "Should someone force drinks into a drowsy person?",
+    "answer": "No. Unsafe swallowing creates an aspiration risk."
+  },
+  {
+    "id": "pump-infusion-failure",
+    "title": "Pump infusion failure",
+    "sourceIds": [
+      "sick",
+      "pump"
+    ],
+    "summary": "A kink, leak, blockage or dislodged cannula can interrupt insulin delivery.",
+    "why": "Pump users may have little long-acting insulin in the body to cover an interruption.",
+    "how": "A pump may record a delivery command even if insulin did not reach tissue as intended.",
+    "example": "A person with unexplained highs consults the written pump-failure plan and checks supplies.",
+    "caution": "Follow the team’s backup plan and seek urgent help for ketones or vomiting. Do not rely on repeated pump corrections through a suspect site.",
+    "question": "Does the absence of a pump alarm prove insulin was delivered?",
+    "answer": "No. Some delivery problems do not trigger an immediate alarm."
+  },
+  {
+    "id": "severe-hypoglycemia",
+    "title": "Severe hypoglycemia",
+    "sourceIds": [
+      "low"
+    ],
+    "summary": "A severe low impairs the person’s ability to treat themselves safely.",
+    "why": "They may need urgent assistance, especially with seizures, unconsciousness or unsafe swallowing.",
+    "how": "The brain needs glucose; loss of function can progress before the person can explain what is wrong.",
+    "example": "A trained caregiver recognises that someone cannot swallow and activates the emergency plan.",
+    "caution": "Call emergency services. Give prescribed glucagon if available and trained, and give nothing by mouth if swallowing is unsafe.",
+    "question": "Does a severe low require a particular meter reading before getting help?",
+    "answer": "No. Do not delay emergency action for severe symptoms."
+  },
+  {
+    "id": "emergency-glucagon",
+    "title": "Emergency glucagon",
+    "sourceIds": [
+      "low"
+    ],
+    "summary": "Rescue glucagon can raise glucose by stimulating the liver to release stored glucose.",
+    "why": "It offers a treatment route when a person with a severe low cannot safely take carbohydrate by mouth.",
+    "how": "Products differ, including nasal and injectable preparations. Caregivers need device-specific training.",
+    "example": "A household checks the expiry date and learns the steps for its own prescribed product.",
+    "caution": "Call emergency services for severe symptoms. Do not put oral food or drink into the mouth of someone unable to swallow safely.",
+    "question": "Can someone else learn to give the prescribed product?",
+    "answer": "Yes. Ask the diabetes team to train the people likely to help."
+  },
+  {
+    "id": "when-to-get-urgent-medical-help",
+    "title": "When to get urgent medical help",
+    "sourceIds": [
+      "emergency",
+      "low"
+    ],
+    "summary": "Some diabetes symptoms need immediate assessment rather than routine follow-up.",
+    "why": "Severe lows and suspected DKA can be life-threatening.",
+    "how": "Urgency depends on consciousness, breathing, ability to swallow or retain fluids and signs of ketones, not just a glucose number.",
+    "example": "A family puts local emergency contacts beside the written sick-day and severe-low plans.",
+    "caution": "Vomiting with T1D, significant ketones, rapid breathing, altered consciousness or suspected DKA require urgent medical assessment.",
+    "question": "Should a person who is confused drive themselves to hospital?",
+    "answer": "No. Arrange emergency assistance."
+  },
+  {
+    "id": "emergency-preparedness-and-supplies",
+    "title": "Emergency preparedness and supplies",
+    "sourceIds": [
+      "sick",
+      "low"
+    ],
+    "summary": "A prepared kit supports the individual plans for illness, severe lows and interrupted insulin delivery.",
+    "why": "Supplies are useful only if available, in date and understood by the people present.",
+    "how": "A team can specify backup monitoring, ketone testing, insulin supplies, prescribed rescue treatments and key contacts.",
+    "example": "A family practises locating the kit and reading its instructions before a trip.",
+    "caution": "Verify compatibility, storage and training. A kit cannot replace urgent medical assessment.",
+    "question": "Who should know where the kit is?",
+    "answer": "People who may be asked to help, with the person’s agreement."
+  }
+]

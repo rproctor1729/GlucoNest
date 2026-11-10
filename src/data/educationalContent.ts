@@ -34,122 +34,147 @@ export const educationalGuides: EducationalGuide[] = [
     ],
   },
   {
-    id: 'guide-insulin-storage-climate',
-    title: 'Insulin Storage in Indian Climates & Power Cuts',
-    category: 'Climate & Storage',
-    readTime: '4 min read',
-    summary: 'Protecting your insulin potency during 40°C+ summer heat, humidity, and load-shedding power outages.',
-    checklistItems: [
-      'Store spare unopened vials/pens in the refrigerator door or vegetable crisper (2°C to 8°C).',
-      'NEVER store insulin against the back freezer coil where it can accidentally freeze. Frozen insulin permanently loses peptide structure.',
-      'Current in-use pen/vial can stay at comfortable room temperature (<28°C) for up to 28 days.',
-      'Keep a water-activated Frio cooling wallet or evaporative clay matka for summer power outages.',
-      'Keep insulin out of direct sunlight and never leave it inside a parked car in the Indian sun.',
-    ],
-    bodySections: [
+    "id": "guide-insulin-storage-climate",
+    "hubCategory": "injection",
+    "illustration": {"src": "/images/guides/storage.png", "alt": "Insulin pen and insulated pouch on a shaded tabletop"},
+    "title": "Keep insulin cool, wherever life goes.",
+    "category": "Climate & Storage",
+    "readTime": "3 min read",
+    "summary": "Understand storage labels, summer heat, and the difference between keeping insulin cool and letting it freeze.",
+    "bodySections": [
       {
-        heading: 'The Earthen Clay Pot (Matka) Hack for Power Cuts',
-        content:
-          'During long summer electricity cuts where refrigerators warm up, use a traditional unglazed clay pot filled with clean wet sand. Place your insulin in a sealed ziplock bag inside. The natural evaporative cooling maintains a micro-temperature of 20°C–23°C even when outside temperatures exceed 38°C.',
+        "heading": "The product label is your starting point",
+        "content": "Storage limits and in-use lifetimes vary by insulin product and device. Follow the instructions for your exact pen or vial, including when it was first opened. Your pharmacist can help explain the label."
       },
       {
-        heading: 'How to Tell if Insulin Has Degraded',
-        content:
-          'Rapid insulin (Novorapid, Humalog, Apidra) and basal analogues (Lantus, Tresiba) should be crystal clear like water. If insulin looks cloudy, frosted, clumpy, or has brownish discoloration, it has been denatured by heat or freezing and must be discarded.',
+        "heading": "Heat and freezing are different risks",
+        "content": "Keep insulin away from direct sunlight and extreme heat. Never use insulin that has frozen. An insulated pouch can help during a journey, but insulin should not touch ice or a frozen pack directly."
       },
+      {
+        "heading": "Planning for a power cut",
+        "content": "Think ahead about access to cooling and replacement supplies. A household cooling method cannot guarantee a particular temperature. If storage conditions are uncertain, ask your pharmacist or diabetes care team about the specific product."
+      }
     ],
+    "references": [
+      {
+        "label": "FDA · Insulin storage guidance",
+        "url": "https://www.fda.gov/drugs/emergency-preparedness-drugs/information-regarding-insulin-storage-and-switching-between-products-emergency"
+      }
+    ]
   },
   {
-    id: 'guide-sick-day-rules',
-    title: 'Sick-Day Guidance: Infections, Fevers & Ketone Management',
-    category: 'Daily Life',
-    readTime: '4 min read',
-    summary: 'When fighting a viral fever, stomach bug, or infection, stress hormones cause glucose to surge.',
-    checklistItems: [
-      'NEVER stop your basal insulin — even if vomiting or unable to eat solid meals.',
-      'Check glucose every 2 to 3 hours.',
-      'Check blood or urine ketones if glucose is consistently >240 mg/dL (13.3 mmol/L).',
-      'Sip 200ml fluids every hour (Electral / ORS, tender coconut water, or clear broth).',
-      'Contact your endocrinologist if vomiting persists >4 hours or moderate/large ketones appear.',
+    "id": "guide-sick-day-rules",
+    "hubCategory": "everyday",
+    "illustration": {"src": "/images/guides/sick-days.png", "alt": "Water, a warm mug and a thermometer beside a bed"},
+    "title": "Know your sick-day plan.",
+    "category": "Daily Life",
+    "readTime": "3 min read",
+    "summary": "Why illness can change glucose, what a personal sick-day plan covers, and when to contact your care team.",
+    "bodySections": [
+      {
+        "heading": "Illness can change your usual pattern",
+        "content": "Infection and other illnesses can affect glucose even when you are eating less. Hormones released while fighting illness may raise blood glucose, so your usual daily pattern may look different."
+      },
+      {
+        "heading": "A plan made for you",
+        "content": "Your diabetes team can give you written guidance for monitoring glucose and ketones, taking insulin, drinking fluids, and getting help. Keep that plan accessible. This article does not provide insulin adjustments or replace your individual instructions."
+      },
+      {
+        "heading": "Know how to get help",
+        "content": "Discuss warning signs with your team before you become ill. Trouble breathing, inability to keep fluids down, or concerning ketones need prompt medical assessment. Use emergency care for severe symptoms rather than waiting for an app or reminder."
+      }
     ],
-    bodySections: [
+    "references": [
       {
-        heading: 'Your care team’s sick-day plan comes first',
-        content:
-          'If anything here differs from the sick-day plan your endocrinologist gave you, follow your plan and contact your care team. The numbers below are general examples, not dosing instructions.',
-      },
-      {
-        heading: 'Why You Must Never Stop Basal Insulin',
-        content:
-          'Even during complete fasting, your cells need basal insulin for basic cellular respiration. Without baseline insulin, the liver breaks down fatty acids into acidic ketones, leading to Diabetic Ketoacidosis (DKA), a life-threatening medical emergency.',
-      },
-      {
-        heading: 'Hydration Strategy with Indian Fluids',
-        content:
-          'If blood sugar is high (>180 mg/dL), hydrate with carb-free liquids: plain water, salted buttermilk (chaas), or light herbal tea. If you feel sick and your glucose is falling, treat any low (below 70 mg/dL) with the Rule of 15 and tell your care team. Do not wait for symptoms to get worse.',
-      },
-    ],
+        "label": "CDC · Managing sick days",
+        "url": "https://www.cdc.gov/diabetes/living-with/managing-sick-days.html"
+      }
+    ]
   },
   {
-    id: 'guide-tir-explained',
-    title: 'Understanding Time-In-Range (TIR) & Modern Metrics',
-    category: 'Clinic & Endo',
-    readTime: '3 min read',
-    summary: 'Why endocrinologists look beyond HbA1c to assess glucose quality of life and reduce glycemic swings.',
-    bodySections: [
+    "id": "guide-tir-explained",
+    "hubCategory": "technology",
+    "title": "See beyond a single glucose number.",
+    "category": "Clinic & Endo",
+    "readTime": "3 min read",
+    "summary": "Get familiar with time in range, glucose variation, and why the amount of available data matters.",
+    "bodySections": [
       {
-        heading: 'The International Consensus Targets (70–180 mg/dL)',
-        content:
-          '• Target Time-In-Range (TIR): >70% of the day (approx. 17 hours)\n• Time-Below-Range (TBR <70): <4% (under 1 hour/day)\n• Urgent Lows (<54 mg/dL): <1% (under 15 minutes/day)\n• Time-Above-Range (>180 mg/dL): <25%\nResearch links more time in range with fewer long-term complications.',
+        "heading": "A reading is one moment",
+        "content": "A glucose reading describes a particular moment. A series of readings can reveal changes over time, including patterns around meals, activity, sleep, or illness. Context helps you and your care team interpret those changes."
       },
       {
-        heading: 'Coefficient of Variation (CV %): The Smoothness Metric',
-        content:
-          'Two people can have the same 7.0% A1c: one might experience peaceful, flat curves between 90 and 150 mg/dL, while another is riding rollercoasters between 40 and 300 mg/dL. CV measures glucose variability. A CV under 36% is the commonly used target for stable glucose.',
+        "heading": "What time in range describes",
+        "content": "Time in range estimates how much of the measured time glucose falls within a chosen band. Time below and above that band provide additional context. Your care team should set an appropriate target for your circumstances."
       },
+      {
+        "heading": "Coverage matters",
+        "content": "Gaps and sparse readings limit what a summary can show. GlucoNest requires enough usable time coverage before displaying time-based percentages. Sample data illustrates the interface; it is not an assessment of your personal glucose."
+      }
     ],
+    "references": [
+      {
+        "label": "NIDDK · Continuous glucose monitoring",
+        "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/managing-diabetes/continuous-glucose-monitoring"
+      }
+    ]
   },
   {
-    id: 'guide-endo-checklist',
-    title: 'Endo Appointment Preparation Checklist',
-    category: 'Clinic & Endo',
-    readTime: '3 min read',
-    summary: 'Turn your 15-minute clinical consultation into a collaborative strategy session.',
-    checklistItems: [
-      'Bring a printed or written summary of your recent readings and logs. (The app does not produce a report yet.)',
-      'Pick 2 specific patterns you noticed to discuss (e.g. 3 AM alarms or post-lunch spikes).',
-      'Note down current Basal-to-Bolus ratio and daily total units.',
-      'Check prescription refills needed for insulin vials, pen needles (4mm/5mm), and CGM sensors.',
-      'Annual lab tests: HbA1c, urine microalbumin-to-creatinine ratio (ACR), lipid profile, TSH (thyroid), celiac screening, and dilated retinal eye check.',
-      'Check expiration date on emergency glucagon or home ketone strips.',
-    ],
-    bodySections: [
+    "id": "guide-endo-checklist",
+    "hubCategory": "prevention",
+    "illustration": {"src": "/images/guides/appointment.png", "alt": "A notebook, pen and glucose meter for an appointment"},
+    "title": "Make your next appointment count.",
+    "category": "Clinic & Endo",
+    "readTime": "2 min read",
+    "summary": "Bring the story behind your readings into the conversation, from everyday routines to the questions that matter to you.",
+    "bodySections": [
       {
-        heading: 'How to Ask Collaborative Questions',
-        content:
-          'Instead of asking "Am I doing well, doctor?", ask specific lifestyle questions:\n"I notice on rest days that rice lunch causes a delayed rise 2 hours later. How should I adjust my bolus timing?"\n"I want to start playing badminton in the evenings; how should we adjust my afternoon basal to avoid drops on the court?"',
+        "heading": "Bring the context behind your numbers",
+        "content": "A reading summary is easier to discuss when it includes the circumstances around it. Meal timing, activity, sleep, symptoms, and changes to your routine can all be useful conversation starters."
       },
+      {
+        "heading": "Start with what matters to you",
+        "content": "Think about a few specific concerns before the visit. You might want to discuss overnight alerts, a new exercise routine, travel, or the practical effort of daily management. Concrete examples help your care team understand your priorities."
+      },
+      {
+        "heading": "Leave with a shared understanding",
+        "content": "Ask for clarification when instructions are unclear, including whom to contact between visits. Discuss treatment changes with your clinician. GlucoNest can prepare a summary from your available personal readings, but it does not recommend doses."
+      }
     ],
+    "references": [
+      {
+        "label": "NIDDK · Managing diabetes",
+        "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/managing-diabetes"
+      }
+    ]
   },
   {
-    id: 'guide-travel-railways-airports',
-    title: 'Traveling in India: Trains, Flights & Airport Security with T1D',
-    category: 'Daily Life',
-    readTime: '3 min read',
-    summary: 'Practical tips for carrying insulin, sensors, and pump supplies across Indian Railways and domestic airports.',
-    checklistItems: [
-      'Carry your doctor’s T1D medical certificate and original prescription in your hand baggage.',
-      'NEVER put insulin in checked aircraft luggage where cargo hold temperatures can freeze it.',
-      'Inform CISF airport security that you wear a CGM / insulin pump before stepping through metal detectors.',
-      'Carry twice the supplies you think you need (extra sensors, backup glucometer strips, pen needles).',
-      'Pack portable fast carbs (Glucon-D, juice boxes) in accessible seat pockets on Indian Railways.',
-    ],
-    bodySections: [
+    "id": "guide-travel-railways-airports",
+    "hubCategory": "everyday",
+    "illustration": {"src": "/images/guides/travel.png", "alt": "An Indian passenger train and a travel bag"},
+    "title": "Take your routine on the road.",
+    "category": "Daily Life",
+    "readTime": "3 min read",
+    "summary": "A little preparation for train journeys, flights, changing schedules, and keeping supplies close at hand.",
+    "bodySections": [
       {
-        heading: 'Airport Security Guidelines for CGMs and Pumps',
-        content:
-          'Continuous Glucose Monitors (Dexcom, Libre) and insulin pumps should generally not go through full-body X-ray scanners (airport luggage scanner belts). Request a polite physical pat-down and hand-held metal detector wand check. Carry your endocrinologist’s letter stating that the medical device is non-removable.',
+        "heading": "Make room for changes to routine",
+        "content": "Delayed meals, new foods, more walking, and time-zone changes can affect glucose. Discuss medication timing and travel concerns with your diabetes care team before a longer journey."
       },
+      {
+        "heading": "Keep essentials accessible",
+        "content": "Carry monitoring equipment, medicines, and fast-acting carbohydrate where you can reach them. Extra supplies can help with delays or lost luggage. Protect medicines from extreme temperatures using their specific storage instructions."
+      },
+      {
+        "heading": "Check the rules for your own device",
+        "content": "Airport screening instructions differ by CGM and pump model. Read the manufacturer’s current guidance and check with your airline or security authority before travelling. Do not assume that every device has the same scanner restrictions."
+      }
     ],
-  },
+    "references": [
+      {
+        "label": "CDC · Travelling with diabetes",
+        "url": "https://www.cdc.gov/diabetes/about/tips-for-traveling-with-diabetes.html"
+      }
+    ]
+  }
 ];

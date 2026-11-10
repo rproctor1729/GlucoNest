@@ -1,0 +1,242 @@
+[
+  {
+    "id": "basal-bolus-insulin-therapy",
+    "title": "Basal-bolus insulin therapy",
+    "sourceIds": [
+      "regimen",
+      "insulin",
+      "adult"
+    ],
+    "summary": "Basal insulin covers background needs. Bolus insulin covers meals and prescribed corrections.",
+    "why": "The body needs background insulin even between meals and overnight.",
+    "how": "Basal insulin helps restrain liver glucose release; mealtime insulin deals with the faster arrival of carbohydrate.",
+    "example": "During a clinic visit, someone points out which pen has each job in their written plan.",
+    "caution": "Mixing up basal and bolus insulin can be dangerous. If a mix-up occurs, get urgent professional advice.",
+    "question": "Can mealtime insulin simply replace the background dose?",
+    "answer": "They serve different roles. A replacement plan needs a clinician.",
+    "takeaways": [
+      "Identify the two roles",
+      "Learn the names of both insulins",
+      "Know whom to call after a mix-up"
+    ]
+  },
+  {
+    "id": "multiple-daily-injections-mdi",
+    "title": "Multiple daily injections (MDI)",
+    "sourceIds": [
+      "india",
+      "insulin"
+    ],
+    "summary": "MDI delivers insulin by separate injections during the day, typically using a basal and a mealtime preparation.",
+    "why": "It allows different meals to be covered while maintaining background insulin.",
+    "how": "Each injection leaves insulin under the skin to absorb according to its formulation.",
+    "example": "A student keeps the two pens labelled and records injections so a busy timetable does not obscure what was taken.",
+    "caution": "If a dose may have been missed, use your written instructions or call the team. Guessing can duplicate a dose.",
+    "question": "Does MDI require a pump?",
+    "answer": "No. Pens or compatible syringes deliver the injections.",
+    "takeaways": [
+      "MDI uses separate injections",
+      "A record can help avoid duplication",
+      "Learn the missed-dose plan"
+    ]
+  },
+  {
+    "id": "insulin-pens-versus-syringes",
+    "title": "Insulin pens versus syringes",
+    "sourceIds": [
+      "inj",
+      "india"
+    ],
+    "summary": "A pen dials a number of units. A syringe draws insulin from a vial using calibrated markings.",
+    "why": "Choosing a device involves vision, dexterity, training and the exact insulin concentration.",
+    "how": "Matching a vial to its syringe calibration matters. A pen is designed to deliver its own formulation.",
+    "example": "At the pharmacy someone checks both the U-40 vial and its matching syringe before accepting a refill.",
+    "caution": "Never withdraw insulin from a pen with a syringe. Never share a pen even if the needle has been changed.",
+    "question": "Is the same volume always the same unit count?",
+    "answer": "No. Units per millilitre depend on the concentration.",
+    "takeaways": [
+      "Match vial and syringe",
+      "Read the strength",
+      "Keep each pen for one person"
+    ]
+  },
+  {
+    "id": "insulin-pump-delivery",
+    "title": "Insulin pump delivery",
+    "sourceIds": [
+      "pump",
+      "aid"
+    ],
+    "summary": "A pump delivers insulin through a small cannula or patch at a programmed rate, with boluses for meals.",
+    "why": "Changing a programmed rate and changing an injected long-acting dose have different effects over time.",
+    "how": "Most standard pump regimens use rapid-acting insulin for background delivery as well as boluses.",
+    "example": "Before a trip a pump user asks for a written plan covering loss of the controller or interruption of delivery.",
+    "caution": "Interrupted delivery can lead to ketones quickly. Keep the backup plan and supplies accessible.",
+    "question": "Does every pump adjust insulin automatically?",
+    "answer": "No. Automated delivery also needs a compatible sensor and algorithm.",
+    "takeaways": [
+      "A pump delivers basal and bolus insulin",
+      "Check delivery if unexpectedly high",
+      "Have a backup plan"
+    ]
+  },
+  {
+    "id": "injection-sites",
+    "title": "Injection sites",
+    "sourceIds": [
+      "sites",
+      "inj"
+    ],
+    "summary": "Insulin is injected into the fatty layer under the skin at a suitable site taught by the diabetes team.",
+    "why": "Areas such as the abdomen, outer thighs, buttocks and selected upper-arm areas differ in access and absorption.",
+    "how": "Body build, needle length and location affect the chance of reaching muscle. A diabetes nurse can show appropriate boundaries on the actual person.",
+    "example": "A learner uses the linked injection guide and then demonstrates a site to their educator.",
+    "caution": "Avoid lumps, scars and damaged skin. Do not infer the right depth or angle from a generic body outline.",
+    "question": "Where can I see the injection areas?",
+    "answer": "Open the Diabetes UK injection guide linked below and ask your educator to show the areas suitable for you.",
+    "takeaways": [
+      "Learn sites in person",
+      "Use healthy tissue",
+      "Consult an illustrated clinical guide"
+    ]
+  },
+  {
+    "id": "site-rotation",
+    "title": "Site rotation",
+    "sourceIds": [
+      "sites",
+      "inj",
+      "india"
+    ],
+    "summary": "Rotation means changing the exact injection spot systematically within the areas approved for you.",
+    "why": "It reduces repeated trauma to one patch of tissue.",
+    "how": "A planned sequence within an area makes it easier to leave previous spots to recover. The same favourite spot can become thickened.",
+    "example": "Someone uses a simple grid on paper and marks the last used area, alternating spots according to their nurse’s instructions.",
+    "caution": "Moving from lumpy tissue to healthy skin can change absorption. Discuss monitoring and the transition with your team.",
+    "question": "Does alternating between two tiny spots count as a full rotation?",
+    "answer": "It still concentrates injections in a small area. Ask for a rotation map that fits your routine.",
+    "takeaways": [
+      "Use a planned sequence",
+      "Avoid favourite spots",
+      "Review changes in absorption"
+    ]
+  },
+  {
+    "id": "lipohypertrophy",
+    "title": "Lipohypertrophy",
+    "sourceIds": [
+      "inj"
+    ],
+    "summary": "Lipohypertrophy is a thickened or lumpy area of fat under the skin at repeated insulin sites.",
+    "why": "It can make insulin absorption less predictable.",
+    "how": "Repeated exposure to insulin and local tissue trauma can cause changes that are easier to feel than see.",
+    "example": "At a routine visit the nurse examines a frequently used injection area even though it looks normal.",
+    "caution": "Avoid injecting into lumps. A change to healthy tissue can increase absorption and the risk of a low.",
+    "question": "Does a painless favourite spot mean it is a good site?",
+    "answer": "No. A painless lump should be assessed.",
+    "takeaways": [
+      "Feel as well as look for lumps",
+      "Avoid affected tissue",
+      "Review the transition with the team"
+    ]
+  },
+  {
+    "id": "injection-technique-and-needle-handling",
+    "title": "Injection technique and needle handling",
+    "sourceIds": [
+      "inj",
+      "sharps"
+    ],
+    "summary": "A reliable injection technique delivers insulin using the intended device into subcutaneous tissue.",
+    "why": "Incomplete delivery, leakage or an incorrect device can change how much insulin reaches the body.",
+    "how": "The product instructions cover fitting the needle, flow checking, injecting and how long to keep the needle in place.",
+    "example": "Someone brings their pen to the clinic and demonstrates their routine with a training device.",
+    "caution": "Use a fresh needle, never share equipment and ask for hands-on teaching. Do not repeat an uncertain dose without advice.",
+    "question": "Is the hold time identical for every pen?",
+    "answer": "Follow the instructions for the exact pen.",
+    "takeaways": [
+      "Follow device-specific steps",
+      "Use a new needle",
+      "Seek advice about uncertain delivery"
+    ]
+  },
+  {
+    "id": "insulin-storage-and-temperature",
+    "title": "Insulin storage and temperature",
+    "sourceIds": [
+      "storage",
+      "insulin"
+    ],
+    "summary": "Heat, freezing and excessive light can damage insulin. The allowed time after opening depends on the product.",
+    "why": "Damaged insulin may be less effective even if its appearance seems unchanged.",
+    "how": "Unopened stock is commonly refrigerated at 2–8°C. In-use temperature limits and discard intervals are specific to the product and device.",
+    "example": "A family notes the date a pen was opened and checks its leaflet before a hot-weather journey.",
+    "caution": "Do not use insulin that has frozen. Keep insulin away from freezer plates and direct contact with ice packs.",
+    "question": "Can appearance prove insulin is still effective?",
+    "answer": "No. Review storage history and ask a pharmacist about exposed stock.",
+    "takeaways": [
+      "Check the exact leaflet",
+      "Date opened insulin",
+      "Protect it from heat and freezing"
+    ]
+  },
+  {
+    "id": "travelling-with-insulin",
+    "title": "Travelling with insulin",
+    "sourceIds": [
+      "travel",
+      "storage"
+    ],
+    "summary": "Travelling with insulin means protecting the supply from heat, freezing, loss and delays.",
+    "why": "Checked baggage can be exposed to unsuitable temperatures or separated from the traveller.",
+    "how": "An insulated carrier can reduce heat exposure. Insulin needs separation from ice or frozen packs.",
+    "example": "A traveller packs insulin and backup supplies in hand luggage with documentation and original labels.",
+    "caution": "Check the exact product limits. Ask the team about time-zone changes before departure.",
+    "question": "Should insulin touch the ice pack inside a cooler?",
+    "answer": "No. Direct contact can freeze it.",
+    "takeaways": [
+      "Carry insulin accessibly",
+      "Separate it from ice",
+      "Plan for delays"
+    ]
+  },
+  {
+    "id": "injection-discomfort-and-mistakes",
+    "title": "Injection discomfort and mistakes",
+    "sourceIds": [
+      "inj"
+    ],
+    "summary": "Persistent pain, leakage or bruising is worth discussing during a technique review.",
+    "why": "Pain can make an already demanding routine harder to maintain.",
+    "how": "Site choice, repeated needle use and technique can contribute. Reviewing the device in person can identify a fix.",
+    "example": "A person who dreads injections asks a nurse to watch them use a demonstration pen.",
+    "caution": "Redness that spreads, warmth, swelling or persistent pain warrants medical assessment.",
+    "question": "What should I bring to a technique review?",
+    "answer": "Your own device, needle packaging and a description of where and when the problem occurs.",
+    "takeaways": [
+      "Describe where discomfort occurs",
+      "Demonstrate your usual technique",
+      "Report spreading inflammation"
+    ]
+  },
+  {
+    "id": "safe-sharps-disposal",
+    "title": "Safe sharps disposal",
+    "sourceIds": [
+      "sharps",
+      "inj"
+    ],
+    "summary": "Used needles and lancets go directly into an appropriate puncture-resistant sharps container.",
+    "why": "Loose sharps can injure family, cleaners and waste handlers.",
+    "how": "Keeping the container within reach avoids carrying an exposed sharp around after use.",
+    "example": "Before leaving the clinic, a family asks where filled containers are accepted locally.",
+    "caution": "Keep containers away from children. Follow local collection rules and the fill line; loose needles do not belong in recycling.",
+    "question": "Do all municipalities collect sharps the same way?",
+    "answer": "No. Ask your clinic, pharmacy or local waste service for the accepted route.",
+    "takeaways": [
+      "Contain used sharps immediately",
+      "Respect the fill line",
+      "Use local collection arrangements"
+    ]
+  }
+]

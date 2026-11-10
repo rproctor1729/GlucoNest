@@ -1,0 +1,203 @@
+[
+  {
+    "id": "newly-diagnosed-children",
+    "title": "Newly diagnosed children",
+    "sourceIds": [
+      "child",
+      "school"
+    ],
+    "summary": "A new T1D diagnosis involves learning practical skills while a child continues to grow, play and attend school.",
+    "why": "Young children depend on adults to notice symptoms and coordinate care across settings.",
+    "how": "Education is shared between the child, caregivers, school staff and paediatric diabetes team, with tasks matched to development.",
+    "example": "A family asks the clinic to demonstrate one skill at a time and agrees on a school contact.",
+    "caution": "Adult targets or meal routines may not suit a young child. Use a paediatric care plan.",
+    "question": "Can a child participate without managing everything?",
+    "answer": "Yes. Small age-appropriate tasks can build confidence with adult supervision.",
+    "takeaways": [
+      "Match tasks to development",
+      "Train the adults involved",
+      "Coordinate home and school"
+    ]
+  },
+  {
+    "id": "adolescence-and-puberty",
+    "title": "Adolescence and puberty",
+    "sourceIds": [
+      "puberty",
+      "child",
+      "india"
+    ],
+    "summary": "Puberty brings hormonal, physical and social changes that can affect glucose and self-care.",
+    "why": "Changing insulin needs during growth can be mistaken for lack of effort.",
+    "how": "Hormonal shifts can reduce insulin sensitivity, while sports, sleep and eating patterns may also change.",
+    "example": "A teenager and parent choose which tasks can be independent and which still need shared support.",
+    "caution": "Ask about distress, eating concerns and access to private clinical conversations.",
+    "question": "Does a changing glucose pattern during puberty imply someone is doing something wrong?",
+    "answer": "No. Growth and ordinary changes in routine are important context.",
+    "takeaways": [
+      "Expect changing needs",
+      "Support private conversations",
+      "Agree on shared tasks"
+    ]
+  },
+  {
+    "id": "young-adult-independence",
+    "title": "Young adult independence",
+    "sourceIds": [
+      "adult",
+      "mind"
+    ],
+    "summary": "Moving out, starting college or changing clinics can shift responsibility for diabetes tasks quickly.",
+    "why": "Medication access and follow-up can be interrupted during transitions.",
+    "how": "A transition plan identifies who prescribes, how to obtain supplies and how to reach urgent advice.",
+    "example": "Before moving cities a student arranges a first appointment, refill plan and local emergency contact.",
+    "caution": "Do not wait until the last pen or sensor to identify a replacement source.",
+    "question": "What belongs in a handover summary?",
+    "answer": "Current treatment and devices, important recent results, emergency plans and clinic contacts.",
+    "takeaways": [
+      "Arrange supplies before moving",
+      "Identify a new care contact",
+      "Plan the handover"
+    ]
+  },
+  {
+    "id": "pregnancy-planning-and-pregnancy",
+    "title": "Pregnancy planning and pregnancy",
+    "sourceIds": [
+      "pregnancy"
+    ],
+    "summary": "Pregnancy planning includes discussing glucose goals, medicines and complication checks before conception where possible.",
+    "why": "Glucose goals and insulin needs can differ before, during and after pregnancy.",
+    "how": "Placental hormones, changing insulin sensitivity and delivery all influence needs. Specialist obstetric and diabetes care work together.",
+    "example": "Someone planning a pregnancy asks for a medication review and advice on preconception care.",
+    "caution": "Contact the team promptly with a positive pregnancy test. Do not stop insulin or change medicines independently.",
+    "question": "Can I use the same CGM target band for every life stage?",
+    "answer": "Pregnancy can use a different range and targets. Agree them with the specialist team.",
+    "takeaways": [
+      "Seek preconception advice",
+      "Review medicines",
+      "Use pregnancy-specific targets"
+    ]
+  },
+  {
+    "id": "menstrual-cycle-and-glucose",
+    "title": "Menstrual cycle and glucose",
+    "sourceIds": [
+      "period"
+    ],
+    "summary": "Hormonal changes across the menstrual cycle can alter glucose patterns for some people.",
+    "why": "Noticing a repeated pattern can reduce uncertainty and support a more informed clinical review.",
+    "how": "Insulin sensitivity may vary across phases. Sleep, pain, appetite and activity may contribute as well.",
+    "example": "A person compares several cycles privately before asking their team about recurring changes.",
+    "caution": "A single high reading or one cycle does not establish a pattern. Unexpected symptoms still need assessment.",
+    "question": "Does everyone become less sensitive at the same time?",
+    "answer": "No. Direction and timing are individual.",
+    "takeaways": [
+      "Look across multiple cycles",
+      "Record only useful details",
+      "Avoid assuming a universal pattern"
+    ]
+  },
+  {
+    "id": "adult-onset-type-1-diabetes",
+    "title": "Adult-onset type 1 diabetes",
+    "sourceIds": [
+      "basics",
+      "adult"
+    ],
+    "summary": "Autoimmune type 1 diabetes can begin in adulthood, including in people initially thought to have type 2.",
+    "why": "Correct classification affects insulin treatment, education and access to appropriate support.",
+    "how": "Clinicians consider symptoms, course, antibodies and sometimes C-peptide rather than relying on age or weight alone.",
+    "example": "An adult whose glucose rises despite initial tablets returns for reassessment.",
+    "caution": "Rapid weight loss, vomiting or ketone symptoms require urgent care while classification is being investigated.",
+    "question": "Does being an adult rule out T1D?",
+    "answer": "No. Age alone cannot determine diabetes type.",
+    "takeaways": [
+      "Consider T1D at any age",
+      "Review uncertain classification",
+      "Act on urgent symptoms"
+    ]
+  },
+  {
+    "id": "latent-autoimmune-diabetes-in-adults-lada",
+    "title": "Latent autoimmune diabetes in adults (LADA)",
+    "sourceIds": [
+      "adult",
+      "basics",
+      "cpep"
+    ],
+    "summary": "LADA describes adult-onset autoimmune diabetes in which insulin production often declines more gradually.",
+    "why": "Someone may initially manage without injected insulin and later need it as beta-cell function falls.",
+    "how": "Antibodies can support an autoimmune cause. C-peptide helps assess remaining insulin production in clinical context.",
+    "example": "An adult with an uncertain diagnosis asks why antibody and C-peptide tests answer different questions.",
+    "caution": "Do not delay needed insulin while waiting for a label. Classification belongs with a clinician.",
+    "question": "Does gradual onset mean the condition is harmless?",
+    "answer": "No. Monitoring, treatment and education are still important.",
+    "takeaways": [
+      "Recognise gradual autoimmune loss",
+      "Consider antibodies and C-peptide",
+      "Do not delay needed treatment"
+    ]
+  },
+  {
+    "id": "older-adults-with-t1d",
+    "title": "Older adults with T1D",
+    "sourceIds": [
+      "adult",
+      "low"
+    ],
+    "summary": "Older adults with T1D have diverse abilities, support networks and health priorities.",
+    "why": "Preventing severe lows and maintaining independence may change the balance of goals.",
+    "how": "Vision, dexterity, memory, kidney function and medication burden can affect diabetes tasks.",
+    "example": "Someone with reduced vision tries a device demonstration with their usual glasses and a supporter.",
+    "caution": "Targets and technology should reflect function and preferences rather than age alone.",
+    "question": "Does every older person need the same glucose goal?",
+    "answer": "No. The care team should individualise it.",
+    "takeaways": [
+      "Consider function and preferences",
+      "Prioritise severe-low prevention",
+      "Reassess equipment"
+    ]
+  },
+  {
+    "id": "aging-with-diabetes",
+    "title": "Aging with diabetes",
+    "sourceIds": [
+      "adult",
+      "heart"
+    ],
+    "summary": "Aging with diabetes includes adapting care as health, roles and living circumstances change.",
+    "why": "A plan that worked for many years can become harder after injury, illness or a move.",
+    "how": "Periodic review can identify changes in device handling, meal patterns, circulation or support needs.",
+    "example": "After a hand injury a person asks an educator to reassess their injection equipment.",
+    "caution": "A change in ability calls for support and reassessment. Abruptly stopping background insulin is unsafe.",
+    "question": "What can a family discuss before a move into supported living?",
+    "answer": "Who is trained to give insulin, monitor glucose, recognise lows and obtain supplies.",
+    "takeaways": [
+      "Review changing abilities",
+      "Update support arrangements",
+      "Prepare care handovers"
+    ]
+  },
+  {
+    "id": "caregiver-education",
+    "title": "Caregiver education",
+    "sourceIds": [
+      "school",
+      "child",
+      "low"
+    ],
+    "summary": "Caregiver education prepares another person for specific tasks agreed with the person living with T1D.",
+    "why": "A clear role reduces guesswork during a low or device problem.",
+    "how": "Practical teaching includes recognising symptoms, locating supplies, following the written plan and practising when to call for help.",
+    "example": "A grandparent rehearses a school-holiday handover with the family and diabetes educator.",
+    "caution": "Use the person’s own plan. Do not give anything by mouth if they cannot swallow safely.",
+    "question": "What should be written down?",
+    "answer": "Contacts, the current plan, supply locations and clear instructions for urgent situations.",
+    "takeaways": [
+      "Agree on the caregiver’s role",
+      "Practise urgent responses",
+      "Keep the written plan accessible"
+    ]
+  }
+]

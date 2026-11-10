@@ -1,26 +1,27 @@
 'use client';
 
+import { useModalFocus } from '@/components/common/useModalFocus';
+
 import { FormEvent, useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { APP_LANGUAGES, AppLanguage, translate } from '@/lib/i18n';
-import { GlucoseUnit } from '@/types';
+import { translate } from '@/lib/i18n';
 
 export default function OnboardingDialog() {
   const {
     onboardingComplete,
     completeOnboarding,
-    language: savedLanguage,
-    glucoseUnit: savedUnit,
+    language,
+    glucoseUnit,
     targetRange: savedRange,
   } = useApp();
 
-  const [language, setLanguage] = useState<AppLanguage>(savedLanguage);
-  const [glucoseUnit, setGlucoseUnit] = useState<GlucoseUnit>(savedUnit);
   const [targetLow, setTargetLow] = useState(String(savedRange.low));
   const [targetHigh, setTargetHigh] = useState(String(savedRange.high));
   const [connectDataSource, setConnectDataSource] = useState(false);
   const [understood, setUnderstood] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const modalRef = useModalFocus(!onboardingComplete);
 
   if (onboardingComplete) return null;
 
@@ -48,45 +49,20 @@ export default function OnboardingDialog() {
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-slate-950/70 p-3 backdrop-blur-sm">
+    <div ref={modalRef} tabIndex={-1} className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-slate-950/70 p-3 backdrop-blur-sm">
       <section
         role="dialog"
         aria-modal="true"
         aria-labelledby="onboarding-title"
-        className="my-auto w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-5 shadow-xl dark:border-slate-800 dark:bg-[#131b24] sm:p-7"
+        className="my-auto w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-5 shadow-xl dark:border-slate-800 dark:bg-[var(--surface)] sm:p-7"
       >
         <form onSubmit={handleSubmit} className="space-y-5">
           <header className="space-y-1">
             <h1 id="onboarding-title" className="text-xl font-bold text-slate-900 dark:text-white">
               {t('onboarding.title')}
             </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-300">{t('onboarding.subtitle')}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t('onboarding.subtitle')}</p>
           </header>
-
-          <label className="block space-y-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200">
-            {t('onboarding.language')}
-            <select
-              value={language}
-              onChange={(event) => setLanguage(event.target.value as AppLanguage)}
-              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
-            >
-              {APP_LANGUAGES.map((item) => (
-                <option key={item.code} value={item.code}>{item.label}</option>
-              ))}
-            </select>
-          </label>
-
-          <label className="block space-y-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200">
-            {t('onboarding.unit')}
-            <select
-              value={glucoseUnit}
-              onChange={(event) => setGlucoseUnit(event.target.value as GlucoseUnit)}
-              className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
-            >
-              <option value="mg/dL">mg/dL</option>
-              <option value="mmol/L">mmol/L</option>
-            </select>
-          </label>
 
           <fieldset className="space-y-2">
             <legend className="text-xs font-semibold text-slate-700 dark:text-slate-200">
@@ -116,7 +92,7 @@ export default function OnboardingDialog() {
                 />
               </label>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('onboarding.rangeHelp')}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t('onboarding.rangeHelp')}</p>
           </fieldset>
 
           <fieldset className="space-y-2">
@@ -155,7 +131,7 @@ export default function OnboardingDialog() {
             {t('onboarding.accept')}
           </label>
 
-          {error && <p role="alert" className="text-xs text-rose-700 dark:text-rose-300">{error}</p>}
+          {error && <p role="alert" className="text-xs text-slate-500 dark:text-slate-400">{error}</p>}
 
           <button
             type="submit"

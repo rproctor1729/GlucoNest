@@ -122,7 +122,7 @@ export default function OneTapLogModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
       <div
-        className="w-full max-w-lg bg-white dark:bg-[#131b24] text-slate-900 dark:text-slate-100 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col"
+        className="w-full max-w-lg bg-white dark:bg-[#0f1723] text-slate-900 dark:text-slate-100 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col"
         role="dialog"
         aria-modal="true"
         aria-labelledby="one-tap-title"

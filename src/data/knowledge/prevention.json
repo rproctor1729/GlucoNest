@@ -1,0 +1,237 @@
+[
+  {
+    "id": "hba1c-and-its-limitations",
+    "title": "HbA1c and its limitations",
+    "sourceIds": [
+      "a1c"
+    ],
+    "summary": "HbA1c reflects glucose attached to haemoglobin and gives an indication of glucose exposure over roughly three months.",
+    "why": "It helps follow long-term patterns but does not reveal individual lows or daily swings.",
+    "how": "Red blood cells accumulate glycated haemoglobin over their lifetime. Conditions affecting the cells or haemoglobin can distort the result.",
+    "example": "A clinician investigating an unexpected HbA1c asks about anaemia, recent blood loss and the glucose record.",
+    "caution": "Interpret a surprising result with the laboratory and diabetes team before acting.",
+    "question": "Can two people with the same HbA1c have different glucose patterns?",
+    "answer": "Yes. An average can conceal substantial variation.",
+    "takeaways": [
+      "Consider the time window",
+      "Ask about factors affecting blood cells",
+      "Review lows separately"
+    ]
+  },
+  {
+    "id": "hba1c-versus-time-in-range",
+    "title": "HbA1c versus Time in Range",
+    "sourceIds": [
+      "a1c",
+      "metrics"
+    ],
+    "summary": "HbA1c and TIR describe different aspects of glucose exposure.",
+    "why": "Reviewing both can reveal whether an improved average came with more time low.",
+    "how": "One is measured from blood haemoglobin; the other uses time-stamped sensor readings and a defined band.",
+    "example": "A learner compares a lab result covering several months with a 14-day sensor report.",
+    "caution": "Different time periods or incomplete sensor wear can make the comparison misleading.",
+    "question": "Can I convert TIR exactly into HbA1c?",
+    "answer": "There is no exact individual conversion.",
+    "takeaways": [
+      "Compare like time periods",
+      "Check sensor coverage",
+      "Read both measures in context"
+    ]
+  },
+  {
+    "id": "eye-health-and-retinopathy",
+    "title": "Eye health and retinopathy",
+    "sourceIds": [
+      "eyes"
+    ],
+    "summary": "Diabetic retinopathy affects small blood vessels in the retina, the light-sensitive layer at the back of the eye.",
+    "why": "Early change can develop while vision seems normal.",
+    "how": "A dilated examination or retinal photography allows professionals to examine areas that ordinary vision checks cannot assess.",
+    "example": "Someone with clear vision still attends the retinal screening arranged by their team.",
+    "caution": "Sudden vision loss, a dark curtain or new marked visual symptoms need urgent assessment.",
+    "question": "Are glasses checks enough?",
+    "answer": "A refraction check and a retinal health assessment serve different purposes.",
+    "takeaways": [
+      "Retinal changes can be silent",
+      "Attend scheduled screening",
+      "Sudden changes need urgent assessment"
+    ]
+  },
+  {
+    "id": "kidney-health-and-albuminuria",
+    "title": "Kidney health and albuminuria",
+    "sourceIds": [
+      "kidney",
+      "adult"
+    ],
+    "summary": "Albuminuria means albumin protein is present in urine above the expected amount.",
+    "why": "Kidney changes can be silent, so urine and blood tests provide different kinds of information.",
+    "how": "Urine albumin-to-creatinine ratio looks for albumin leakage. Estimated filtration rate uses blood results to assess filtering function.",
+    "example": "At review a clinician explains why a urine sample is useful even with a normal blood creatinine.",
+    "caution": "An abnormal result may need confirmation and interpretation in context, including infection or recent exercise.",
+    "question": "Is one elevated urine result a final diagnosis?",
+    "answer": "A clinician considers repeat measurements and the wider clinical picture.",
+    "takeaways": [
+      "Urine and blood tests differ",
+      "Ask about repeat testing",
+      "Review results together"
+    ]
+  },
+  {
+    "id": "peripheral-neuropathy",
+    "title": "Peripheral neuropathy",
+    "sourceIds": [
+      "nerve",
+      "feet"
+    ],
+    "summary": "Peripheral neuropathy is damage to nerves outside the brain and spinal cord, often affecting the feet.",
+    "why": "Loss of protective sensation can let minor injuries go unnoticed.",
+    "how": "Nerve damage can cause pain, tingling or numbness. A clinical foot check assesses sensation along with circulation.",
+    "example": "A person notices rubbing from new shoes only when checking their skin that evening.",
+    "caution": "New weakness, an open wound or an infected-looking foot needs medical advice promptly.",
+    "question": "Does absence of pain mean a foot injury is minor?",
+    "answer": "No. Reduced sensation can mask injury.",
+    "takeaways": [
+      "Loss of feeling can hide injury",
+      "Check skin and footwear",
+      "Report new problems"
+    ]
+  },
+  {
+    "id": "cardiovascular-health",
+    "title": "Cardiovascular health",
+    "sourceIds": [
+      "heart"
+    ],
+    "summary": "Cardiovascular health concerns the heart and blood vessels, including the risk of heart attack and stroke.",
+    "why": "T1D care extends beyond glucose to risk factors such as blood pressure and smoking.",
+    "how": "Over time, high glucose, raised blood pressure and abnormal lipids can affect blood vessels through different mechanisms.",
+    "example": "At a diabetes review a person asks how their family history changes their prevention plan.",
+    "caution": "Chest pain or stroke symptoms need emergency assessment. A routine review is for prevention.",
+    "question": "Is a good glucose average the only heart-health measure?",
+    "answer": "No. Blood pressure, lipids and other risk factors also matter.",
+    "takeaways": [
+      "Review several risk factors",
+      "Include family history",
+      "Know urgent symptoms"
+    ]
+  },
+  {
+    "id": "blood-pressure-and-cholesterol",
+    "title": "Blood pressure and cholesterol",
+    "sourceIds": [
+      "heart",
+      "adult"
+    ],
+    "summary": "Blood pressure measures force on artery walls. A lipid profile measures several types of blood fats.",
+    "why": "Both can affect cardiovascular and kidney risk without causing obvious symptoms.",
+    "how": "Repeated properly taken pressure readings and lipid results help a clinician estimate risk alongside age and medical history.",
+    "example": "A person brings home blood pressure readings and their cuff to a clinic visit.",
+    "caution": "Goals and treatment depend on the individual, including pregnancy and kidney status.",
+    "question": "Does one elevated pressure always mean hypertension?",
+    "answer": "Repeat assessment and clinical context are usually needed.",
+    "takeaways": [
+      "Use reliable measurements",
+      "Discuss individual targets",
+      "Ask what follow-up is due"
+    ]
+  },
+  {
+    "id": "dental-health",
+    "title": "Dental health",
+    "sourceIds": [
+      "dental"
+    ],
+    "summary": "Gums, teeth and saliva are part of diabetes preventive care.",
+    "why": "Gum disease and infections can add discomfort and make eating difficult.",
+    "how": "High glucose and inflammation can affect the tissues around teeth. A dental team can look for early changes.",
+    "example": "A person mentions persistent bleeding when brushing at a dental appointment.",
+    "caution": "Swelling, fever or signs of spreading infection need prompt assessment.",
+    "question": "Should I tell the dentist that I use insulin?",
+    "answer": "Yes. It helps them plan procedures, meal timing and management of a possible low.",
+    "takeaways": [
+      "Report gum bleeding",
+      "Keep dental visits",
+      "Discuss procedure timing"
+    ]
+  },
+  {
+    "id": "foot-care",
+    "title": "Foot care",
+    "sourceIds": [
+      "feet"
+    ],
+    "summary": "Foot care includes checking skin, footwear, circulation and protective sensation.",
+    "why": "A small blister can become a significant problem when healing or sensation is impaired.",
+    "how": "Looking at the soles and between toes helps identify skin changes early. Clinical exams add circulation and nerve checks.",
+    "example": "A walker checks both shoes for a foreign object before setting off.",
+    "caution": "A hot swollen foot, spreading redness or a new ulcer needs timely medical assessment.",
+    "question": "What if I cannot see or reach my feet?",
+    "answer": "Ask for help or discuss an appropriate inspection aid with the team.",
+    "takeaways": [
+      "Inspect skin and shoes",
+      "Ask for help reaching feet",
+      "Seek assessment for new wounds"
+    ]
+  },
+  {
+    "id": "thyroid-and-celiac-screening",
+    "title": "Thyroid and celiac screening",
+    "sourceIds": [
+      "child",
+      "adult"
+    ],
+    "summary": "Autoimmune thyroid disease and celiac disease occur more often in people with T1D.",
+    "why": "Symptoms can overlap with other causes or be absent, especially early.",
+    "how": "Clinicians use targeted blood tests guided by age, symptoms and guideline-based review. Further testing may be needed.",
+    "example": "A family mentions persistent abdominal symptoms and changes in growth at a diabetes review.",
+    "caution": "Do not start a gluten-free diet before discussing testing because removing gluten can affect results.",
+    "question": "Does a positive screening test always confirm disease?",
+    "answer": "Some results require confirmation or specialist interpretation.",
+    "takeaways": [
+      "Raise symptoms with the team",
+      "Ask which tests are appropriate",
+      "Discuss testing before diet changes"
+    ]
+  },
+  {
+    "id": "preventive-appointments",
+    "title": "Preventive appointments",
+    "sourceIds": [
+      "adult",
+      "india"
+    ],
+    "summary": "Preventive review checks for changes that may not yet cause symptoms.",
+    "why": "A planned visit can combine discussions about glucose, emotional health, injection sites and complication screening.",
+    "how": "The appropriate checks depend on age, time since diagnosis, other conditions and local services.",
+    "example": "Someone brings a list of the last eye, kidney, dental and foot checks to their appointment.",
+    "caution": "New or urgent symptoms should not wait for the annual review.",
+    "question": "What is useful to take to a review?",
+    "answer": "Your current medicines, device information, concerns and relevant reports.",
+    "takeaways": [
+      "Bring a short agenda",
+      "Check the screening schedule",
+      "Prioritise new symptoms"
+    ]
+  },
+  {
+    "id": "age-appropriate-screening",
+    "title": "Age-appropriate screening",
+    "sourceIds": [
+      "child",
+      "adult"
+    ],
+    "summary": "Screening schedules differ across childhood, adulthood and pregnancy.",
+    "why": "A test appropriate after several years of diabetes in an adult may be scheduled differently in a growing child.",
+    "how": "Guidelines consider age, pubertal stage, duration of diabetes, previous findings and other risks.",
+    "example": "A teenager transferring to adult care asks the new clinic for a written list of upcoming checks.",
+    "caution": "Avoid applying a timetable copied from a different country or age group without checking locally.",
+    "question": "Who decides the interval after an abnormal result?",
+    "answer": "The treating team tailors follow-up to the finding and individual circumstances.",
+    "takeaways": [
+      "Age and duration matter",
+      "Previous findings influence timing",
+      "Confirm the local plan"
+    ]
+  }
+]

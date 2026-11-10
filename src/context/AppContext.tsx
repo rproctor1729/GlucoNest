@@ -8,8 +8,6 @@ import {
   MealLogEntry,
   InsulinLogEntry,
   ActivityLogEntry,
-  PatternInsight,
-  EducationalGuide,
   CommunityFeedback,
   MealItemSelection,
 } from '../types';
@@ -25,12 +23,12 @@ import {
   mergeRecordsById,
   replaceDemoRecords,
 } from '../lib/localData';
-import { AppLanguage } from '../lib/i18n';
+import { APP_LANGUAGES, type AppLanguage } from '../lib/i18n';
+import { sectionFromHash } from '../lib/navigation';
+import type { TeamMember } from '../data/teamMembers';
 import { mockGlucoseReadings } from '../data/mockGlucose';
 import { initialMockMeals } from '../data/mockMeals';
 import { initialMockInsulin } from '../data/mockInsulin';
-import { mockPatternInsights } from '../data/mockInsights';
-import { educationalGuides } from '../data/educationalContent';
 import {
   fetchNightscoutReadingsWithRetry,
   NightscoutConfig,
@@ -54,6 +52,7 @@ export type GlucoseDataSource = 'demo' | 'manual' | 'nightscout';
 export type DataConnectionStatus = 'disconnected' | 'fetching' | 'connected' | 'error';
 
 interface AppContextType {
+  teamMembers: readonly TeamMember[];
   // Navigation
   activeSection: NavigationSection;
   setActiveSection: (sec: NavigationSection) => void;
@@ -69,9 +68,7 @@ interface AppContextType {
   setLanguage: (language: AppLanguage) => void;
   targetRange: { low: number; high: number };
   largeText: boolean;
-  toggleLargeText: () => void;
   onboardingComplete: boolean;
-  saveTargetRange: (low: number, high: number) => boolean;
   completeOnboarding: (preferences: {
     language: AppLanguage;
     glucoseUnit: GlucoseUnit;
@@ -82,6 +79,7 @@ interface AppContextType {
   // Readings
   readings: GlucoseReading[];
   manualReadings: GlucoseReading[];
+  deleteManualReading: (id: string) => boolean;
   importManualReadings: (readings: GlucoseReading[]) => { imported: number; skipped: number } | null;
   currentReading: GlucoseReading | null;
   addReading: (reading: GlucoseReading) => boolean;
@@ -120,14 +118,7 @@ interface AppContextType {
   clearMealPlate: () => void;
 
   // Pattern Insights
-  patterns: PatternInsight[];
-  activePattern: PatternInsight;
-  setActivePatternId: (id: string) => void;
 
-  // Guides
-  guides: EducationalGuide[];
-  selectedGuide: EducationalGuide | null;
-  setSelectedGuide: (guide: EducationalGuide | null) => void;
 
   // Community Feedback
   feedbackList: CommunityFeedback[];
@@ -138,8 +129,6 @@ interface AppContextType {
   setIsHypoModalOpen: (open: boolean) => void;
   triggerHypoEmergency: () => void;
 
-  isOneTapModalOpen: boolean;
-  setIsOneTapModalOpen: (open: boolean) => void;
 
   // Demo Reset
   resetDemoData: () => void;
@@ -152,11 +141,41 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export function AppProvider({ children }: { children: React.ReactNode }) {
+function readPreference<T extends string>(key: string, choices: readonly T[]): T | null {
+  const raw = window.localStorage.getItem(key);
+  return choices.find(choice => raw === choice || raw === JSON.stringify(choice)) ?? null;
+}
+
+export function AppProvider({ children, teamMembers = [] }: { children: React.ReactNode; teamMembers?: readonly TeamMember[] }) {
   // Navigation
-  const [activeSection, setActiveSection] = useState<NavigationSection>('my-day');
+  const [activeSection, setActiveSectionState] = useState<NavigationSection>('home');
+  const setActiveSection = useCallback((section: NavigationSection) => {
+    setActiveSectionState(section);
+    if (window.location.hash !== `#${section}`) {
+      window.history.pushState(null, '', `#${section}`);
+      if (section === 'knowledge-hub') window.dispatchEvent(new Event('hashchange'));
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
+  useEffect(() => {
+    const restoreSection = () => {
+      if (window.location.hash === '#learn-community') window.history.replaceState(window.history.state, '', '#knowledge-hub');
+      const section = sectionFromHash(window.location.hash);
+      if (section) setActiveSectionState(section);
+      else if (!window.location.hash) setActiveSectionState('home');
+    };
+    restoreSection();
+    window.addEventListener('popstate', restoreSection);
+    window.addEventListener('hashchange', restoreSection);
+    return () => {
+      window.removeEventListener('popstate', restoreSection);
+      window.removeEventListener('hashchange', restoreSection);
+    };
+  }, []);
 
   // Preferences
+  const [preferencesLoaded, setPreferencesLoaded] = useState(false);
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [glucoseUnit, setGlucoseUnit] = useState<GlucoseUnit>('mg/dL');
   const [language, setLanguageState] = useState<AppLanguage>('en');
@@ -176,6 +195,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const fetchSequence = useRef(0);
   const fetchInProgress = useRef(false);
+  const nightscoutAbort = useRef<AbortController | null>(null);
+
+  useEffect(() => () => nightscoutAbort.current?.abort(), []);
   const [meals, setMeals] = useState<MealLogEntry[]>(initialMockMeals);
   const [insulinLogs, setInsulinLogs] = useState<InsulinLogEntry[]>(initialMockInsulin);
   const [activityLogs, setActivityLogs] = useState<ActivityLogEntry[]>(() => [makeDemoActivity()]);
@@ -184,12 +206,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [mealPlate, setMealPlate] = useState<MealItemSelection[]>([]);
 
   // Insights & Patterns
-  const [patterns] = useState<PatternInsight[]>(mockPatternInsights);
-  const [activePatternId, setActivePatternId] = useState<string>('pat-01');
 
-  // Guides
-  const [guides] = useState<EducationalGuide[]>(educationalGuides);
-  const [selectedGuide, setSelectedGuide] = useState<EducationalGuide | null>(null);
 
   // Community Feedback
   const [feedbackList, setFeedbackList] = useState<CommunityFeedback[]>([]);
@@ -198,7 +215,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Modals
   const [isHypoModalOpen, setIsHypoModalOpen] = useState(false);
-  const [isOneTapModalOpen, setIsOneTapModalOpen] = useState(false);
 
   const persistLocalValue = useCallback((key: string, value: unknown): boolean => {
     if (blockedLocalDataKeys.current.has(key)) {
@@ -231,16 +247,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setDarkMode(true);
       }
 
-      const storedUnit = window.localStorage.getItem('gluconest_unit');
-      if (storedUnit === 'mg/dL' || storedUnit === 'mmol/L') {
+      const storedUnit = readPreference<GlucoseUnit>('gluconest_unit', ['mg/dL', 'mmol/L']);
+      if (storedUnit) {
         setGlucoseUnit(storedUnit);
       }
 
       setLargeText(window.localStorage.getItem('gluconest_large_text') === 'true');
 
-      const storedLanguage = window.localStorage.getItem('gluconest_language');
-      if (storedLanguage === 'en' || storedLanguage === 'hi' || storedLanguage === 'ta' ||
-          storedLanguage === 'kn' || storedLanguage === 'te') {
+      const storedLanguage = readPreference('gluconest_language', APP_LANGUAGES.map(item => item.code));
+      if (storedLanguage) {
         setLanguageState(storedLanguage);
       }
 
@@ -292,15 +307,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
       };
 
-      loadCollection(LOCAL_DATA_KEYS.meals, 'meal', isMealLogEntry, setMeals);
-      loadCollection(LOCAL_DATA_KEYS.insulin, 'insulin', isInsulinLogEntry, setInsulinLogs);
-      loadCollection(LOCAL_DATA_KEYS.activity, 'activity', isActivityLogEntry, setActivityLogs);
+      loadCollection(LOCAL_DATA_KEYS.meals, 'meal', isMealLogEntry, (items) =>
+        setMeals([...items.filter((m) => !m.isDemo), ...initialMockMeals])
+      );
+      loadCollection(LOCAL_DATA_KEYS.insulin, 'insulin', isInsulinLogEntry, (items) =>
+        setInsulinLogs([...items.filter((i) => !i.isDemo), ...initialMockInsulin])
+      );
+      loadCollection(LOCAL_DATA_KEYS.activity, 'activity', isActivityLogEntry, (items) =>
+        setActivityLogs([...items.filter((a) => !a.isDemo), makeDemoActivity()])
+      );
       loadCollection(
         LOCAL_DATA_KEYS.readings,
         'glucose reading',
         isManualGlucoseReading,
         (storedReadings) => {
-          setManualReadings(storedReadings);
+          setManualReadings([...storedReadings].sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp)));
           if (storedReadings.length > 0) setDataSource('manual');
         }
       );
@@ -325,6 +346,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       );
     }
 
+    setPreferencesLoaded(true);
     if (invalidCollections.length > 0) {
       const labels = invalidCollections.join(', ');
       console.error(`Invalid saved ${labels} data was not loaded.`);
@@ -339,12 +361,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [language]);
 
   useEffect(() => {
+    if (!preferencesLoaded) return;
     document.documentElement.classList.toggle('large-text', largeText);
     persistLocalValue('gluconest_large_text', largeText);
-  }, [largeText, persistLocalValue]);
+  }, [largeText, preferencesLoaded, persistLocalValue]);
 
   // Sync dark mode class with HTML
   useEffect(() => {
+    if (!preferencesLoaded) return;
     if (darkMode) {
       document.documentElement.classList.add('dark');
       persistLocalValue('gluconest_dark', true);
@@ -352,17 +376,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       document.documentElement.classList.remove('dark');
       persistLocalValue('gluconest_dark', false);
     }
-  }, [darkMode, persistLocalValue]);
+  }, [darkMode, preferencesLoaded, persistLocalValue]);
 
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
-  const toggleLargeText = () => setLargeText((previous) => !previous);
 
   const toggleGlucoseUnit = () => {
-    setGlucoseUnit((prev) => {
-      const next = prev === 'mg/dL' ? 'mmol/L' : 'mg/dL';
-      persistLocalValue('gluconest_unit', next);
-      return next;
-    });
+    const next = glucoseUnit === 'mg/dL' ? 'mmol/L' : 'mg/dL';
+    if (persistLocalValue('gluconest_unit', next)) setGlucoseUnit(next);
   };
 
   const setLanguage = (nextLanguage: AppLanguage) => {
@@ -393,21 +413,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
-  const saveTargetRange = (low: number, high: number) => {
-    if (
-      !Number.isFinite(low) ||
-      !Number.isFinite(high) ||
-      low < 20 ||
-      high > 400 ||
-      low >= high
-    ) {
-      return false;
-    }
-    if (!persistLocalValue('gluconest_target_range', { low, high })) return false;
-    setTargetRange({ low, high });
-    return true;
-  };
-
   const readings = dataSource === 'nightscout'
     ? nightscoutReadings
     : dataSource === 'manual'
@@ -433,6 +438,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
+  const deleteManualReading = (id: string): boolean => {
+    const updated = manualReadings.filter(reading => (reading.id ?? reading.timestamp) !== id);
+    if (!persistLocalValue(LOCAL_DATA_KEYS.readings, updated)) return false;
+    setManualReadings(updated);
+    return true;
+  };
+
   const importManualReadings = (incoming: GlucoseReading[]) => {
     const existing = new Set(
       manualReadings.map((reading) => `${Date.parse(reading.timestamp)}:${reading.value}`)
@@ -447,7 +459,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       .sort((first, second) => Date.parse(first.timestamp) - Date.parse(second.timestamp));
     if (!persistLocalValue(LOCAL_DATA_KEYS.readings, updated)) return null;
     setManualReadings(updated);
-    if (additions.length > 0) setDataSource('manual');
+    if (additions.length > 0 && dataSource !== 'nightscout') setDataSource('manual');
     return { imported: additions.length, skipped: incoming.length - additions.length };
   };
 
@@ -455,11 +467,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (fetchInProgress.current) return;
     const requestId = ++fetchSequence.current;
     fetchInProgress.current = true;
+    const controller = new AbortController();
+    nightscoutAbort.current = controller;
     setConnectionStatus('fetching');
     setConnectionError(null);
 
     try {
-      const fetchedReadings = await fetchNightscoutReadingsWithRetry(config);
+      const fetchedReadings = await fetchNightscoutReadingsWithRetry(config, controller.signal);
       if (requestId !== fetchSequence.current) return;
       setNightscoutReadings(fetchedReadings);
       setDataSource('nightscout');
@@ -474,11 +488,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       );
       setConnectionStatus('error');
     } finally {
-      if (requestId === fetchSequence.current) fetchInProgress.current = false;
+      if (requestId === fetchSequence.current) {
+        fetchInProgress.current = false;
+        nightscoutAbort.current = null;
+      }
     }
   }, []);
 
   const connectNightscout = useCallback(async (config: NightscoutConfig) => {
+    if (fetchInProgress.current) return;
     setNightscoutCredentials(config);
     setNightscoutUrl(config.url.trim());
     await runNightscoutFetch(config);
@@ -491,16 +509,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const disconnectNightscout = useCallback(() => {
     fetchSequence.current += 1;
+    nightscoutAbort.current?.abort();
+    nightscoutAbort.current = null;
     fetchInProgress.current = false;
     setNightscoutCredentials(null);
     setNightscoutReadings([]);
     setDemoReadings(mockGlucoseReadings);
     setNightscoutUrl('');
-    setDataSource('demo');
+    setDataSource(manualReadings.length > 0 ? 'manual' : 'demo');
     setConnectionStatus('disconnected');
     setLastSuccessfulFetch(null);
     setConnectionError(null);
-  }, []);
+  }, [manualReadings]);
 
   const isNightscoutConnected = dataSource === 'nightscout';
 
@@ -526,19 +546,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [newEntry, ...meals];
     setMeals(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated.filter((m) => !m.isDemo));
   };
 
   const updateMealLog = (id: string, updatedFields: Partial<MealLogEntry>): boolean => {
     const updated = meals.map((m) => (m.id === id ? { ...m, ...updatedFields } : m));
     setMeals(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated.filter((m) => !m.isDemo));
   };
 
   const deleteMealLog = (id: string): boolean => {
     const updated = meals.filter((m) => m.id !== id);
+    if (!persistLocalValue(LOCAL_DATA_KEYS.meals, updated.filter((m) => !m.isDemo))) return false;
     setMeals(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.meals, updated);
+    return true;
   };
 
   // Insulin management
@@ -550,19 +571,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [newEntry, ...insulinLogs];
     setInsulinLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated.filter((i) => !i.isDemo));
   };
 
   const updateInsulinLog = (id: string, updatedFields: Partial<InsulinLogEntry>): boolean => {
     const updated = insulinLogs.map((i) => (i.id === id ? { ...i, ...updatedFields } : i));
     setInsulinLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated.filter((i) => !i.isDemo));
   };
 
   const deleteInsulinLog = (id: string): boolean => {
     const updated = insulinLogs.filter((i) => i.id !== id);
+    if (!persistLocalValue(LOCAL_DATA_KEYS.insulin, updated.filter((i) => !i.isDemo))) return false;
     setInsulinLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.insulin, updated);
+    return true;
   };
 
   // Activity management
@@ -574,13 +596,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [newEntry, ...activityLogs];
     setActivityLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.activity, updated);
+    return persistLocalValue(LOCAL_DATA_KEYS.activity, updated.filter((a) => !a.isDemo));
   };
 
   const deleteActivityLog = (id: string): boolean => {
     const updated = activityLogs.filter((a) => a.id !== id);
+    if (!persistLocalValue(LOCAL_DATA_KEYS.activity, updated.filter((a) => !a.isDemo))) return false;
     setActivityLogs(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.activity, updated);
+    return true;
   };
 
   // Meal Plate management
@@ -636,8 +659,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       submittedAt: new Date().toISOString(),
     };
     const updated = [newFb, ...feedbackList];
+    if (!persistLocalValue(LOCAL_DATA_KEYS.feedback, updated)) return false;
     setFeedbackList(updated);
-    return persistLocalValue(LOCAL_DATA_KEYS.feedback, updated);
+    return true;
   };
 
   // Hypo trigger
@@ -645,7 +669,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setIsHypoModalOpen(true);
   };
 
-  const activePattern = patterns.find((p) => p.id === activePatternId) || patterns[0];
 
   // Resets only the sample content. Anything the user logged (isDemo false) is kept.
   const resetDemoData = () => {
@@ -657,9 +680,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMeals(nextMeals);
     setInsulinLogs(nextInsulin);
     setActivityLogs(nextActivities);
-    persistLocalValue(LOCAL_DATA_KEYS.meals, nextMeals);
-    persistLocalValue(LOCAL_DATA_KEYS.insulin, nextInsulin);
-    persistLocalValue(LOCAL_DATA_KEYS.activity, nextActivities);
+    persistLocalValue(LOCAL_DATA_KEYS.meals, nextMeals.filter((m) => !m.isDemo));
+    persistLocalValue(LOCAL_DATA_KEYS.insulin, nextInsulin.filter((i) => !i.isDemo));
+    persistLocalValue(LOCAL_DATA_KEYS.activity, nextActivities.filter((a) => !a.isDemo));
   };
 
   const importLocalDataBackup = (backup: LocalDataBackup) => {
@@ -722,6 +745,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        teamMembers,
         activeSection,
         setActiveSection,
         darkMode,
@@ -734,13 +758,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setLanguage,
         targetRange,
         largeText,
-        toggleLargeText,
         onboardingComplete,
         completeOnboarding,
-        saveTargetRange,
         readings,
         manualReadings,
         importManualReadings,
+        deleteManualReading,
         currentReading,
         addReading,
         dataSource,
@@ -768,19 +791,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         updateMealPlateItem,
         removeFromMealPlate,
         clearMealPlate,
-        patterns,
-        activePattern,
-        setActivePatternId,
-        guides,
-        selectedGuide,
-        setSelectedGuide,
         feedbackList,
         submitFeedback,
         isHypoModalOpen,
         setIsHypoModalOpen,
         triggerHypoEmergency,
-        isOneTapModalOpen,
-        setIsOneTapModalOpen,
         resetDemoData,
         localDataError,
         dismissLocalDataError,

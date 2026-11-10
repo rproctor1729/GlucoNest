@@ -10,8 +10,8 @@ export interface CommunityFeedback {
   currentAppsOther?: string;
   dislikedAspects: string[];
   dislikedAspectsOther?: string;
-  indianFoodHelpfulness: 'Extremely helpful' | 'Somewhat helpful' | 'Not sure' | 'I already know my counts';
-  patternExplanationsHelpfulness: 'Yes - helps me understand the why' | 'Sometimes' | 'No - just numbers please';
+  indianFoodHelpfulness: 'Not answered' | 'Extremely helpful' | 'Somewhat helpful' | 'Not sure' | 'I already know my counts';
+  patternExplanationsHelpfulness: 'Not answered' | 'Yes - helps me understand the why' | 'Sometimes' | 'No - just numbers please';
   featureWouldUseRegularly: string[];
   featureOther?: string;
   wishSomeoneBuilt: string;

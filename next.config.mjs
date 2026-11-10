@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  images: { formats: ['image/avif', 'image/webp'] },
+  // Preview servers must not overwrite the user's running development chunks.
+  distDir: process.env.NODE_ENV === 'development'
+    ? (process.env.GLUCONEST_PREVIEW === '1' ? '.next-preview' : '.next-dev')
+    : '.next',
   eslint: {
     ignoreDuringBuilds: true,
   },

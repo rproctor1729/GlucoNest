@@ -1,134 +1,93 @@
 'use client';
 
-import React from 'react';
-import {
-  ShieldCheck,
-  Lock,
-  Sparkles,
-  Compass,
-  CheckCircle2,
-  AlertCircle,
-} from 'lucide-react';
+import { useRef, useState } from 'react';
+import Image from 'next/image';
+import { ArrowUpRight, BookOpen, ChartNoAxesCombined, Heart, Utensils } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
+import styles from './AboutSection.module.css';
+import TeamSection from './TeamSection';
+
+const chapters = [
+  { id: 'food', label: 'Familiar food', icon: Utensils, title: 'A place for the food you grew up with.', description: 'Indian meals, everyday portions, and carbohydrate estimates you can explore.' },
+  { id: 'moments', label: 'Daily moments', icon: BookOpen, title: 'A day is made of little things.', description: 'Keep meals, readings, insulin, and movement together, with room for your notes.' },
+  { id: 'perspective', label: 'More perspective', icon: ChartNoAxesCombined, title: 'See a little more of the story.', description: 'Explore glucose history and prepare a reading summary for your care team.' },
+] as const;
+
+function JournalArtwork() {
+  return <svg viewBox="0 0 320 300" fill="none" aria-hidden="true" className={styles.journal}>
+    <rect x="65" y="29" width="204" height="252" rx="18" fill="currentColor" opacity=".08" transform="rotate(7 167 155)" />
+    <rect x="51" y="20" width="212" height="254" rx="17" className={styles.journalPage} stroke="currentColor" strokeWidth="1.5" />
+    <path d="M81 21v252" stroke="currentColor" opacity=".2" />
+    {[58, 104, 150, 196, 242].map(y => <path key={y} d={`M43 ${y}h18`} stroke="currentColor" strokeWidth="3" strokeLinecap="round" />)}
+    <text x="103" y="66" fill="currentColor" fontSize="12" letterSpacing="2">LITTLE MOMENTS</text>
+    <g stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="118" cy="111" r="13" opacity=".2" /><path d="M111 111l5 5 9-11" /><path d="M146 105h80M146 116h48" opacity=".4" />
+      <circle cx="118" cy="157" r="13" opacity=".2" /><path d="M111 157l5 5 9-11" /><path d="M146 151h65M146 162h83" opacity=".4" />
+      <circle cx="118" cy="203" r="13" opacity=".2" /><path d="M111 203l5 5 9-11" /><path d="M146 197h81M146 208h56" opacity=".4" />
+    </g>
+    <path d="M234 267c-30-33-16-64 18-71 2 32-5 54-18 71Z" className={styles.leafFill} /><path d="m234 267 14-58" stroke="currentColor" strokeWidth="1.5" />
+  </svg>;
+}
+
+function PerspectiveArtwork() {
+  return <svg viewBox="0 0 360 300" fill="none" aria-hidden="true" className={styles.curve}>
+    <rect x="18" y="36" width="324" height="224" rx="22" className={styles.chartPaper} />
+    <path d="M43 99h274M43 151h274M43 203h274" stroke="currentColor" strokeDasharray="3 7" opacity=".17" />
+    <rect x="43" y="112" width="274" height="79" rx="7" fill="currentColor" opacity=".055" />
+    <path d="M43 179C67 179 72 190 94 179S129 104 155 123s35 60 62 44 32-60 53-39 25 34 47 24v67H43Z" fill="currentColor" opacity=".08" />
+    <path className={styles.drawCurve} pathLength="1" d="M43 179C67 179 72 190 94 179S129 104 155 123s35 60 62 44 32-60 53-39 25 34 47 24" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    <circle cx="217" cy="167" r="7" className={styles.chartPaper} stroke="currentColor" strokeWidth="2" />
+    <path d="M210 68h83" stroke="currentColor" strokeWidth="3" opacity=".2" strokeLinecap="round" />
+    <circle cx="49" cy="68" r="4" fill="currentColor" opacity=".6" /><circle cx="63" cy="68" r="4" fill="currentColor" opacity=".3" /><circle cx="77" cy="68" r="4" fill="currentColor" opacity=".15" />
+    <text x="180" y="245" textAnchor="middle" fill="currentColor" fontSize="9" letterSpacing="2">CONTEXT, NOT A SCORE</text>
+  </svg>;
+}
 
 export default function AboutSection() {
-  return (
-    <div className="space-y-8 sm:space-y-10 animate-fadeIn py-4">
-      {/* Prototype Objective & Transparency Notice */}
-      <div className="max-w-4xl mx-auto p-6 rounded-2xl bg-amber-50/80 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 space-y-3">
-        <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200 font-bold text-sm">
-          <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-          <span>About This Community Preview (v0.1)</span>
+  const { setActiveSection, teamMembers } = useApp();
+  const [active, setActive] = useState(0);
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const chapter = chapters[active];
+  const selectWithKeyboard = (event: React.KeyboardEvent, index: number) => {
+    let next: number;
+    if (event.key === 'ArrowRight') next = (index + 1) % chapters.length;
+    else if (event.key === 'ArrowLeft') next = (index + chapters.length - 1) % chapters.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = chapters.length - 1;
+    else return;
+    event.preventDefault();
+    setActive(next);
+    tabs.current[next]?.focus();
+  };
+
+  return <div className={`${styles.about} animate-fadeIn`}>
+    <section className={styles.story} aria-label="The idea behind GlucoNest">
+      <div className={styles.copy}>
+        <span className={styles.littleMark} aria-hidden="true">✳</span>
+        <h2>Life first.<br /><em>Numbers in context.</em></h2>
+        <p>GlucoNest brings familiar food, everyday moments, and glucose history into one thoughtful space for life with type 1.</p>
+        <div className={styles.tabs} role="tablist" aria-label="Explore the idea">
+          {chapters.map(({id, label, icon: Icon}, index) => <button key={id} ref={element => { tabs.current[index] = element; }} type="button" role="tab" id={`about-tab-${id}`} aria-controls="about-story-panel" aria-selected={active === index} tabIndex={active === index ? 0 : -1} onClick={() => setActive(index)} onKeyDown={event => selectWithKeyboard(event, index)}><Icon size={16} strokeWidth={1.7} aria-hidden="true" /><span>{label}</span></button>)}
         </div>
-        <p className="text-xs sm:text-sm text-amber-900/90 dark:text-amber-200/90 leading-relaxed">
-          This is an independent, non-commercial prototype. The objective is <strong>NOT</strong> to operate a production clinical healthcare platform or replace your medical team.
-          It is built so fellow Type-1 warriors across India can explore the interface, test the Indian food carb library, experience calm non-judgmental tracking, and help shape what an ideal community companion should look like.
-        </p>
-        <div className="pt-1 flex items-center justify-between text-xs">
-          <span className="text-amber-800 dark:text-amber-300 font-medium">
-            No login · No backend database · Prototype data stays in your browser
-          </span>
+        <span className={styles.invitation}>Three small ways to make room for your day.</span>
+      </div>
+      <div role="tabpanel" id="about-story-panel" aria-labelledby={`about-tab-${chapter.id}`} tabIndex={0} className={styles.storyPanel}>
+        <div key={chapter.id} className={styles.scene}>
+          <div className={styles.artwork}>
+            <div className={styles.orbit} aria-hidden="true" />
+            <span className={styles.artSpark} aria-hidden="true">✳</span>
+            {chapter.id === 'food' ? <div className={styles.plate}><Image src="/images/indian-meal.png" alt="Idli, dosa, pesarattu, rice, curd, and chutneys arranged on a South Indian plate" fill sizes="(max-width: 600px) 230px, 290px" className={styles.foodPhoto} /></div> : chapter.id === 'moments' ? <JournalArtwork /> : <PerspectiveArtwork />}
+            <span className={`${styles.floatingLabel} ${styles.labelOne}`}>{chapter.id === 'food' ? 'Familiar flavours' : chapter.id === 'moments' ? 'A meal. A walk. A moment.' : 'The bigger picture'}</span>
+            <span className={`${styles.floatingLabel} ${styles.labelTwo}`}>{chapter.id === 'food' ? 'Your kind of everyday' : chapter.id === 'moments' ? 'The details belong together' : 'Illustration · not glucose data'}</span>
+          </div>
+          <div className={styles.caption}><span className={styles.chapterNumber}>0{active + 1} / 03</span><h3>{chapter.title}</h3><p>{chapter.description}</p></div>
         </div>
       </div>
-
-      <section className="max-w-5xl mx-auto rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#131b24] p-5 sm:p-7 space-y-5">
-        <div className="max-w-3xl space-y-2">
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Built by People Living with T1D
-          </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-            GlucoNest is shaped by the everyday realities of living with Type-1 diabetes, particularly in India. It aims to make diabetes information more understandable, practical and non-judgmental.
-          </p>
-        </div>
-
-        <div className="border-t border-slate-100 dark:border-slate-800 pt-5 space-y-3">
-          <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Compass className="w-4 h-4 text-nest-500" />
-            <span>Our Community Language Charter</span>
-          </h2>
-          <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-            Living with T1D involves making many extra decisions every day. Supportive, blame-free language helps keep glucose numbers neutral—not a measure of personal effort or worth.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="p-3 rounded-xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200/60 dark:border-rose-900/40 text-rose-900 dark:text-rose-300 space-y-1">
-              <span className="font-bold line-through">Avoid: “You slipped up again.”</span>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Blame-free language recognizes that a glucose change is not a personal failure.
-              </p>
-            </div>
-
-            <div className="p-3 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-900/40 text-emerald-900 dark:text-emerald-300 space-y-1">
-              <span className="font-bold">Prefer: “Your glucose rose. Here&apos;s something to try.”</span>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Supportive, practical wording treats numbers as neutral information.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* The 4 Unbreakable Promises */}
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-8 space-y-1">
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
-            Our Four Ethics Promises
-          </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Stated plainly. Zero corporate fine print.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="bg-white dark:bg-[#131b24] p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-subtle space-y-2.5">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-              <CheckCircle2 className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              1. Core tracking free forever
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Managing Type-1 in India is already expensive — imported CGM sensors, test strips, rapid insulin cartridges, and pen needles carry significant financial burden. You will never be paywalled from viewing your glucose curves or logging carbs.
-            </p>
-          </div>
-
-          <div className="bg-white dark:bg-[#131b24] p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-subtle space-y-2.5">
-            <div className="w-10 h-10 rounded-xl bg-nest-500/10 text-nest-600 dark:text-nest-400 flex items-center justify-center font-bold">
-              <Lock className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              2. Zero ads, zero commercial distraction
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Your headspace is precious. You will never see pharma advertisements, sponsored &quot;miracle herbal cure&quot; banners, or popup sales pitches interrupting your 3 AM hypo treatment.
-            </p>
-          </div>
-
-          <div className="bg-white dark:bg-[#131b24] p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-subtle space-y-2.5">
-            <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              3. Health data is NEVER sold or monetized
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              All interactions in this prototype reside exclusively inside your browser&apos;s localStorage. We have no backend databases, no trackers, and no interest in monetizing or selling health information. Data is stored unencrypted in this browser, so on a shared device, clear this site&apos;s data when you are done.
-            </p>
-          </div>
-
-          <div className="bg-white dark:bg-[#131b24] p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-subtle space-y-2.5">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              4. Built for the reality of Indian life
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Western apps assume oatmeal, bagels, and temperate weather. GlucoNest centers around idlis, rotis, biryanis, summer heat insulin storage in clay pots, and celebrating festivals with self-compassion.
-            </p>
-          </div>
-        </div>
-      </div>
-
+    </section>
+    <div className={styles.closing}>
+      <section className={styles.kindness}><Heart size={22} strokeWidth={1.4} aria-hidden="true" /><div><h2>A gentler kind of tracking.</h2><p>Glucose numbers are information. They don’t define your effort, your worth, or your day.</p></div></section>
+      <section className={styles.community}><div><span className={styles.kicker}>STILL TAKING SHAPE, WITH YOU</span><p>Everyday experience makes better ideas.</p></div><button type="button" onClick={() => setActiveSection('feedback')}>Share an idea <ArrowUpRight size={17} aria-hidden="true" /></button></section>
     </div>
-  );
+    <TeamSection members={teamMembers} />
+  </div>;
 }

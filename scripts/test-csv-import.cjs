@@ -38,6 +38,12 @@ test('reports invalid rows while preserving valid readings', () => {
   assert.deepEqual(result.rejectedRows, [3, 4]);
 });
 
+test('uses the glucose header units when an optional units cell is blank', () => {
+  const result = parseGlucoseCsv('Timestamp,Glucose (mmol/L),Units\n2026-11-08T09:00:00Z,5.5,\n2026-11-08T09:05:00Z,120,mg/dL');
+  assert.deepEqual(result.readings.map((reading) => reading.value), [99, 120]);
+  assert.deepEqual(result.rejectedRows, []);
+});
+
 test('rejects unknown shapes, malformed quoting, empty data, and oversized input', () => {
   assert.throws(() => parseGlucoseCsv('Name,Value\nA,1'), /timestamp or date/);
   assert.throws(() => parseGlucoseCsv('Timestamp,Value\n"not closed,120'), /unclosed quoted/);

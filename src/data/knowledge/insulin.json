@@ -1,0 +1,144 @@
+[
+  {
+    "id": "carbohydrate-counting",
+    "title": "Carbohydrate counting",
+    "sourceIds": [
+      "carbs",
+      "homefood",
+      "ifct"
+    ],
+    "summary": "Carbohydrate is a family of nutrients that includes starch, sugars and fibre. Counting starts with the amount of carbohydrate in the portion you actually eat.",
+    "why": "The sweet taste of a food tells you little about its starch. Rice, roti, idli and dal can all contribute carbohydrate to a meal.",
+    "how": "Read the label’s reference weight. Scale the listed carbohydrate to your portion. For a homemade dish, add the carbohydrate from the ingredients and divide by the cooked yield.",
+    "example": "A family makes poha in one pan. Weighing the cooked panful and a single bowl helps estimate that bowl’s share even when the recipe changes.",
+    "caution": "Net-carb claims and fibre labelling conventions differ. Ask your dietitian which label line to use. Oil, fillings and serving sizes vary between a home dosa and a restaurant dosa.",
+    "question": "Does an unsweetened snack count?",
+    "answer": "It may contain starch. Check the carbohydrate line and serving size even if added sugar is zero.",
+    "takeaways": [
+      "Read the reference weight",
+      "Count starch as well as sugars",
+      "Scale to the portion eaten"
+    ]
+  },
+  {
+    "id": "insulin-to-carbohydrate-ratio-icr",
+    "title": "Insulin-to-carbohydrate ratio (ICR)",
+    "sourceIds": [
+      "ratio",
+      "india"
+    ],
+    "summary": "An insulin-to-carbohydrate ratio describes how many grams of carbohydrate one unit of mealtime insulin is expected to cover.",
+    "why": "A breakfast ratio and an evening ratio can differ for the same person because insulin sensitivity changes through the day.",
+    "how": "In a teaching example, 1:10 means one unit for ten grams. The historical 500 rule divides 500 by total daily insulin to estimate grams per unit as a clinical starting point.",
+    "example": "A learner reads “1:10” aloud as “ten grams per unit” before looking at any arithmetic.",
+    "caution": "Starting estimates require professional adjustment. Illness, exercise, insulin already active and meal composition all affect actual care.",
+    "question": "What are the units of an ICR?",
+    "answer": "Grams of carbohydrate per unit of insulin. Reversing them changes the meaning.",
+    "takeaways": [
+      "Read the ratio as grams per unit",
+      "Ratios may vary across a day",
+      "The 500 rule is a starting estimate"
+    ]
+  },
+  {
+    "id": "insulin-sensitivity-factor-isf",
+    "title": "Insulin sensitivity factor (ISF)",
+    "sourceIds": [
+      "ratio",
+      "pump"
+    ],
+    "summary": "The correction factor describes the expected glucose change from one unit of rapid-acting insulin, in specified glucose units.",
+    "why": "Meal coverage accounts for carbohydrate. A correction addresses glucose above an agreed target. The two use different quantities.",
+    "how": "The historical 1800 rule divides 1800 by total daily insulin to estimate a correction factor in mg/dL per unit. It is an approximation for clinical assessment.",
+    "example": "A class compares “ten grams per unit” on one card with “fifty mg/dL per unit” on another and identifies which describes sensitivity.",
+    "caution": "Never enter an mg/dL factor into an mmol/L field. A correction plan must account for active insulin and changing sensitivity.",
+    "question": "Can a correction factor change?",
+    "answer": "Yes. Exercise, illness and time of day can change how strongly insulin acts.",
+    "takeaways": [
+      "Sensitivity uses glucose units per insulin unit",
+      "Check mg/dL versus mmol/L",
+      "A meal ratio serves a different purpose"
+    ]
+  },
+  {
+    "id": "insulin-on-board-iob",
+    "title": "Insulin on board (IOB)",
+    "sourceIds": [
+      "pump",
+      "aid"
+    ],
+    "summary": "Insulin on board is a device’s estimate of earlier insulin that may still be working.",
+    "why": "Glucose can be rising while a previous bolus is still active. Repeating a correction may cause a low later.",
+    "how": "A pump models delivery over an assumed action curve. Algorithms differ in which insulin they count and how they display it.",
+    "example": "Two devices show different IOB values after the same example meal because their models and settings differ.",
+    "caution": "An injection delivered outside a pump may be missing from its history. An IOB display cannot measure circulating insulin.",
+    "question": "Does zero displayed IOB prove that insulin has stopped acting?",
+    "answer": "No. It describes what the device’s model counts.",
+    "takeaways": [
+      "Check timing of previous doses",
+      "Models differ between systems",
+      "Account for injections outside the pump"
+    ]
+  },
+  {
+    "id": "rage-bolusing",
+    "title": "Rage bolusing",
+    "sourceIds": [
+      "pump",
+      "low"
+    ],
+    "summary": "Rage bolusing is a community term for giving extra insulin out of frustration with a persistent high.",
+    "why": "Several doses may overlap even when the glucose trace looks unchanged at first.",
+    "how": "Insulin takes time to act, and sensor glucose can lag. Overlapping corrections may reach their strongest effect together.",
+    "example": "After a large lunch, someone sees another high alert and checks the timing of their last bolus and their written plan.",
+    "caution": "Persistent highs with illness or suspected pump failure need the sick-day plan and clinical help. Waiting for a graph to change can miss a delivery problem.",
+    "question": "What information is useful before contacting the team?",
+    "answer": "The timing of insulin, glucose trend, symptoms, ketone results if available, and any delivery alarms.",
+    "takeaways": [
+      "Pause and inspect the dosing history",
+      "Consider delayed absorption",
+      "Use the agreed plan for persistent highs"
+    ]
+  },
+  {
+    "id": "types-of-insulin",
+    "title": "Types of insulin",
+    "sourceIds": [
+      "insulin",
+      "storage",
+      "india"
+    ],
+    "summary": "Rapid- and short-acting insulin usually cover meals. Intermediate-, long- and ultra-long-acting preparations provide longer coverage.",
+    "why": "A familiar-looking pen can contain a different insulin, concentration or duration of action.",
+    "how": "Onset means when an effect begins, peak means strongest action and duration means how long activity lasts. Human regular insulin and engineered analogues have different profiles. Some basal analogues have little pronounced peak.",
+    "example": "A pharmacist checks the full product name and concentration when a replacement vial looks different from the original.",
+    "caution": "U-40, U-100 and U-200 describe units per mL. Devices and concentrations are not interchangeable. Follow the exact product’s storage and in-use instructions.",
+    "question": "Does a stronger concentration mean a longer duration?",
+    "answer": "Concentration describes units per volume. The formulation determines the action profile.",
+    "takeaways": [
+      "Identify name and strength",
+      "Match the device",
+      "Check the in-use expiry"
+    ]
+  },
+  {
+    "id": "bolus-timing",
+    "title": "Bolus timing",
+    "sourceIds": [
+      "india",
+      "insulin"
+    ],
+    "summary": "Bolus timing is the relationship between a mealtime dose and when food is eaten.",
+    "why": "A mismatch between digestion and insulin action can produce an early low or a later rise.",
+    "how": "Rapid insulin still takes time to absorb. Fat, protein, meal size and delayed stomach emptying can shift when glucose appears after a meal.",
+    "example": "A small idli breakfast and an oily biryani dinner may produce different curves even with similar carbohydrate estimates.",
+    "caution": "Timing depends on insulin type, current glucose, activity and whether the meal is certain to arrive. Use the plan agreed with your care team.",
+    "question": "Why might a restaurant meal be tricky?",
+    "answer": "The arrival time, portion and ingredients may all be uncertain.",
+    "takeaways": [
+      "Match timing to insulin type",
+      "Allow for uncertainty about meals",
+      "Look beyond the first post-meal reading"
+    ]
+  }
+]

@@ -1,60 +1,41 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useId, useMemo, useState } from 'react';
+import { Activity, ArrowUpRight, ChevronDown, Database, RefreshCw, RotateCcw, Utensils, Droplets } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
-import {
-  convertGlucose,
-  formatUnitLabel,
-  getTrendSymbol,
-  getGlucoseStatus,
-  getGlucoseStatusColor,
-} from '@/utils/glucoseUtils';
+import { convertGlucose, formatUnitLabel, getTrendSymbol, getGlucoseStatus, getGlucoseStatusColor } from '@/utils/glucoseUtils';
 import { calculateDetailedTIR } from '@/utils/tirCalculator';
 import { translate } from '@/lib/i18n';
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ReferenceArea,
-  ReferenceLine,
-} from 'recharts';
+import { getReadingWindow } from '@/utils/chartWindow';
+import { summarizeToday } from '@/utils/today';
+import TimeInRangeRing from './TimeInRangeRing';
+import styles from './DashboardSection.module.css';
+import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ReferenceArea, ReferenceLine, Brush } from 'recharts';
 
 export default function DashboardSection() {
-  const {
-    readings,
-    currentReading,
-    glucoseUnit,
-    patterns,
-    activePattern,
-    setActivePatternId,
-    setActiveSection,
-    resetDemoData,
-    dataSource,
-    connectionStatus,
-    isNightscoutConnected,
-    lastSuccessfulFetch,
-    connectionError,
-    refreshNightscout,
-    darkMode,
-    targetRange,
-    language,
-    meals,
-  } = useApp();
-
+  const { readings, currentReading, glucoseUnit, setActiveSection, resetDemoData, dataSource, connectionStatus,
+    isNightscoutConnected, lastSuccessfulFetch, connectionError, refreshNightscout, darkMode, targetRange, language, meals } = useApp();
   const [timeRange, setTimeRange] = useState<'3h' | '6h' | '12h' | '24h'>('24h');
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   const [glucoseDetailsExpanded, setGlucoseDetailsExpanded] = useState(false);
-
+  const chartGradientId = useId();
+  const [showTargetBand, setShowTargetBand] = useState(true);
+  const [chartWindow, setChartWindow] = useState<{startIndex:number;endIndex:number} | null>(null);
+  useEffect(() => setChartWindow(null), [timeRange, readings]);
+  const [reducedMotion, setReducedMotion] = useState(true);
+  useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const updateMotion = () => setReducedMotion(preference.matches);
+    updateMotion();
+    preference.addEventListener('change', updateMotion);
+    return () => preference.removeEventListener('change', updateMotion);
+  }, []);
   const tirStats = calculateDetailedTIR(readings, targetRange.low, targetRange.high);
 
   useEffect(() => {
-    if (!isNightscoutConnected) return;
     const timer = window.setInterval(() => setNow(Date.now()), 60 * 1000);
     return () => window.clearInterval(timer);
-  }, [isNightscoutConnected]);
+  }, []);
 
   const filteredReadings = useMemo(() => {
     if (dataSource !== 'demo' && readings.length > 0) {
@@ -91,284 +72,73 @@ export default function DashboardSection() {
   const yDomainMin = glucoseUnit === 'mmol/L' ? 2.5 : 40;
   const yDomainMax = glucoseUnit === 'mmol/L' ? 16.5 : 300;
 
-  if (!currentReading) {
-    return (
-      <div className="space-y-6 animate-fadeIn">
-        <div className="rounded-2xl border border-nest-200 dark:border-nest-900/60 bg-white dark:bg-[#131b24] p-6 sm:p-8 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                Connected to Nightscout
-              </span>
-              <h2 className="mt-4 text-xl font-bold text-slate-900 dark:text-white">No glucose readings available</h2>
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                The instance returned no valid readings. Demo readings are not mixed with this source.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => void refreshNightscout()}
-              disabled={connectionStatus === 'fetching'}
-              className="h-10 px-4 rounded-xl bg-nest-600 hover:bg-nest-700 disabled:opacity-60 text-white text-xs font-semibold"
-            >
-              {connectionStatus === 'fetching' ? 'Fetching…' : 'Refresh'}
-            </button>
-          </div>
-          {connectionError && <p role="alert" className="text-xs text-amber-700 dark:text-amber-300">{connectionError}</p>}
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Last successful fetch: {lastSuccessfulFetch ? new Date(lastSuccessfulFetch).toLocaleString() : 'Not available'}
-          </p>
-          <button
-            type="button"
-            onClick={() => setActiveSection('devices')}
-            className="text-xs font-semibold text-nest-700 dark:text-nest-300 hover:underline"
-          >
-            Manage data sources
-          </button>
-        </div>
-      </div>
-    );
-  }
 
-  const trend = currentReading.trend ? getTrendSymbol(currentReading.trend) : null;
-  const status = getGlucoseStatus(currentReading.value, targetRange.low, targetRange.high);
-  const statusColors = getGlucoseStatusColor(status, darkMode, targetRange.low, targetRange.high);
-  const statusLabel = status === 'in-range'
-    ? translate(language, 'dashboard.inRange')
-    : status === 'low' || status === 'very-low'
-      ? translate(language, 'dashboard.low')
-      : translate(language, 'dashboard.high');
-  const latestReadingTime = Number.isFinite(Date.parse(currentReading.timestamp))
-    ? new Date(currentReading.timestamp).toLocaleString()
-    : currentReading.timeLabel;
-  const readingIsStale = isNightscoutConnected &&
-    Number.isFinite(Date.parse(currentReading.timestamp)) &&
+  const trend = currentReading?.trend ? getTrendSymbol(currentReading.trend) : null;
+  const status = currentReading ? getGlucoseStatus(currentReading.value, targetRange.low, targetRange.high) : null;
+  const statusColors = status ? getGlucoseStatusColor(status, darkMode, targetRange.low, targetRange.high) : null;
+  const statusLabel = status === 'in-range' ? translate(language, 'dashboard.inRange')
+    : status === 'low' || status === 'very-low' ? translate(language, 'dashboard.low') : translate(language, 'dashboard.high');
+  const latestReadingTime = currentReading && Number.isFinite(Date.parse(currentReading.timestamp))
+    ? new Date(currentReading.timestamp).toLocaleString() : currentReading?.timeLabel;
+  const readingIsStale = isNightscoutConnected && currentReading && Number.isFinite(Date.parse(currentReading.timestamp)) &&
     now - Date.parse(currentReading.timestamp) > 10 * 60 * 1000;
-  const todayKey = new Date(now).toDateString();
-  const todaysReadings = readings.filter((reading) => {
-    const timestamp = Date.parse(reading.timestamp);
-    return Number.isFinite(timestamp) && new Date(timestamp).toDateString() === todayKey;
-  });
-  const todaysStats = calculateDetailedTIR(todaysReadings, targetRange.low, targetRange.high);
-  const lowsToday = todaysReadings.filter((reading) => reading.value < targetRange.low).length;
-  const latestMealToday = [...meals]
-    .filter((meal) => new Date(meal.timestamp).toDateString() === todayKey)
-    .sort((first, second) => Date.parse(second.timestamp) - Date.parse(first.timestamp))[0];
+  const today = summarizeToday(dataSource === 'demo' ? [] : readings, meals, [], new Date(now), targetRange);
+  const latestMealToday = meals.find(meal => !meal.isDemo && meal.timestamp === today.lastMealTime);
+  const rangeRows = [
+    { label: 'Below range', value: tirStats.timeBelowRangePercent, color: '#e8979e' },
+    { label: 'Within range', value: tirStats.inRangePercent, color: '#739b64' },
+    { label: 'Above range', value: tirStats.timeAboveRangePercent, color: '#d6ad61' },
+  ];
+  const details = [
+    { label: 'Average glucose', value: currentReading ? convertGlucose(tirStats.meanGlucose, glucoseUnit) + ' ' + formatUnitLabel(glucoseUnit) : '—' },
+    { label: 'Lowest glucose', value: currentReading ? convertGlucose(tirStats.minReading, glucoseUnit) + ' ' + formatUnitLabel(glucoseUnit) : '—' },
+    { label: 'Highest glucose', value: currentReading ? convertGlucose(tirStats.maxReading, glucoseUnit) + ' ' + formatUnitLabel(glucoseUnit) : '—' },
+    { label: 'Glucose variability (CV)', value: tirStats.hasSufficientVariabilityData ? tirStats.coefficientOfVariation + '%' : 'Insufficient data' },
+    { label: 'Estimated GMI', value: tirStats.hasSufficientGmiData ? tirStats.gmiPercent + '%' : 'Insufficient data' },
+  ];
+  const visibleWindow = getReadingWindow(chartWindow, filteredReadings.length);
+  const selectedPeriodReadings = filteredReadings.slice(visibleWindow.startIndex, visibleWindow.endIndex + 1);
+  const periodSummary = selectedPeriodReadings.length ? {
+    average: Math.round(selectedPeriodReadings.reduce((sum, reading) => sum + reading.value, 0) / selectedPeriodReadings.length),
+    minimum: Math.min(...selectedPeriodReadings.map(reading => reading.value)),
+    maximum: Math.max(...selectedPeriodReadings.map(reading => reading.value)),
+  } : null;
 
   return (
-    <div className="space-y-5 sm:space-y-6 animate-fadeIn">
-      <section className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#131b24] p-4 sm:p-6 shadow-subtle">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className={`px-2 py-1 rounded-md text-[10px] font-bold tracking-wider ${
-            isNightscoutConnected
-              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300'
-              : dataSource === 'manual'
-                ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-                : 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300'
-          }`}>
-            {isNightscoutConnected ? 'NIGHTSCOUT DATA' : dataSource === 'manual' ? 'MANUAL DATA' : 'DEMO DATA'}
-          </span>
-          <div className="flex items-center gap-3 text-xs">
-            {isNightscoutConnected && (
-              <button
-                type="button"
-                onClick={() => void refreshNightscout()}
-                disabled={connectionStatus === 'fetching'}
-                className="font-semibold text-slate-600 dark:text-slate-300 hover:underline disabled:opacity-60"
-              >
-                {connectionStatus === 'fetching' ? 'Fetching…' : 'Refresh'}
-              </button>
-            )}
-            {dataSource === 'demo' && (
-              <button
-                type="button"
-                onClick={resetDemoData}
-                className="font-semibold text-slate-600 dark:text-slate-300 hover:underline"
-              >
-                Reset demo
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={() => setActiveSection('devices')}
-              className="font-semibold text-nest-700 dark:text-nest-300 hover:underline"
-            >
-              Data sources
-            </button>
+    <div className={styles.dashboard}>
+      <section className={styles.overview + ' bg-white dark:bg-[var(--surface)] border-slate-200 dark:border-slate-800'} aria-label="Glucose overview">
+        <div className={styles.sourceBar}>
+          <div className={styles.sourceIdentity}><span className={styles.sourceIcon + ' bg-nest-50 text-nest-700 dark:bg-nest-950 dark:text-nest-300'}><Database size={18} /></span><div><span className={styles.sourceLabel + (dataSource === 'demo' ? ' text-amber-800 dark:text-amber-300' : ' text-nest-700 dark:text-nest-300')}>{dataSource === 'demo' ? 'EXPLORING SAMPLE DATA' : isNightscoutConnected ? 'NIGHTSCOUT · READ ONLY' : 'YOUR MANUAL READINGS'}</span><p className="text-slate-500 dark:text-slate-400">{dataSource === 'demo' ? 'A preview of your day. Personal logs stay separate.' : isNightscoutConnected ? 'Last fetched: ' + (lastSuccessfulFetch ? new Date(lastSuccessfulFetch).toLocaleString() : 'Not yet') : 'Your own readings, recorded in this browser.'}</p></div></div>
+          <div className={styles.sourceActions}>
+            {dataSource === 'demo' && <button type="button" className={styles.quietButton + ' text-slate-500 dark:text-slate-400'} onClick={resetDemoData}><RotateCcw size={14} /><span>Reset sample</span></button>}
+            {isNightscoutConnected && <button type="button" className={styles.quietButton + ' text-slate-600 dark:text-slate-300'} onClick={() => void refreshNightscout()} disabled={connectionStatus === 'fetching'}><RefreshCw size={14} /><span>{connectionStatus === 'fetching' ? 'Refreshing…' : 'Refresh'}</span></button>}
+            <button type="button" className={styles.dataButton + ' text-nest-800 bg-nest-100 hover:bg-nest-200 dark:text-nest-200 dark:bg-nest-900 dark:hover:bg-nest-800'} onClick={() => setActiveSection('devices')}><span>{dataSource === 'demo' ? 'Connect your data' : 'Manage data source'}</span><ArrowUpRight size={16} /></button>
           </div>
         </div>
+        {connectionError && <p role="alert" className={styles.connectionError + ' text-amber-800 bg-amber-50 dark:text-amber-200 dark:bg-amber-950/30'}>{connectionError} {isNightscoutConnected ? 'Showing the last successfully fetched readings.' : dataSource === 'demo' ? 'Sample data remains active.' : 'Your saved readings remain active.'}</p>}
 
-        <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-          {isNightscoutConnected
-            ? `Read-only Nightscout · Last fetched ${lastSuccessfulFetch ? new Date(lastSuccessfulFetch).toLocaleString() : 'not yet'}`
-            : dataSource === 'manual'
-              ? 'Manually entered readings only; demo samples are not included.'
-              : 'Sample readings for exploring the prototype.'}
-          {readingIsStale && <span className="ml-2 font-semibold">Last reading is stale · {latestReadingTime}</span>}
-        </p>
-        {connectionError && (
-          <p role="alert" className="mt-2 text-xs text-amber-700 dark:text-amber-300">
-            {connectionError} {isNightscoutConnected ? 'Showing the last successfully fetched readings.' : 'Demo data remains active.'}
-          </p>
-        )}
-
-        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 sm:items-center gap-5 sm:gap-8">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-              <span>{translate(language, 'dashboard.current')}</span>
-              <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${statusColors.badgeBg}`}>
-                {statusLabel}
-              </span>
+        {currentReading ? <>
+          <div className={styles.snapshotGrid}>
+            <div className={styles.spotlight}>
+              <div className={styles.spotlightTop}><span>{dataSource === 'demo' ? 'LATEST SAMPLE READING' : translate(language, 'dashboard.current')}</span><Activity size={23} strokeWidth={1.4} /></div>
+              <div className={styles.readingValue}><strong>{convertGlucose(currentReading.value, glucoseUnit)}</strong><span>{formatUnitLabel(glucoseUnit)}</span>{trend && <span className={styles.trendSymbol} aria-label={trend.text}>{trend.symbol}</span>}</div>
+              <div className={styles.readingState}><span className={styles.statusBadge + ' ' + statusColors?.badgeBg}>{statusLabel}</span><span>{trend?.text || 'No trend available'}</span></div>
+              <div className={styles.readingTimestamp}><span>{latestReadingTime}</span><span>{readingIsStale ? 'STALE READING' : dataSource === 'demo' ? 'SAMPLE' : 'LATEST AVAILABLE'}</span></div>
             </div>
-            <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-6xl sm:text-7xl font-bold font-mono tracking-tight text-slate-900 dark:text-white tabular-nums">
-                {convertGlucose(currentReading.value, glucoseUnit)}
-              </span>
-              <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{formatUnitLabel(glucoseUnit)}</span>
-              {trend && (
-                <span className="text-2xl font-bold text-nest-600 dark:text-nest-400" title={trend.text} aria-label={trend.text}>
-                  {trend.symbol}
-                </span>
-              )}
-            </div>
-            <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-              {trend ? `${trend.text} · ` : ''}{latestReadingTime}
-            </p>
-          </div>
-
-          <div className="sm:border-l sm:border-slate-100 sm:dark:border-slate-800 sm:pl-7">
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="text-xs font-medium text-slate-600 dark:text-slate-300">{translate(language, 'dashboard.tir')}</span>
-              <span className="text-3xl font-bold font-mono tracking-tight text-emerald-600 dark:text-emerald-400">
-                {tirStats.hasSufficientData ? `${tirStats.inRangePercent}%` : '—'}
-              </span>
-            </div>
-            <div
-              className="mt-2 h-2.5 w-full rounded-full overflow-hidden flex bg-slate-200 dark:bg-slate-800"
-              role="img"
-              aria-label={tirStats.hasSufficientData
-                ? `Time in range ${tirStats.inRangePercent}%, below range ${tirStats.timeBelowRangePercent}%, above range ${tirStats.timeAboveRangePercent}%`
-                : 'Time in range unavailable due to insufficient readings'}
-            >
-              {tirStats.hasSufficientData && (
-                <>
-                  <div style={{ width: `${tirStats.veryLowPercent}%` }} className="bg-rose-700" />
-                  <div style={{ width: `${tirStats.lowPercent}%` }} className="bg-rose-400" />
-                  <div style={{ width: `${tirStats.inRangePercent}%` }} className="bg-emerald-500" />
-                  <div style={{ width: `${tirStats.highPercent}%` }} className="bg-amber-400" />
-                  <div style={{ width: `${tirStats.veryHighPercent}%` }} className="bg-orange-600" />
-                </>
-              )}
-            </div>
-            <div className="mt-1.5 flex justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
-              <span className="text-rose-600 dark:text-rose-400">TBR {tirStats.hasSufficientData ? `${tirStats.timeBelowRangePercent}%` : '—'}</span>
-              <span className="text-emerald-600 dark:text-emerald-400">TIR {tirStats.hasSufficientData ? `${tirStats.inRangePercent}%` : '—'}</span>
-              <span className="text-amber-600 dark:text-amber-400">TAR {tirStats.hasSufficientData ? `${tirStats.timeAboveRangePercent}%` : '—'}</span>
-            </div>
-            {!tirStats.hasSufficientData && (
-              <p className="mt-1 text-[10px] text-slate-400">
-                At least 12 hours of usable readings are needed for time-based percentages.
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-4 border-t border-slate-100 dark:border-slate-800 pt-3">
-          <button
-            type="button"
-            aria-expanded={glucoseDetailsExpanded}
-            aria-controls="glucose-details"
-            onClick={() => setGlucoseDetailsExpanded((expanded) => !expanded)}
-            className="inline-flex min-h-8 items-center gap-2 text-xs font-semibold text-nest-700 dark:text-nest-300 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500"
-          >
-            {glucoseDetailsExpanded
-              ? translate(language, 'dashboard.hideDetails')
-              : translate(language, 'dashboard.details')}
-            <span aria-hidden="true" className={`transition-transform duration-200 ${glucoseDetailsExpanded ? 'rotate-180' : ''}`}>⌄</span>
-          </button>
-          <div
-            id="glucose-details"
-            aria-hidden={!glucoseDetailsExpanded}
-            className={`grid transition-[grid-template-rows,opacity] duration-200 ease-in-out ${
-              glucoseDetailsExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-            }`}
-          >
-            <div className="min-h-0 overflow-hidden">
-              <div className="grid grid-cols-2 gap-x-6 gap-y-3 pt-3 sm:grid-cols-3">
-                <div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400">Average glucose</div>
-                  <div className="text-sm font-semibold font-mono text-slate-900 dark:text-white">
-                    {convertGlucose(tirStats.meanGlucose, glucoseUnit)} {formatUnitLabel(glucoseUnit)}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400">Lowest glucose</div>
-                  <div className="text-sm font-semibold font-mono text-slate-900 dark:text-white">
-                    {convertGlucose(tirStats.minReading, glucoseUnit)} {formatUnitLabel(glucoseUnit)}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400">Highest glucose</div>
-                  <div className="text-sm font-semibold font-mono text-slate-900 dark:text-white">
-                    {convertGlucose(tirStats.maxReading, glucoseUnit)} {formatUnitLabel(glucoseUnit)}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400">Glucose variability (CV)</div>
-                  <div className="text-sm font-semibold font-mono text-slate-900 dark:text-white">
-                    {tirStats.hasSufficientVariabilityData ? `${tirStats.coefficientOfVariation}%` : 'Insufficient data'}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400">Estimated GMI</div>
-                  <div className="text-sm font-semibold font-mono text-slate-900 dark:text-white">
-                    {tirStats.hasSufficientGmiData ? `${tirStats.gmiPercent}%` : 'Insufficient data'}
-                  </div>
-                </div>
-              </div>
-              {isNightscoutConnected && (
-                <p className="pt-2 text-[10px] text-slate-400">
-                  {tirStats.totalReadings} readings · {Math.floor(tirStats.coverageMinutes / 60)}h usable coverage
-                  {!tirStats.hasSufficientGmiData && ' · GMI requires at least 10 days of readings'}
-                </p>
-              )}
-              {tirStats.hasSufficientGmiData && (
-                <p className="pt-1 text-[10px] text-slate-400">Estimated GMI is a CGM-derived estimate, not laboratory HbA1c.</p>
-              )}
+            <div className={styles.rangePanel}>
+              <div className={styles.rangeHeading}><div><p className={styles.eyebrow + ' text-slate-500 dark:text-slate-400'}>THE BIGGER PICTURE</p><h2>Time in range</h2></div><span className={styles.historyPill + ' text-slate-500 bg-slate-50 dark:text-slate-400 dark:bg-slate-900'}>Available history</span></div>
+              <div className={styles.rangeVisual}><TimeInRangeRing percent={tirStats.hasSufficientData ? tirStats.inRangePercent : null} size={128} /><dl className={styles.rangeLegend}>{rangeRows.map(row => <div key={row.label}><dt className="text-slate-500 dark:text-slate-400"><span style={{backgroundColor:row.color}} />{row.label}</dt><dd>{tirStats.hasSufficientData ? row.value + '%' : '—'}</dd></div>)}</dl></div>
+              <p className={styles.rangeNote + ' text-slate-500 dark:text-slate-400'}>{tirStats.hasSufficientData ? 'Target band: ' + targetLow + '–' + targetHigh + ' ' + formatUnitLabel(glucoseUnit) + ' · ' + tirStats.totalReadings + ' readings' : 'At least 12 hours of usable readings are needed for time-based percentages.'}</p>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section
-        aria-label="Today so far"
-        className="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200/90 bg-white p-4 dark:border-slate-800 dark:bg-[#131b24] sm:grid-cols-3"
-      >
-        <div>
-          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Today so far · Time in range</div>
-          <div className="mt-1 text-lg font-bold font-mono text-emerald-700 dark:text-emerald-300">
-            {todaysStats.hasSufficientData ? `${todaysStats.inRangePercent}%` : 'Not enough data'}
-          </div>
-        </div>
-        <div>
-          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Readings below your range</div>
-          <div className="mt-1 text-lg font-bold font-mono text-slate-900 dark:text-white">{lowsToday}</div>
-        </div>
-        <div>
-          <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Last meal logged today</div>
-          <div className="mt-1 truncate text-sm font-semibold text-slate-900 dark:text-white">
-            {latestMealToday?.name ?? 'No meal logged today'}
-          </div>
-          {latestMealToday?.isDemo && <span className="text-[9px] font-bold text-amber-700 dark:text-amber-300">SAMPLE</span>}
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#131b24] p-4 sm:p-6 shadow-subtle space-y-4">
+        </> : <div className={styles.emptyState}><span className={styles.emptyIcon + ' text-nest-600 bg-nest-50 dark:text-nest-300 dark:bg-nest-950'}><Activity size={38} strokeWidth={1.3} /></span><h2>No glucose readings available</h2><p className="text-slate-500 dark:text-slate-400">{isNightscoutConnected ? 'The connected instance returned no valid readings. Refresh above to try again.' : 'Add a reading in Quick Log, or use the data connection above to import your readings.'} Sample readings are kept separate from your own data.</p><button type="button" className="button-primary" onClick={() => setActiveSection('quick-log')}>Open Quick Log <ArrowUpRight size={16} /></button></div>}
+      {currentReading && <div className={`${styles.chartPanel} border-slate-100 dark:border-slate-800`}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-0.5">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
-              {isNightscoutConnected ? 'Nightscout glucose history' : dataSource === 'manual' ? 'Manual glucose history' : 'Continuous glucose curve'}
+            <p className={styles.eyebrow + ' text-nest-600 dark:text-nest-300'}>YOUR DAY, IN PERSPECTIVE</p>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+              {isNightscoutConnected ? 'Nightscout glucose history' : dataSource === 'manual' ? 'Manual glucose history' : 'Glucose through the day'}
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
               Target: {targetLow}–{targetHigh} {formatUnitLabel(glucoseUnit)}
@@ -381,11 +151,11 @@ export default function DashboardSection() {
                 key={range}
                 type="button"
                 aria-pressed={timeRange === range}
-                onClick={() => setTimeRange(range)}
+                onClick={() => { setChartWindow(null); setTimeRange(range); }}
                 className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
                   timeRange === range
                     ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-semibold shadow-sm'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-300'
                 }`}
               >
                 {range}
@@ -394,12 +164,18 @@ export default function DashboardSection() {
           </div>
         </div>
 
+        <div className={styles.curveToolbar}>
+          <div className={styles.periodStats} aria-label="Selected period summary">{periodSummary && [{label:'Mean',value:periodSummary.average},{label:'Lowest',value:periodSummary.minimum},{label:'Highest',value:periodSummary.maximum}].map(stat => <span key={stat.label}><small className="text-slate-500 dark:text-slate-400">{stat.label}</small><strong>{convertGlucose(stat.value,glucoseUnit)}</strong></span>)}<small className="text-slate-400">{formatUnitLabel(glucoseUnit)} · {chartWindow ? 'Zoomed selection' : timeRange + ' summary'}</small></div>
+          <button type="button" className={styles.targetToggle + ' text-nest-700 dark:text-nest-300'} aria-pressed={showTargetBand} onClick={() => setShowTargetBand(value => !value)}><span style={{backgroundColor:showTargetBand ? '#83a775' : '#94a3b8'}} />Target band {showTargetBand ? 'on' : 'off'}</button>
+        </div>
         <div id="glucose-chart-description" className="sr-only">
           {translate(language, 'dashboard.chartSummary')}
         </div>
-        <div className="h-[320px] sm:h-[420px] lg:h-[480px] w-full" role="region" aria-label="Glucose chart" aria-describedby="glucose-chart-description">
+        <div className={styles.chartCanvas} role="region" aria-label="Glucose chart" aria-describedby="glucose-chart-description">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData} margin={{ top: 15, right: 15, left: -20, bottom: 5 }}>
+            <AreaChart key={timeRange} accessibilityLayer data={chartData} margin={{ top: 20, right: 15, left: -15, bottom: 8 }}>
+              <defs><linearGradient id={chartGradientId} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#73a283" stopOpacity={0.28} /><stop offset="100%" stopColor="#73a283" stopOpacity={0.01} /></linearGradient></defs>
+              <CartesianGrid strokeDasharray="3 7" vertical={false} stroke={darkMode ? '#26372f' : '#e9eee5'} />
               <XAxis
                 dataKey="chartTime"
                 tick={{ fontSize: 11, fill: darkMode ? '#94a3b8' : '#64748b' }}
@@ -412,7 +188,7 @@ export default function DashboardSection() {
                 axisLine={{ stroke: darkMode ? '#334155' : '#cbd5e1' }}
                 tickLine={false}
               />
-              <Tooltip
+              <Tooltip cursor={{stroke:darkMode ? '#b7cd9c' : '#6d8759',strokeDasharray:'4 5',strokeWidth:1}}
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
@@ -430,21 +206,24 @@ export default function DashboardSection() {
                   return null;
                 }}
               />
-              <ReferenceArea y1={targetLow} y2={targetHigh} fill="#10b981" fillOpacity={darkMode ? 0.08 : 0.06} />
-              <ReferenceLine y={targetHigh} stroke={darkMode ? '#334155' : '#e2e8f0'} strokeDasharray="3 3" />
-              <ReferenceLine y={targetLow} stroke={darkMode ? '#334155' : '#e2e8f0'} strokeDasharray="3 3" />
-              <Line
+              {showTargetBand && <ReferenceArea y1={targetLow} y2={targetHigh} fill="#10b981" fillOpacity={darkMode ? 0.12 : 0.12} />}
+              {showTargetBand && <ReferenceLine y={targetHigh} stroke={darkMode ? '#334155' : '#e2e8f0'} strokeDasharray="3 3" />}
+              {showTargetBand && <ReferenceLine y={targetLow} stroke={darkMode ? '#334155' : '#e2e8f0'} strokeDasharray="3 3" />}
+              <Area isAnimationActive={!reducedMotion && !chartWindow} animationDuration={900} animationEasing="ease-out"
+                fill={`url(#${chartGradientId})`}
                 type="monotone"
                 dataKey="displayValue"
-                stroke="#5c9183"
-                strokeWidth={2.75}
+                stroke={darkMode ? '#a3c7ab' : '#527e5e'}
+                strokeWidth={3}
                 dot={false}
                 activeDot={{ r: 5, fill: '#5c9183', stroke: '#ffffff', strokeWidth: 2 }}
               />
-            </LineChart>
+              {chartData.length > 1 && <Brush ariaLabel="Glucose history zoom handle. Use left and right arrow keys to change the visible time window." startIndex={visibleWindow.startIndex} endIndex={visibleWindow.endIndex} onChange={range => { if (range.startIndex !== undefined && range.endIndex !== undefined) setChartWindow({startIndex:range.startIndex,endIndex:range.endIndex}); }} dataKey="chartTime" height={28} travellerWidth={9} stroke={darkMode ? '#65816b' : '#a7b99a'} fill={darkMode ? '#16241d' : '#f4f7ed'} tickFormatter={() => ''}><AreaChart><Area dataKey="displayValue" stroke="#7f9b70" fill="#7f9b7025" isAnimationActive={false} /></AreaChart></Brush>}
+            </AreaChart>
           </ResponsiveContainer>
         </div>
 
+        <p className={styles.navigatorHint + ' text-slate-500 dark:text-slate-400'}>Hover or use the arrow keys to inspect readings. Drag the navigator handles to zoom within this period.</p>
         <details className="border-t border-slate-100 pt-3 text-xs dark:border-slate-800">
           <summary className="cursor-pointer font-semibold text-nest-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nest-500 dark:text-nest-300">
             Text alternative: view chart readings
@@ -452,7 +231,7 @@ export default function DashboardSection() {
           <div className="mt-3 max-h-64 overflow-auto">
             <table className="w-full text-left text-[11px]">
               <caption className="sr-only">Glucose readings shown in the continuous glucose chart</caption>
-              <thead className="sticky top-0 bg-white text-slate-500 dark:bg-[#131b24] dark:text-slate-400">
+              <thead className="sticky top-0 bg-white text-slate-500 dark:bg-[var(--surface)] dark:text-slate-400">
                 <tr>
                   <th scope="col" className="p-2">Time</th>
                   <th scope="col" className="p-2">Glucose ({formatUnitLabel(glucoseUnit)})</th>
@@ -472,7 +251,7 @@ export default function DashboardSection() {
           </div>
         </details>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800 pt-3 text-xs text-slate-500">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800 pt-3 text-xs text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded bg-emerald-500/20 border border-emerald-500/40" />
@@ -487,53 +266,20 @@ export default function DashboardSection() {
             {isNightscoutConnected ? 'NIGHTSCOUT DATA' : dataSource === 'manual' ? 'MANUAL DATA' : 'DEMO DATA'}
           </span>
         </div>
-      </section>
-
-      {dataSource === 'demo' && activePattern && (
-        <section className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#131b24] px-4 py-4 sm:px-5">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold text-slate-900 dark:text-white">Today&apos;s insight</h2>
-                <span className="rounded bg-amber-50 dark:bg-amber-950/40 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-amber-800 dark:text-amber-300">
-                  DEMO
-                </span>
-              </div>
-              <p className="mt-2 text-sm font-medium text-slate-800 dark:text-slate-200">
-                {activePattern.observation}
-              </p>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                {activePattern.historicalContext} This is an example from sample data, not a recommendation.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setActiveSection('insights')}
-              className="shrink-0 text-xs font-semibold text-nest-700 dark:text-nest-300 hover:underline"
-            >
-              Explore more
-            </button>
+      </div>}
+      {currentReading && <>
+          <div className={styles.todayRow + ' border-slate-100 dark:border-slate-800'}>
+            <div className={styles.todayIntro}><span className={styles.todayIcon + ' bg-nest-50 text-nest-600 dark:bg-nest-950 dark:text-nest-300'}><Droplets size={19} /></span><div><strong>Your own day</strong><small className="text-slate-500 dark:text-slate-400">Personal logs only</small></div></div>
+            <div className={styles.todayMetric}><span className="text-slate-500 dark:text-slate-400">Readings today</span><strong>{today.readingCount}</strong></div>
+            <div className={styles.todayMetric}><span className="text-slate-500 dark:text-slate-400">Below your range</span><strong>{today.lowCount}</strong></div>
+            <div className={styles.lastMeal}><Utensils size={17} className="text-slate-400" /><div><span className="text-slate-500 dark:text-slate-400">Last meal today</span><strong>{latestMealToday?.name || 'Nothing logged yet'}</strong></div></div>
           </div>
-          {patterns.length > 1 && (
-            <div className="mt-3 flex gap-1.5" aria-label="Choose a demo insight">
-              {patterns.map((pattern, index) => (
-                <button
-                  key={pattern.id}
-                  type="button"
-                  aria-label={`Show demo insight ${index + 1}`}
-                  aria-pressed={activePattern.id === pattern.id}
-                  onClick={() => setActivePatternId(pattern.id)}
-                  className={`h-1.5 w-5 rounded-full transition-colors ${
-                    activePattern.id === pattern.id
-                      ? 'bg-nest-600'
-                      : 'bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600'
-                  }`}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-      )}
+          <div className={styles.detailArea + ' border-slate-100 dark:border-slate-800'}><button type="button" aria-expanded={glucoseDetailsExpanded} aria-controls="glucose-details" className={styles.detailToggle + ' text-nest-700 dark:text-nest-300'} onClick={() => setGlucoseDetailsExpanded(v => !v)}>{glucoseDetailsExpanded ? translate(language,'dashboard.hideDetails') : translate(language,'dashboard.details')}<ChevronDown size={15} style={{transform:glucoseDetailsExpanded ? 'rotate(180deg)' : undefined}} /></button>
+            {glucoseDetailsExpanded && <div id="glucose-details" className={styles.detailContent}><dl>{details.map(item => <div key={item.label}><dt className="text-slate-500 dark:text-slate-400">{item.label}</dt><dd>{item.value}</dd></div>)}</dl>{tirStats.hasSufficientGmiData && <p className="text-slate-500 dark:text-slate-400">Estimated GMI is a CGM-derived estimate, not laboratory HbA1c.</p>}</div>}
+          </div>
+
+      </>}
+      </section>
     </div>
   );
 }

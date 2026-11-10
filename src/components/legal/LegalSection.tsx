@@ -10,11 +10,11 @@ export default function LegalSection() {
   return (
     <div className="mx-auto max-w-4xl space-y-5 animate-fadeIn">
       <header className="space-y-1">
-        <h1 className="text-xl font-bold text-slate-900 dark:text-white">Privacy, terms &amp; contact</h1>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Privacy, terms &amp; contact</h2>
         <p className="text-xs text-slate-500 dark:text-slate-400">Plain-language information for this browser-based prototype.</p>
       </header>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#131b24]">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[var(--surface)]">
         <h2 className="font-semibold text-slate-900 dark:text-white">Privacy</h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
           <li>Records you enter are stored in this browser&apos;s local storage. Browser storage is not encrypted and may be cleared by your browser or by anyone with access to this device.</li>
@@ -24,14 +24,14 @@ export default function LegalSection() {
         </ul>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#131b24]">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[var(--surface)]">
         <h2 className="font-semibold text-slate-900 dark:text-white">Terms and safety</h2>
         <p className="mt-3 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
           GlucoNest is an independent prototype for education and self-tracking. It is not a medical device, clinical service, emergency alert, diagnosis, or treatment recommendation. Do not rely on it for insulin decisions, hypoglycaemia response, or urgent care. Use your prescribed care plan and established device alerts, and discuss health decisions with your clinical team. The prototype is provided as-is and may be unavailable, incomplete, or contain errors.
         </p>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#131b24]">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[var(--surface)]">
         <h2 className="font-semibold text-slate-900 dark:text-white">Contact</h2>
         <p className="mt-2 text-xs text-slate-600 dark:text-slate-300">
           Use the feedback page to share comments. Feedback is saved in this browser; sending it to the maintainer is a separate choice.

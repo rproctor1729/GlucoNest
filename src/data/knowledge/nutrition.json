@@ -1,0 +1,240 @@
+[
+  {
+    "id": "carbohydrates-protein-and-fat",
+    "title": "Carbohydrates, protein and fat",
+    "sourceIds": [
+      "carbs",
+      "weight"
+    ],
+    "summary": "Foods often contain several nutrients. Carbohydrate generally has the most immediate influence on post-meal glucose.",
+    "why": "A bowl of dal contributes both carbohydrate and protein; calling it a protein food alone can miss part of the meal.",
+    "how": "Starch and sugars supply glucose. Protein and fat influence fullness and can change the timing of the response.",
+    "example": "A lunch includes chapati, dal, curd and paneer. The learner considers each ingredient and its portion.",
+    "caution": "Food-group labels are shortcuts. A gravy may include flour, milk or sugar even when its main ingredient is paneer.",
+    "question": "Does a savoury food contain carbohydrate?",
+    "answer": "It can. Rice, pulses, flour and milk all contribute.",
+    "takeaways": [
+      "Count carbohydrate-containing ingredients",
+      "Include pulses and dairy",
+      "Consider the whole portion"
+    ]
+  },
+  {
+    "id": "glycemic-index-versus-glycemic-load",
+    "title": "Glycemic index versus glycemic load",
+    "sourceIds": [
+      "gi"
+    ],
+    "summary": "Glycemic index (GI) compares glucose responses to equal amounts of available carbohydrate. Load (GL) also accounts for the carbohydrate in the portion.",
+    "why": "A small portion and a large plate of the same rice share a GI but can have different loads.",
+    "how": "GL is GI multiplied by available carbohydrate grams in a portion, divided by 100. Grinding, cooking and mixed meals can change the response.",
+    "example": "A person compares a spoonful of pulao with a full serving rather than ranking the rice by GI alone.",
+    "caution": "GI tables cannot predict an individual curve or determine insulin doses.",
+    "question": "Does a low GI make the amount unimportant?",
+    "answer": "No. Portion and total carbohydrate still matter.",
+    "takeaways": [
+      "GI compares equal carbohydrate quantities",
+      "GL includes portion size",
+      "Mixed meals add uncertainty"
+    ]
+  },
+  {
+    "id": "total-carbohydrate-versus-sugars",
+    "title": "Total carbohydrate versus sugars",
+    "sourceIds": [
+      "label",
+      "carbs"
+    ],
+    "summary": "Sugars make up one part of the carbohydrate in a food. Starch can contribute substantially even when little sugar is listed.",
+    "why": "Reading only added sugars can miss much of the carbohydrate in bread, biscuits or breakfast cereal.",
+    "how": "Compare the carbohydrate and sugar entries using the same reference weight. Sugar is already included in the carbohydrate figure under the relevant label convention.",
+    "example": "A packet of unsweetened crackers shows little sugar but lists carbohydrate from flour.",
+    "caution": "Do not add the sugars line to carbohydrate a second time.",
+    "question": "Does “no added sugar” mean carbohydrate-free?",
+    "answer": "No. Grains, fruit and milk may still supply carbohydrate.",
+    "takeaways": [
+      "Read carbohydrate and sugar separately",
+      "Count starch",
+      "Avoid double-counting sugars"
+    ]
+  },
+  {
+    "id": "fibre-and-digestion",
+    "title": "Fibre and digestion",
+    "sourceIds": [
+      "weight",
+      "gi"
+    ],
+    "summary": "Fibre is the part of plant food that resists digestion in the small intestine.",
+    "why": "It contributes to bowel health and can affect how a meal is absorbed.",
+    "how": "Food structure matters. Whole fruit and juice deliver different amounts of fibre and can produce different responses.",
+    "example": "A learner compares a whole orange with strained juice and checks the portion of each.",
+    "caution": "Fibre reporting differs across countries. Avoid a universal subtraction rule for insulin decisions.",
+    "question": "Is the fibre in dal the only reason its curve differs from rice?",
+    "answer": "No. Protein, preparation, portion and the rest of the meal matter too.",
+    "takeaways": [
+      "Compare whole and processed foods",
+      "Check local label conventions",
+      "Ask about fibre counting"
+    ]
+  },
+  {
+    "id": "high-fat-and-high-protein-meals",
+    "title": "High-fat and high-protein meals",
+    "sourceIds": [
+      "india",
+      "gi"
+    ],
+    "summary": "A mixed meal can affect glucose over a longer period than its immediate carbohydrate response suggests.",
+    "why": "Checking only an early reading can miss a later rise.",
+    "how": "Fat may slow stomach emptying. Digestion and later metabolic effects of protein and fat can spread the glucose response over hours.",
+    "example": "A learner compares several evenings after paratha and paneer with evenings after a lighter meal.",
+    "caution": "One curve cannot establish a personal dosing pattern. Discuss repeated delayed rises with your team.",
+    "question": "Is there a fixed delay for every high-fat meal?",
+    "answer": "No. Ingredients, portion and the person all influence the timing.",
+    "takeaways": [
+      "Look beyond early readings",
+      "Consider meal composition",
+      "Review repeated patterns"
+    ]
+  },
+  {
+    "id": "portion-estimation",
+    "title": "Portion estimation",
+    "sourceIds": [
+      "homefood",
+      "ifct"
+    ],
+    "summary": "A portion is the amount eaten. A reference serving is the amount a database uses to describe a food.",
+    "why": "Katoris, ladles, idlis and rotis come in different sizes.",
+    "how": "Weigh a familiar household serving once and compare it with the reference weight. For recipes, account for the cooked yield.",
+    "example": "A home cook weighs a ladle of sambar and a serving of khichdi. Water changes their cooked weight without adding carbohydrate.",
+    "caution": "Do not apply raw rice values gram-for-gram to cooked rice. Rasam, dal and curries vary with the recipe.",
+    "question": "Does a larger-looking bowl always contain more carbohydrate?",
+    "answer": "No. The ingredients and actual portion weight both matter.",
+    "takeaways": [
+      "Weigh a familiar serving",
+      "Match cooked with cooked",
+      "Account for recipe water"
+    ]
+  },
+  {
+    "id": "reading-food-labels-in-india",
+    "title": "Reading food labels in India",
+    "sourceIds": [
+      "label",
+      "carbs"
+    ],
+    "summary": "Indian packaged-food labels identify a reference quantity and list nutrients such as carbohydrate, total sugars and added sugars.",
+    "why": "A packet can contain multiple servings, while the nutrition panel may describe 100 g or 100 mL.",
+    "how": "Match the stated basis to the amount eaten. Convert a per-100-g figure by multiplying by portion grams and dividing by 100.",
+    "example": "A shopper compares two namkeen labels on a per-100-g basis, then weighs the handful they plan to eat.",
+    "caution": "Check whether figures refer to dry mix or prepared food. Sugars and added sugars are not extra quantities to add to total carbohydrate.",
+    "question": "Is the packet’s front claim enough for carb counting?",
+    "answer": "Use the nutrition panel and the actual portion.",
+    "takeaways": [
+      "Identify the label basis",
+      "Scale to what you ate",
+      "Read carbohydrate alongside sugars"
+    ]
+  },
+  {
+    "id": "restaurant-and-street-food-estimates",
+    "title": "Restaurant and street-food estimates",
+    "sourceIds": [
+      "homefood",
+      "ifct"
+    ],
+    "summary": "Restaurant estimates start with the visible starches and a plausible serving size.",
+    "why": "Batter thickness, fillings, sweet chutney and accompaniments can vary between stalls.",
+    "how": "Split a meal into components such as dosa, potato filling and sambar. Use a close reference food and acknowledge uncertainty.",
+    "example": "For chaat, a learner identifies potato, puffed rice, sev and chutney before estimating the portion.",
+    "caution": "A visually similar home recipe is a guide, not a measured value for the restaurant dish.",
+    "question": "What if the cook cannot give ingredient weights?",
+    "answer": "Record a reasonable portion description and keep the estimate visibly approximate.",
+    "takeaways": [
+      "Identify the main ingredients",
+      "Estimate the actual plate",
+      "Record uncertainty"
+    ]
+  },
+  {
+    "id": "festival-foods-and-sweets",
+    "title": "Festival foods and sweets",
+    "sourceIds": [
+      "ifct",
+      "homefood"
+    ],
+    "summary": "Festival foods can be counted using ingredients and serving weight, just like everyday dishes.",
+    "why": "Two pieces of mithai can differ in size and in the balance of flour, milk, nuts, syrup and ghee.",
+    "how": "A batch recipe and its yield give a more useful starting point than the sweet’s name alone.",
+    "example": "At a gathering, a family divides a known homemade batch into portions and records the piece actually eaten.",
+    "caution": "A “sugar-free” sweet can still contain carbohydrate from milk solids or grain.",
+    "question": "Must a celebration meal be all or nothing?",
+    "answer": "A dietitian can help fit familiar foods into a practical plan.",
+    "takeaways": [
+      "Consider piece weight",
+      "Use the home recipe if known",
+      "Check ingredients in sugar-free sweets"
+    ]
+  },
+  {
+    "id": "food-choices-during-exercise",
+    "title": "Food choices during exercise",
+    "sourceIds": [
+      "exercise",
+      "exerciseAdult"
+    ],
+    "summary": "Food during activity serves different purposes, including planned fuel and fast carbohydrate for a low.",
+    "why": "A high-fat snack may be poorly suited to a situation that needs fast absorption.",
+    "how": "Duration, intensity, recent meals and active insulin affect fuel needs. Plan with the team before trying a longer activity.",
+    "example": "A cyclist packs their agreed low treatment separately from a normal lunch.",
+    "caution": "Do not use a generic grams-per-hour or insulin adjustment as a personal prescription.",
+    "question": "Why carry fast carbohydrate on a short session?",
+    "answer": "Glucose can fall unexpectedly even when planned fuel needs are modest.",
+    "takeaways": [
+      "Separate rescue carbohydrate from ordinary fuel",
+      "Plan access during activity",
+      "Personalise with the team"
+    ]
+  },
+  {
+    "id": "balanced-nutrition-and-weight",
+    "title": "Balanced nutrition and weight",
+    "sourceIds": [
+      "weight",
+      "india"
+    ],
+    "summary": "Balanced eating considers adequate energy, variety, fibre, protein and enjoyment alongside glucose.",
+    "why": "Children need enough nutrition for growth. Adults have different needs depending on health and activity.",
+    "how": "Meals can combine familiar grains, vegetables, pulses, dairy or other protein foods in suitable portions.",
+    "example": "A family reviews a regular dosa breakfast with a dietitian and explores adding sambar or other foods they enjoy.",
+    "caution": "Insulin omission for weight control is dangerous. Seek confidential support if eating or insulin feels difficult.",
+    "question": "Does good nutrition require special diabetes foods?",
+    "answer": "Everyday foods can form the basis of an individual plan.",
+    "takeaways": [
+      "Include familiar foods",
+      "Consider growth and energy needs",
+      "Seek support with eating concerns"
+    ]
+  },
+  {
+    "id": "alcohol-and-delayed-lows",
+    "title": "Alcohol and delayed lows",
+    "sourceIds": [
+      "alcohol"
+    ],
+    "summary": "Alcohol can increase the risk of low glucose later, including during sleep, in adults who drink.",
+    "why": "The symptoms of a low can be mistaken for intoxication.",
+    "how": "The liver processes alcohol and may release less glucose. Carbohydrate in a drink can also cause an earlier rise.",
+    "example": "An adult discusses a monitoring and companion plan before an evening out.",
+    "caution": "Unconsciousness needs emergency assistance. Never give food or drink to someone who cannot swallow safely.",
+    "question": "Can an early high rule out a later low?",
+    "answer": "No. The drink and the liver’s later response can affect glucose at different times.",
+    "takeaways": [
+      "Risk can extend into sleep",
+      "Help companions recognise lows",
+      "Plan for delayed effects"
+    ]
+  }
+]

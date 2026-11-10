@@ -15,9 +15,31 @@ export default function ServiceWorkerRegistration() {
     window.addEventListener('offline', updateStatus);
 
     if ('serviceWorker' in navigator) {
-      void navigator.serviceWorker.register('/sw.js').catch((error: unknown) => {
-        console.error('Unable to register the offline app shell.', error);
-      });
+      if (process.env.NODE_ENV === 'production') {
+        void navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).catch((error: unknown) => {
+          console.error('Unable to register the offline app shell.', error);
+        });
+      } else {
+        // A worker installed during an earlier preview can still control next dev.
+        // Unregistering alone does not release the current document: reload it once.
+        void (async () => {
+          const workerUrl = new URL('/sw.js', window.location.origin).href;
+          const wasControlled = navigator.serviceWorker.controller?.scriptURL === workerUrl;
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.filter((registration) =>
+            [registration.active, registration.waiting, registration.installing]
+              .some((worker) => worker?.scriptURL === workerUrl)
+          ).map((registration) => registration.unregister()));
+          if ('caches' in window) {
+            const keys = await caches.keys();
+            await Promise.all(keys.filter((key) => key.startsWith('gluconest-shell-'))
+              .map((key) => caches.delete(key)));
+          }
+          if (wasControlled) window.location.reload();
+        })().catch((error: unknown) => {
+          console.error('Unable to clear the old GlucoNest development cache.', error);
+        });
+      }
     }
 
     return () => {

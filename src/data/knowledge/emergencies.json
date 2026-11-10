@@ -1,0 +1,85 @@
+[
+  {
+    "id": "sick-day-management",
+    "title": "Sick-day management",
+    "sourceIds": [
+      "sick"
+    ]
+  },
+  {
+    "id": "blood-and-urine-ketone-tests",
+    "title": "Blood and urine ketone tests",
+    "sourceIds": [
+      "emergency",
+      "sick"
+    ]
+  },
+  {
+    "id": "diabetic-ketoacidosis-dka",
+    "title": "Diabetic ketoacidosis (DKA)",
+    "sourceIds": [
+      "emergency",
+      "eglu"
+    ]
+  },
+  {
+    "id": "dka-warning-signs",
+    "title": "DKA warning signs",
+    "sourceIds": [
+      "emergency"
+    ]
+  },
+  {
+    "id": "euglycemic-dka",
+    "title": "Euglycemic DKA",
+    "sourceIds": [
+      "eglu"
+    ]
+  },
+  {
+    "id": "vomiting-and-dehydration",
+    "title": "Vomiting and dehydration",
+    "sourceIds": [
+      "sick",
+      "emergency"
+    ]
+  },
+  {
+    "id": "pump-infusion-failure",
+    "title": "Pump infusion failure",
+    "sourceIds": [
+      "sick",
+      "pump"
+    ]
+  },
+  {
+    "id": "severe-hypoglycemia",
+    "title": "Severe hypoglycemia",
+    "sourceIds": [
+      "low"
+    ]
+  },
+  {
+    "id": "emergency-glucagon",
+    "title": "Emergency glucagon",
+    "sourceIds": [
+      "low"
+    ]
+  },
+  {
+    "id": "when-to-get-urgent-medical-help",
+    "title": "When to get urgent medical help",
+    "sourceIds": [
+      "emergency",
+      "low"
+    ]
+  },
+  {
+    "id": "emergency-preparedness-and-supplies",
+    "title": "Emergency preparedness and supplies",
+    "sourceIds": [
+      "sick",
+      "low"
+    ]
+  }
+]

@@ -1,0 +1,381 @@
+{
+  "cpep": {
+    "org": "MedlinePlus, U.S. National Library of Medicine",
+    "title": "C-Peptide Test",
+    "url": "https://medlineplus.gov/lab-tests/c-peptide-test/",
+    "verified": "2026-11-10"
+  },
+  "access": {
+    "org": "World Health Organization",
+    "title": "Keeping the 100-year-old promise: making insulin access universal",
+    "url": "https://www.who.int/publications/i/item/9789240039100",
+    "issued": "12 November 2021",
+    "verified": "2026-11-10"
+  },
+  "puberty": {
+    "org": "ISPAD",
+    "title": "Diabetes in adolescence",
+    "url": "https://www.ispad.org/static/428e53f9-eeae-490f-aef343362f7f76c1/ch21pediatricdiabetes.pdf",
+    "issued": "2022",
+    "verified": "2026-11-10"
+  },
+  "sites": {
+    "org": "University Hospitals Birmingham NHS Foundation Trust",
+    "title": "A patient guide to the use of insulin for diabetes",
+    "url": "https://www.uhb.nhs.uk/media/qzhlg5ob/pi-diabetes_new-to-insulin.pdf#page=5",
+    "verified": "2026-11-10"
+  },
+  "regimen": {
+    "org": "UCSF Diabetes Teaching Center",
+    "title": "Designing an Insulin Regimen in Type 1 Diabetes",
+    "url": "https://diabetesteachingcenter.ucsf.edu/content/designing-an-insulin-regimen-in-type-1-diabetes",
+    "verified": "2026-11-10"
+  },
+  "india": {
+    "org": "ICMR",
+    "title": "Guidelines for Management of Type 1 Diabetes",
+    "url": "https://www.icmr.gov.in/icmrobject/custom_data/pdf/resource-guidelines/ICMR_Guidelines_for_Management_of_Type_1_Diabetes.pdf",
+    "issued": "2022",
+    "verified": "2026-11-10"
+  },
+  "ratio": {
+    "org": "UCSF Diabetes Teaching Center",
+    "title": "Calculating Insulin Dose",
+    "url": "https://diabetesteachingcenter.ucsf.edu/calculating-insulin-dose",
+    "verified": "2026-11-10"
+  },
+  "pump": {
+    "org": "UCSF Diabetes Teaching Center",
+    "title": "Programming Your Pump",
+    "url": "https://diabetesteachingcenter.ucsf.edu/content/programming-your-pump",
+    "verified": "2026-11-10"
+  },
+  "inj": {
+    "org": "Diabetes UK",
+    "title": "Injecting insulin",
+    "url": "https://www.diabetes.org.uk/about-diabetes/looking-after-diabetes/treatments/insulin/injecting",
+    "verified": "2026-11-10"
+  },
+  "travel": {
+    "org": "Diabetes UK",
+    "title": "Travelling with diabetes",
+    "url": "https://www.diabetes.org.uk/living-with-diabetes/life-with-diabetes/travel",
+    "verified": "2026-11-10"
+  },
+  "insulin": {
+    "org": "Diabetes UK",
+    "title": "What is insulin?",
+    "url": "https://www.diabetes.org.uk/about-diabetes/looking-after-diabetes/treatments/insulin/what-is-insulin",
+    "verified": "2026-11-10"
+  },
+  "basics": {
+    "org": "NIDDK",
+    "title": "Type 1 Diabetes",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/type-1-diabetes",
+    "verified": "2026-11-10"
+  },
+  "low": {
+    "org": "NIDDK",
+    "title": "Low Blood Glucose (Hypoglycemia)",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/low-blood-glucose-hypoglycemia",
+    "verified": "2026-11-10"
+  },
+  "cgm": {
+    "org": "NIDDK",
+    "title": "Continuous Glucose Monitoring",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/managing-diabetes/continuous-glucose-monitoring",
+    "verified": "2026-11-10"
+  },
+  "aid": {
+    "org": "NIDDK",
+    "title": "Artificial Pancreas",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/managing-diabetes/artificial-pancreas",
+    "verified": "2026-11-10"
+  },
+  "metrics": {
+    "org": "International consensus panel",
+    "title": "Clinical Targets for Continuous Glucose Monitoring Data Interpretation: Recommendations From the International Consensus on Time in Range",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/31177185/",
+    "issued": "2019",
+    "verified": "2026-11-10"
+  },
+  "night": {
+    "org": "Nightscout",
+    "title": "Nightscout Security and Privacy",
+    "url": "https://nightscout.github.io/nightscout/security/",
+    "verified": "2026-11-10"
+  },
+  "open": {
+    "org": "OpenAPS",
+    "title": "What is OpenAPS?",
+    "url": "https://openaps.org/what-is-openaps/",
+    "verified": "2026-11-10"
+  },
+  "rebound": {
+    "org": "Guillod and colleagues",
+    "title": "Nocturnal hypoglycaemias in type 1 diabetic patients: what can we learn with continuous glucose monitoring?",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/17652003/",
+    "issued": "2007",
+    "verified": "2026-11-10"
+  },
+  "homefood": {
+    "org": "UCSF Diabetes Teaching Center",
+    "title": "Counting Carbohydrates Without Food Labels",
+    "url": "https://diabetesteachingcenter.ucsf.edu/living-diabetes/diet-nutrition/understanding-carbohydrates/counting-carbohydrates-without-food-labels",
+    "verified": "2026-11-10"
+  },
+  "ifct": {
+    "org": "ICMR–National Institute of Nutrition",
+    "title": "Indian Food Composition Tables",
+    "url": "https://www.nin.res.in/ebooks/IFCT2017_16122024.pdf",
+    "issued": "2017",
+    "verified": "2026-11-10"
+  },
+  "exercise": {
+    "org": "ISPAD",
+    "title": "ISPAD Clinical Practice Consensus Guidelines 2022: Exercise in children and adolescents with diabetes",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/36537529/",
+    "issued": "2022",
+    "verified": "2026-11-10"
+  },
+  "emergency": {
+    "org": "NHS",
+    "title": "Diabetic ketoacidosis",
+    "url": "https://www.nhs.uk/conditions/diabetic-ketoacidosis/",
+    "verified": "2026-11-10"
+  },
+  "sick": {
+    "org": "NHS My Health London",
+    "title": "Sick Day Guidance for Type 1 Diabetes",
+    "url": "https://www.myhealthlondon.nhs.uk/resources/sick-day-guidance-for-type-1-diabetes/",
+    "verified": "2026-11-10"
+  },
+  "mind": {
+    "org": "Diabetes UK",
+    "title": "Emotional health professionals guide",
+    "url": "https://www.diabetes.org.uk/for-professionals/improving-care/good-practice/psychological-care/emotional-health-professionals-guide",
+    "verified": "2026-11-10"
+  },
+  "adult": {
+    "org": "NICE",
+    "title": "Type 1 diabetes in adults: diagnosis and management",
+    "url": "https://www.nice.org.uk/guidance/ng17/chapter/recommendations",
+    "verified": "2026-11-10"
+  },
+  "child": {
+    "org": "NICE",
+    "title": "Diabetes in children and young people: diagnosis and management",
+    "url": "https://www.nice.org.uk/guidance/ng18/chapter/Recommendations",
+    "verified": "2026-11-10"
+  },
+  "pregnancy": {
+    "org": "NIDDK",
+    "title": "Pregnancy if You Have Diabetes",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/diabetes-pregnancy",
+    "verified": "2026-11-10"
+  },
+  "stem": {
+    "org": "Reichman and colleagues",
+    "title": "Stem Cell–Derived, Fully Differentiated Islets for Type 1 Diabetes",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/40544428/",
+    "issued": "2025",
+    "verified": "2026-11-10"
+  },
+  "islet": {
+    "org": "US FDA",
+    "title": "Lantidra",
+    "url": "https://www.fda.gov/vaccines-blood-biologics/lantidra",
+    "verified": "2026-11-10"
+  },
+  "tzield": {
+    "org": "US FDA",
+    "title": "Tzield prescribing information",
+    "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2026/761183s010lbls014lbl.pdf",
+    "issued": "2026",
+    "verified": "2026-11-10"
+  },
+  "label": {
+    "org": "FSSAI",
+    "title": "Food Safety and Standards (Labelling and Display) Regulations, 2020, compendium version VIII",
+    "url": "https://stg-old.fssai.gov.in/upload/uploadfiles/files/Comp_Labelling%20Display_Version%20VIII_09_09_2025.pdf",
+    "issued": "2025",
+    "verified": "2026-11-10"
+  },
+  "dawn": {
+    "org": "American Diabetes Association",
+    "title": "High Morning Blood Glucose",
+    "url": "https://diabetes.org/living-with-diabetes/high-morning-blood-glucose",
+    "verified": "2026-11-10"
+  },
+  "carbs": {
+    "org": "CDC",
+    "title": "Carb Counting",
+    "url": "https://www.cdc.gov/diabetes/healthy-eating/carb-counting-manage-blood-sugar.html",
+    "verified": "2026-11-10"
+  },
+  "weight": {
+    "org": "NIDDK",
+    "title": "Healthy Living with Diabetes",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/healthy-living-with-diabetes",
+    "verified": "2026-11-10"
+  },
+  "storage": {
+    "org": "US FDA",
+    "title": "Information Regarding Insulin Storage and Switching Between Products in an Emergency",
+    "url": "https://www.fda.gov/drugs/emergency-preparedness-drugs/information-regarding-insulin-storage-and-switching-between-products-emergency",
+    "verified": "2026-11-10"
+  },
+  "sharps": {
+    "org": "US FDA",
+    "title": "Best Way to Get Rid of Used Needles and Other Sharps",
+    "url": "https://www.fda.gov/medical-devices/safely-using-sharps-needles-and-syringes-home-work-and-travel/best-way-get-rid-used-needles-and-other-sharps",
+    "verified": "2026-11-10"
+  },
+  "sensor": {
+    "org": "Diabetes UK",
+    "title": "What are continuous glucose monitors?",
+    "url": "https://www.diabetes.org.uk/about-diabetes/looking-after-diabetes/technology/continuous-glucose-monitors",
+    "verified": "2026-11-10"
+  },
+  "sleep": {
+    "org": "CDC",
+    "title": "10 Surprising Things That Can Spike Your Blood Sugar",
+    "url": "https://www.cdc.gov/diabetes/living-with/10-things-that-spike-blood-sugar.html",
+    "verified": "2026-11-10"
+  },
+  "gi": {
+    "org": "Diabetes UK",
+    "title": "Glycaemic index and diabetes",
+    "url": "https://www.diabetes.org.uk/living-with-diabetes/eating/carbohydrates-and-diabetes/glycaemic-index-and-diabetes",
+    "verified": "2026-11-10"
+  },
+  "eyes": {
+    "org": "NIDDK",
+    "title": "Diabetic Eye Disease",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/diabetic-eye-disease",
+    "verified": "2026-11-10"
+  },
+  "kidney": {
+    "org": "NIDDK",
+    "title": "Quick Reference on UACR & GFR",
+    "url": "https://www.niddk.nih.gov/health-information/professionals/advanced-search/quick-reference-uacr-gfr",
+    "verified": "2026-11-10"
+  },
+  "nerve": {
+    "org": "NIDDK",
+    "title": "Diabetic Neuropathy",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/nerve-damage-diabetic-neuropathies",
+    "verified": "2026-11-10"
+  },
+  "heart": {
+    "org": "NIDDK",
+    "title": "Diabetes, Heart Disease, & Stroke",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/heart-disease-stroke",
+    "verified": "2026-11-10"
+  },
+  "dental": {
+    "org": "NIDDK",
+    "title": "Diabetes, Gum Disease, & Other Dental Problems",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/gum-disease-dental-problems",
+    "verified": "2026-11-10"
+  },
+  "feet": {
+    "org": "NIDDK",
+    "title": "Diabetes & Foot Problems",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/foot-problems",
+    "verified": "2026-11-10"
+  },
+  "a1c": {
+    "org": "NIDDK",
+    "title": "The A1C Test & Diabetes",
+    "url": "https://www.niddk.nih.gov/health-information/diagnostic-tests/a1c-test",
+    "verified": "2026-11-10"
+  },
+  "auto": {
+    "org": "Breakthrough T1D",
+    "title": "Early detection and screening guidance",
+    "url": "https://www.breakthrought1d.org/wp-content/uploads/2024/11/Early-Detection-Screening-Guidance-Tool-EN.pdf",
+    "verified": "2026-11-10"
+  },
+  "work": {
+    "org": "American Diabetes Association",
+    "title": "Common Reasonable Accommodations for Individuals with Diabetes",
+    "url": "https://diabetes.org/advocacy/know-your-rights/common-reasonable-accommodations",
+    "verified": "2026-11-10"
+  },
+  "driving": {
+    "org": "American Diabetes Association",
+    "title": "Driver's License Information",
+    "url": "https://diabetes.org/tools-resources/drivers-license-information",
+    "verified": "2026-11-10"
+  },
+  "fasting": {
+    "org": "Diabetes UK",
+    "title": "Diabetes and Ramadan",
+    "url": "https://www.diabetes.org.uk/about-diabetes/looking-after-diabetes/ramadan",
+    "verified": "2026-11-10"
+  },
+  "burnout": {
+    "org": "CDC",
+    "title": "Diabetes and Mental Health",
+    "url": "https://www.cdc.gov/diabetes/living-with/mental-health.html",
+    "verified": "2026-11-10"
+  },
+  "fear": {
+    "org": "Diabetes UK",
+    "title": "Chapter 4 - Fear of hypoglycaemia (and other diabetes-specific fears)",
+    "url": "https://www.diabetes.org.uk/professionals/resources/shared-practice/psychological-care/emotional-health-professionals-guide/chapter-4-fear-hypos",
+    "verified": "2026-11-10"
+  },
+  "gmi": {
+    "org": "GMI study authors",
+    "title": "Glucose Management Indicator (GMI): A New Term for Estimating A1C From Continuous Glucose Monitoring",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/30224348/",
+    "issued": "2018",
+    "verified": "2026-11-10"
+  },
+  "exerciseAdult": {
+    "org": "American Diabetes Association",
+    "title": "Physical Activity/Exercise and Diabetes: A Position Statement of the American Diabetes Association",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/27926890/",
+    "issued": "2016",
+    "verified": "2026-11-10"
+  },
+  "period": {
+    "org": "Breakthrough T1D",
+    "title": "Menstrual Cycles, Hormones, and Type 1 Diabetes",
+    "url": "https://www.breakthrought1d.org/news-and-updates/menstrual-cycles-hormones-and-t1d/",
+    "verified": "2026-11-10"
+  },
+  "lag": {
+    "org": "Dexcom",
+    "title": "What do I do if my BG meter is not within the accuracy (20/20) range of my Dexcom G6?",
+    "url": "https://www.dexcom.com/faqs/blood-glucose-meter-is-not-within-accuracy-range",
+    "verified": "2026-11-10"
+  },
+  "eglu": {
+    "org": "International consensus panel",
+    "title": "Hyperglycemic Crises in Adults With Diabetes: A Consensus Report",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/39052901/",
+    "issued": "2024",
+    "verified": "2026-11-10"
+  },
+  "honeymoon": {
+    "org": "Breakthrough T1D",
+    "title": "Honeymoon Phase 101: What to Know When You’re New to T1D",
+    "url": "https://www.breakthrought1d.org/news-and-updates/type-1-diabetes-honeymoon-phase-101-faq/",
+    "verified": "2026-11-10"
+  },
+  "alcohol": {
+    "org": "Diabetes UK",
+    "title": "Type 1 diabetes and drinking",
+    "url": "https://www.diabetes.org.uk/living-with-diabetes/life-with-diabetes/young-adults/type-1-drinking",
+    "verified": "2026-11-10"
+  },
+  "school": {
+    "org": "CDC",
+    "title": "Managing Diabetes at School",
+    "url": "https://www.cdc.gov/diabetes/caring/managing-diabetes-at-school.html",
+    "verified": "2026-11-10"
+  }
+}

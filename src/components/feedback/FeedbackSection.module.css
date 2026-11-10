@@ -1,0 +1,98 @@
+.workspace { max-width: 1120px; margin-inline: auto; color: var(--foreground); }
+.paper { background: #fff; border: 1px solid var(--border); border-radius: 24px; overflow: hidden; box-shadow: 0 8px 35px #2d493904; }
+.steps { display: flex; gap: 12px; padding: 20px 28px; border-bottom: 1px solid var(--border); background: var(--background); }
+.step { display: flex; align-items: center; gap: 10px; flex: 1; padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 600; color: var(--muted); text-align: left; transition: background .2s, color .2s; }
+.step > span:first-child { display: grid; place-items: center; width: 26px; height: 26px; flex-shrink: 0; border: 1px solid var(--border); border-radius: 50%; font-size: 11px; }
+.step:hover { background: #e2eeeb; }
+.activeStep { background: var(--surface-muted); color: #294f50; }
+.activeStep > span:first-child { background: #155e60; border-color: #155e60; color: #fff; }
+.panel { padding: 28px 32px 30px; scroll-margin-top: 100px; outline: none; }
+.questionMeta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+.questionMeta > span:first-child { letter-spacing: .14em; font-size: 9px; font-weight: 700; color: var(--accent); }
+.question { min-width: 0; margin: 0; padding: 0; border: 0; width: 100%; }
+.question legend, .ideaLabel { display: block; font-family: var(--font-display), Georgia, serif; font-size: clamp(23px, 2.2vw, 30px); line-height: 1.25; letter-spacing: -.02em; padding: 0; color: var(--foreground); }
+.hint { margin: 8px 0 22px; font-size: 13px; line-height: 1.65; color: var(--muted); }
+.choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.choice { position: relative; min-height: 128px; display: flex; flex-direction: column; gap: 15px; padding: 18px; border: 1px solid var(--border); border-radius: 15px; background: var(--surface); cursor: pointer; transition: border-color .18s, background .18s, box-shadow .18s; }
+.choice:hover { border-color: #849d99; box-shadow: 0 4px 15px #30482b08; }
+.choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.choice:has(input:focus-visible) { outline: 2px solid #6a8554; outline-offset: 3px; }
+.choiceIcon { color: var(--accent); }
+.choiceText { display: flex; flex-direction: column; gap: 5px; }
+.choiceText strong { font-size: 13px; line-height: 1.35; font-weight: 650; }
+.choiceText > span { font-size: 11px; line-height: 1.55; color: var(--muted); }
+.check { position: absolute; top: 18px; right: 16px; width: 17px; height: 17px; border: 1px solid var(--border); border-radius: 5px; display: grid; place-items: center; }
+.selected { background: var(--surface-muted); border-color: #849d99; }
+.selected .check { background: #155e60; border-color: #155e60; color: white; }
+.formFooter { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 22px 32px; background: var(--background); border-top: 1px solid var(--border); }
+.formFooter p { font-size: 11px; line-height: 1.7; color: var(--muted); max-width: 320px; }
+.actions, .successActions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.primary, .secondary { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; border-radius: 99px; padding: 11px 23px; font-size: 12px; font-weight: 600; text-decoration: none; cursor: pointer; }
+.primary { background: #155e60; color: #fff; border: 1px solid #155e60; }
+.primary:hover { background: #124b4d; }
+.secondary { background: transparent; border: 1px solid var(--border); color: #505e5d; }
+.secondary:hover { background: var(--surface-muted); }
+.ideas textarea, .contactFields input { display: block; width: 100%; border: 1px solid var(--border); border-radius: 12px; background: var(--background); padding: 14px; font-size: 13px; line-height: 1.7; color: var(--foreground); }
+.ideas textarea { min-height: 125px; resize: vertical; }
+.ideas textarea::placeholder { color: var(--muted); }
+.characterCount { text-align: right; font-size: 10px; color: var(--muted); margin-top: 7px; }
+.identity { display: flex; align-items: center; gap: 10px; padding-top: 19px; margin-top: 10px; border-top: 1px solid var(--border); font-size: 12px; color: var(--accent); cursor: pointer; }
+.identity input { margin-left: auto; width: 17px; height: 17px; accent-color: #155e60; }
+.contactFields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+.contactFields label { font-size: 12px; line-height: 1.7; }
+.contactFields label > span { color: var(--muted); font-size: 11px; }
+.contactFields input { margin-top: 6px; }
+.error { color: #9f332b; background: #fff1ee; border: 1px solid #f1d3cd; border-radius: 10px; padding: 12px 15px; font-size: 12px; line-height: 1.7; margin-top: 20px; }
+.success { padding: 48px 30px; text-align: center; outline: none; scroll-margin-top: 100px; }
+.successIcon { display: grid; place-items: center; width: 66px; height: 66px; margin: 0 auto 24px; background: var(--surface-muted); color: var(--accent); border-radius: 50%; }
+.success h2 { font-size: clamp(24px, 3vw, 32px); line-height: 1.3; }
+.success > p { font-size: 13px; line-height: 1.8; color: var(--muted); max-width: 450px; margin: 14px auto 24px; }
+.successActions { justify-content: center; }
+.success > .copyStatus { margin-block: 14px; font-size: 12px; }
+.textButton { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--accent); margin-top: 12px; padding: 8px; }
+:global(.dark) .workspace { color: var(--foreground); }
+:global(.dark) .paper { background: var(--surface); border-color: var(--border); box-shadow: none; }
+:global(.dark) .steps, :global(.dark) .formFooter { background: var(--surface-muted); border-color: var(--border); }
+:global(.dark) .step { color: var(--muted); }
+:global(.dark) .activeStep, :global(.dark) .step:hover { background: var(--surface-muted); color: #e7efec; }
+:global(.dark) .question legend, :global(.dark) .ideaLabel { color: var(--foreground); }
+:global(.dark) .hint, :global(.dark) .questionMeta, :global(.dark) .formFooter p, :global(.dark) .choiceText > span, :global(.dark) .success > p { color: var(--muted); }
+:global(.dark) .questionMeta > span:first-child, :global(.dark) .choiceIcon, :global(.dark) .identity, :global(.dark) .textButton { color: var(--accent); }
+:global(.dark) .choice { background: var(--surface); border-color: var(--border); }
+:global(.dark) .choice:hover, :global(.dark) .selected { border-color: #849d99; background: var(--surface-muted); }
+:global(.dark) .ideas textarea, :global(.dark) .contactFields input { color: var(--foreground); background: var(--surface); border-color: var(--border); }
+:global(.dark) .identity { border-color: var(--border); }
+:global(.dark) .secondary { color: #e7efec; border-color: #536b69; }
+:global(.dark) .secondary:hover { background: var(--surface-muted); }
+:global(.dark) .primary { background: #9ad5cd; border-color: #9ad5cd; color: #1c3030; }
+:global(.dark) .primary:hover { background: #b1e2da; }
+:global(.dark) .error { background: #42251f; border-color: #754537; color: #f5c3b5; }
+@media (max-width: 900px) { .choices { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 901px) and (max-height: 800px) {
+  .steps { padding: 12px 24px; }
+  .panel { padding: 20px 28px; }
+  .questionMeta { margin-bottom: 10px; }
+  .hint { margin-bottom: 16px; }
+  .choice { min-height: 104px; padding: 14px 16px; gap: 10px; }
+  .check { top: 14px; }
+  .formFooter { padding: 16px 28px; }
+}
+@media (max-width: 560px) {
+  .paper { border-radius: 18px; }
+  .steps { padding: 12px; gap: 5px; }
+  .step { padding: 8px 5px; flex-direction: column; gap: 7px; text-align: center; font-size: 10px; line-height: 1.3; }
+  .panel { padding: 23px 18px; }
+  .questionMeta { font-size: 10px; }
+  .hint { font-size: 12px; margin-bottom: 18px; }
+  .choices { gap: 9px; }
+  .choice { padding: 14px 12px; min-height: 145px; gap: 15px; }
+  .choiceText strong { font-size: 12px; }
+  .choiceText > span { font-size: 10px; }
+  .check { top: 14px; right: 12px; width: 15px; height: 15px; }
+  .formFooter { padding: 18px; flex-direction: column-reverse; align-items: stretch; gap: 14px; }
+  .formFooter p { max-width: none; text-align: center; font-size: 10px; }
+  .actions { justify-content: space-between; }
+  .actions > .primary { flex: 1; }
+  .contactFields { grid-template-columns: 1fr; gap: 12px; }
+  .success { padding: 32px 20px; }
+}

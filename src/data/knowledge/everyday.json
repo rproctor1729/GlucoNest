@@ -1,0 +1,242 @@
+[
+  {
+    "id": "travel-with-diabetes-supplies",
+    "title": "Travel with diabetes supplies",
+    "sourceIds": [
+      "travel",
+      "india"
+    ],
+    "summary": "A travel plan covers insulin, monitoring, documents and a backup if a bag or device goes missing.",
+    "why": "Delays and unfamiliar pharmacies can interrupt access to essentials.",
+    "how": "Carry accessible supplies and plan how to replace the exact formulation and device at the destination.",
+    "example": "Before a rail journey a traveller keeps low treatment and a working meter in their seat bag.",
+    "caution": "Product names, concentrations and available devices can differ across regions. Check with a pharmacist or clinician.",
+    "question": "What should I ask before crossing time zones?",
+    "answer": "Ask the team for an individual schedule for the journey and arrival.",
+    "takeaways": [
+      "Plan for delays",
+      "Carry compatible spares",
+      "Clarify time-zone adjustments"
+    ]
+  },
+  {
+    "id": "airport-security-and-devices",
+    "title": "Airport security and devices",
+    "sourceIds": [
+      "travel"
+    ],
+    "summary": "Airport screening procedures and device manufacturer instructions both matter when carrying diabetes technology.",
+    "why": "A scanner permitted for one sensor or pump may be unsuitable for another.",
+    "how": "Check the exact device’s instructions and the airport’s process for alternative screening if required.",
+    "example": "A traveller carries a device letter and asks security staff about a hand inspection before entering a scanner.",
+    "caution": "Do not assume a phone, pump and sensor have the same X-ray or scanner compatibility.",
+    "question": "Whose instructions should I check?",
+    "answer": "The manufacturer for device compatibility and the airport or carrier for local procedures.",
+    "takeaways": [
+      "Check the exact device instructions",
+      "Check airport procedures",
+      "Carry supporting documents"
+    ]
+  },
+  {
+    "id": "driving-safety",
+    "title": "Driving safety",
+    "sourceIds": [
+      "driving",
+      "low"
+    ],
+    "summary": "Driving requires attention, judgement and quick reactions, all of which a low can impair.",
+    "why": "Symptoms or an alarm behind the wheel require a safe place to stop.",
+    "how": "Use the monitoring and recovery rules agreed with your clinician and the applicable licensing authority.",
+    "example": "Before a longer drive, a person checks the plan and keeps low treatment accessible at planned stops.",
+    "caution": "Do not drive while low or cognitively impaired. Driving restrictions and reporting rules vary by jurisdiction.",
+    "question": "Is a US licensing rule automatically applicable in India?",
+    "answer": "No. Confirm local rules and discuss fitness to drive with your clinician.",
+    "takeaways": [
+      "Plan safe stops",
+      "Avoid driving while impaired",
+      "Verify local licensing rules"
+    ]
+  },
+  {
+    "id": "school-and-workplace-accommodations",
+    "title": "School and workplace accommodations",
+    "sourceIds": [
+      "school",
+      "work"
+    ],
+    "summary": "Practical arrangements can give a person time, privacy and access to the supplies they need.",
+    "why": "Exams, long meetings and shift work can conflict with treatment routines.",
+    "how": "A written plan identifies breaks, supply storage, named contacts and emergency responsibilities.",
+    "example": "A shift worker discusses access to their meter and a place to treat a low immediately.",
+    "caution": "US and UK examples describe their own systems. Seek local advice for specific rights or entitlements.",
+    "question": "What makes an arrangement practical?",
+    "answer": "It names who will do what, including when the usual contact is unavailable.",
+    "takeaways": [
+      "Name the responsible contacts",
+      "Keep essential supplies accessible",
+      "Agree on emergency arrangements"
+    ]
+  },
+  {
+    "id": "emergency-identification",
+    "title": "Emergency identification",
+    "sourceIds": [
+      "travel",
+      "low"
+    ],
+    "summary": "Medical identification can tell helpers that someone uses insulin and whom to contact.",
+    "why": "A person with a severe low may be unable to explain what is happening.",
+    "how": "An ID card, bracelet or phone medical ID can point responders to relevant information without exposing a full health record.",
+    "example": "A traveller checks their emergency contact and carries an identification card in a familiar location.",
+    "caution": "Identification supplements an emergency plan. It does not guarantee someone will notice or act.",
+    "question": "What information can be kept concise?",
+    "answer": "The condition, insulin use and a reliable contact, according to personal preference.",
+    "takeaways": [
+      "Keep contact details current",
+      "Discuss privacy",
+      "Pair ID with a practical plan"
+    ]
+  },
+  {
+    "id": "diabetes-supply-checklist",
+    "title": "Diabetes supply checklist",
+    "sourceIds": [
+      "travel",
+      "sick"
+    ],
+    "summary": "A checklist groups routine supplies, backup monitoring and emergency items in one place.",
+    "why": "An overlooked charger or a missing strip can make an otherwise complete kit unusable.",
+    "how": "Check compatibility, expiry, batteries, quantities and storage conditions before leaving home.",
+    "example": "While packing, someone tests the backup meter rather than merely noting that it is in the bag.",
+    "caution": "Ensure critical items remain reachable and temperature protected. Tailor quantities to duration and delays.",
+    "question": "Why check expiry dates on rarely used supplies?",
+    "answer": "An emergency is a poor time to discover unusable strips or rescue medication.",
+    "takeaways": [
+      "Check compatibility and expiry",
+      "Test the backup meter",
+      "Protect critical supplies"
+    ]
+  },
+  {
+    "id": "festivals-and-changing-routines",
+    "title": "Festivals and changing routines",
+    "sourceIds": [
+      "india",
+      "homefood"
+    ],
+    "summary": "Festivals can change the timing of meals, sleep, activity and access to supplies.",
+    "why": "A single unfamiliar reading may reflect several changes at once.",
+    "how": "Planning around familiar dishes and changing timetables can reduce uncertainty without losing the social occasion.",
+    "example": "Before a family celebration someone packs supplies and asks when the main meal is expected.",
+    "caution": "Heat, long queues and delayed meals can matter as much as the sweet itself.",
+    "question": "What is useful to record afterwards?",
+    "answer": "The portion, timing and activity context if it helps a later review.",
+    "takeaways": [
+      "Discuss meal timing",
+      "Keep supplies nearby",
+      "Allow room for celebration"
+    ]
+  },
+  {
+    "id": "fasting-and-religious-observances",
+    "title": "Fasting and religious observances",
+    "sourceIds": [
+      "fasting",
+      "india"
+    ],
+    "summary": "Fasting changes when carbohydrate, fluid and insulin can be taken. T1D can make fasting high risk.",
+    "why": "Lows, highs, dehydration and ketones can occur even if a previous fast seemed uneventful.",
+    "how": "Risk assessment considers medical history, current treatment, access to monitoring and the length of the fast.",
+    "example": "Ahead of an observance, someone discusses safer alternatives, monitoring and explicit stopping criteria with the team.",
+    "caution": "Never omit basal insulin independently. Seek individual advice before fasting and follow the agreed plan for breaking a fast.",
+    "question": "Does a successful fast last year establish safety this year?",
+    "answer": "No. Health, medicines, weather and duration can change.",
+    "takeaways": [
+      "Discuss risk well in advance",
+      "Agree on stopping criteria",
+      "Consider alternatives"
+    ]
+  },
+  {
+    "id": "hot-weather",
+    "title": "Hot weather",
+    "sourceIds": [
+      "storage",
+      "travel",
+      "sleep"
+    ],
+    "summary": "Heat can affect insulin, monitoring supplies, hydration and the pace of absorption.",
+    "why": "Indian summers or a power cut can expose supplies to temperatures above the product limit.",
+    "how": "Direct sun or a parked car can get much hotter than the surrounding air. Insulated storage can help during transport.",
+    "example": "A family asks a pharmacist how to protect their particular insulin during a planned power outage.",
+    "caution": "Avoid direct ice contact. If insulin may have overheated, seek product-specific advice rather than judging by appearance alone.",
+    "question": "Is a car glove box a suitable long-term store?",
+    "answer": "It can become very hot. Follow the product’s specified storage limits.",
+    "takeaways": [
+      "Avoid parked-car heat",
+      "Protect supplies from direct ice",
+      "Seek product-specific advice"
+    ]
+  },
+  {
+    "id": "cold-weather",
+    "title": "Cold weather",
+    "sourceIds": [
+      "travel",
+      "storage"
+    ],
+    "summary": "Freezing can damage insulin and cold can affect the operating range of devices and strips.",
+    "why": "A winter journey can put supplies at risk even when they are inside a bag.",
+    "how": "Contact with frozen packs, aircraft holds or a freezer compartment can expose insulin to damaging temperatures.",
+    "example": "On a mountain trip a traveller keeps supplies insulated and checks the meter’s temperature limits.",
+    "caution": "Do not thaw and reuse insulin that has frozen. Seek replacement guidance.",
+    "question": "Do all supplies have identical temperature limits?",
+    "answer": "No. Check each product’s leaflet.",
+    "takeaways": [
+      "Prevent freezing",
+      "Check meter operating limits",
+      "Replace frozen insulin"
+    ]
+  },
+  {
+    "id": "preparing-for-appointments",
+    "title": "Preparing for appointments",
+    "sourceIds": [
+      "adult",
+      "india"
+    ],
+    "summary": "An appointment can address practical difficulties and the questions behind glucose readings.",
+    "why": "A brief agenda helps prioritise the issue that matters most to you.",
+    "how": "Selected dates, meal notes, symptom descriptions and device records can help distinguish patterns.",
+    "example": "Someone brings two example days and asks why similar breakfasts sometimes produce different curves.",
+    "caution": "Do not delay urgent symptoms for a scheduled appointment.",
+    "question": "Where can I prepare a summary in GlucoNest?",
+    "answer": "Doctor Report organises available records for discussion with your team.",
+    "takeaways": [
+      "Bring two or three useful examples",
+      "Write down priorities",
+      "Act sooner on urgent concerns"
+    ]
+  },
+  {
+    "id": "insurance-and-supply-access",
+    "title": "Insurance and supply access",
+    "sourceIds": [
+      "access",
+      "india"
+    ],
+    "summary": "Access planning means knowing where medicines and supplies are available and what a particular plan covers.",
+    "why": "Cost or stock interruptions can be as important as knowing how a device works.",
+    "how": "Check formulary wording, quantities, authorisations and refill lead times directly with the provider or clinic.",
+    "example": "A person asks for written confirmation about strips and sensors before choosing an insurance policy.",
+    "caution": "Never ration insulin or substitute a concentration without medical advice. Contact a clinic promptly if supply is at risk.",
+    "question": "Can this article confirm coverage for a specific policy?",
+    "answer": "No. The insurer, programme or dispensing clinic must confirm the current terms.",
+    "takeaways": [
+      "Verify actual coverage",
+      "Plan refills early",
+      "Ask for help before supplies run out"
+    ]
+  }
+]

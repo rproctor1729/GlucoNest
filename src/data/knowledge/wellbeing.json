@@ -1,0 +1,241 @@
+[
+  {
+    "id": "diabetes-distress",
+    "title": "Diabetes distress",
+    "sourceIds": [
+      "burnout",
+      "mind"
+    ],
+    "summary": "Diabetes distress is the emotional load of managing a condition that asks for attention every day.",
+    "why": "Someone can feel overwhelmed even when their readings look steady.",
+    "how": "Decisions, alarms, costs and fear of complications can accumulate. Naming the particular burden makes support more specific.",
+    "example": "A person tells their educator that supply ordering, rather than injections, is the hardest part this month.",
+    "caution": "Persistent low mood, anxiety or difficulty carrying out essential care deserves professional support.",
+    "question": "Is distress a sign of poor self-discipline?",
+    "answer": "No. It is a recognised response to sustained demands.",
+    "takeaways": [
+      "Name the source of the burden",
+      "Ask for specific help",
+      "Discuss persistent distress"
+    ]
+  },
+  {
+    "id": "diabetes-burnout",
+    "title": "Diabetes burnout",
+    "sourceIds": [
+      "burnout",
+      "mind"
+    ],
+    "summary": "Burnout describes feeling exhausted or disconnected from diabetes tasks.",
+    "why": "Tasks that once felt manageable can start to feel impossible.",
+    "how": "An accumulation of effort without enough rest or support can lead someone to pull away from monitoring or appointments.",
+    "example": "A student asks a trusted person to help organise refills while the diabetes team helps prioritise essential tasks.",
+    "caution": "Seek help promptly when access to insulin or the ability to take it is affected.",
+    "question": "What is a useful first conversation?",
+    "answer": "Name one task that feels hardest and one person who could help with it.",
+    "takeaways": [
+      "Identify one difficult task",
+      "Share practical work",
+      "Seek help if essential care is affected"
+    ]
+  },
+  {
+    "id": "fear-of-hypoglycemia",
+    "title": "Fear of hypoglycemia",
+    "sourceIds": [
+      "fear",
+      "low"
+    ],
+    "summary": "Fear of a low may persist after a frightening episode or long before a new one occurs.",
+    "why": "It can shape sleep, driving, exercise and willingness to be alone.",
+    "how": "A safety review and psychological support can address both actual risk and the fear that remains.",
+    "example": "After a severe low someone asks for a review of warning symptoms and a plan for returning to a favourite activity.",
+    "caution": "Avoid changing targets or insulin independently to manage fear. A clinician can review the plan safely.",
+    "question": "Can a caregiver experience fear too?",
+    "answer": "Yes. Include the caregiver when agreeing roles and an emergency plan.",
+    "takeaways": [
+      "Address risk and fear together",
+      "Involve trusted supporters",
+      "Discuss a return to valued activities"
+    ]
+  },
+  {
+    "id": "anxiety-around-glucose-numbers",
+    "title": "Anxiety around glucose numbers",
+    "sourceIds": [
+      "mind",
+      "burnout"
+    ],
+    "summary": "Glucose readings can start to feel like judgements, especially when they appear continuously.",
+    "why": "Anxiety can make it harder to look at data or take a needed break.",
+    "how": "A reading reflects many influences. Describing the time and circumstances can support a more neutral discussion.",
+    "example": "Instead of calling lunch “bad”, someone writes “later meal than usual” beside the trace.",
+    "caution": "If reviewing glucose causes panic or avoidance, ask for support from a diabetes-informed professional.",
+    "question": "What can I bring to an appointment besides numbers?",
+    "answer": "Describe how checking makes you feel and which parts of the day feel hardest.",
+    "takeaways": [
+      "Describe readings neutrally",
+      "Share how monitoring feels",
+      "Seek help with avoidance"
+    ]
+  },
+  {
+    "id": "stigma-and-misconceptions",
+    "title": "Stigma and misconceptions",
+    "sourceIds": [
+      "basics",
+      "burnout"
+    ],
+    "summary": "Stigma includes blame, assumptions or exclusion based on a diabetes diagnosis.",
+    "why": "It can make people reluctant to check glucose, inject or ask for help in public.",
+    "how": "T1D is an autoimmune condition. Food choices or personal effort do not explain why a person developed it.",
+    "example": "A classmate asks whether sweets caused T1D. A student chooses a short explanation or asks a teacher to help.",
+    "caution": "Decide how much to share. A person does not owe colleagues their medical history.",
+    "question": "How can a friend respond supportively?",
+    "answer": "Ask what help is wanted and avoid commenting on someone’s food or numbers.",
+    "takeaways": [
+      "T1D has an autoimmune cause",
+      "Let the person choose what to share",
+      "Ask before advising"
+    ]
+  },
+  {
+    "id": "emotional-impact-of-diagnosis",
+    "title": "Emotional impact of diagnosis",
+    "sourceIds": [
+      "burnout",
+      "basics"
+    ],
+    "summary": "Shock, sadness, relief and uncertainty can coexist after a diagnosis.",
+    "why": "Learning practical skills may feel particularly hard while processing a life change.",
+    "how": "Small, repeated teaching sessions and opportunities to ask follow-up questions can help learning settle.",
+    "example": "A family writes down one question each evening to bring to their next education visit.",
+    "caution": "Ask for additional support if distress affects sleep, eating or essential treatment.",
+    "question": "Do people have to feel positive immediately?",
+    "answer": "No. Adjustment has no fixed timetable.",
+    "takeaways": [
+      "Allow time to adjust",
+      "Revisit practical skills",
+      "Bring questions to follow-up"
+    ]
+  },
+  {
+    "id": "family-and-caregiver-support",
+    "title": "Family and caregiver support",
+    "sourceIds": [
+      "school",
+      "mind"
+    ],
+    "summary": "Support works best when the person and their caregivers agree on roles.",
+    "why": "Well-intentioned reminders can feel intrusive if nobody has agreed when they are helpful.",
+    "how": "A shared plan can separate routine independence from situations where immediate help is needed.",
+    "example": "A teenager and parent decide what kind of message to send after a low alert.",
+    "caution": "Review the agreement as age, ability or living arrangements change.",
+    "question": "What question can a caregiver start with?",
+    "answer": "“Which task would you like me to take off your hands today?”",
+    "takeaways": [
+      "Agree on roles",
+      "Respect independence",
+      "Review the plan as needs change"
+    ]
+  },
+  {
+    "id": "school-college-and-work",
+    "title": "School, college and work",
+    "sourceIds": [
+      "school",
+      "work"
+    ],
+    "summary": "Learning and working with T1D involves access to monitoring, insulin, food and safe breaks.",
+    "why": "A rigid timetable can make ordinary diabetes tasks difficult.",
+    "how": "Discuss the actual situation with a named contact and put essential arrangements in writing.",
+    "example": "A college student asks how to keep monitoring equipment with them during an exam.",
+    "caution": "Legal protections and processes depend on country and setting. Check local rules.",
+    "question": "Who needs to see a full medical record?",
+    "answer": "Share only the information needed for the agreed support.",
+    "takeaways": [
+      "Identify a named contact",
+      "Agree on practical arrangements",
+      "Check local processes"
+    ]
+  },
+  {
+    "id": "relationships-and-social-life",
+    "title": "Relationships and social life",
+    "sourceIds": [
+      "mind",
+      "burnout"
+    ],
+    "summary": "Choosing when and how to discuss T1D is a personal decision.",
+    "why": "Social plans can affect meal timing and access to supplies, while privacy can matter just as much.",
+    "how": "A short conversation about what a low looks like and what help is welcome can reduce uncertainty.",
+    "example": "Before a night out, someone shows a close friend where emergency contacts are stored.",
+    "caution": "Do not assume a partner wants to monitor every reading. Agree on boundaries.",
+    "question": "Must I explain diabetes to everyone at an event?",
+    "answer": "You can choose whom to involve and what to disclose.",
+    "takeaways": [
+      "Choose whom to tell",
+      "Make emergency support practical",
+      "Agree on boundaries"
+    ]
+  },
+  {
+    "id": "peer-communities",
+    "title": "Peer communities",
+    "sourceIds": [
+      "burnout",
+      "mind"
+    ],
+    "summary": "A peer community offers practical experience and companionship from people who understand daily diabetes work.",
+    "why": "Being understood can reduce isolation and help someone frame a question for their team.",
+    "how": "Peers share what happened in their own context. Clinical decisions require an assessment of yours.",
+    "example": "A reader uses a community story to start a clinic conversation about travel planning.",
+    "caution": "Protect personal details in public groups and do not copy another person’s insulin settings.",
+    "question": "Where can I read GlucoNest community stories?",
+    "answer": "Visit Our story in the app; contributions are personal experiences.",
+    "takeaways": [
+      "Use peers for shared experience",
+      "Keep health details private",
+      "Check treatment questions with clinicians"
+    ]
+  },
+  {
+    "id": "sleep-and-alarm-burden",
+    "title": "Sleep and alarm burden",
+    "sourceIds": [
+      "fear",
+      "sensor"
+    ],
+    "summary": "Interrupted sleep can affect both the person using a sensor and those who receive shared alerts.",
+    "why": "Repeated false or nonactionable alerts can make nights especially stressful.",
+    "how": "Alarm thresholds, signal loss, pressure on a sensor and genuine lows have different causes and solutions.",
+    "example": "A family lists the alerts from three nights before discussing them with the diabetes team.",
+    "caution": "Recurring lows need a clinical review. Do not disable essential alerts simply to protect sleep.",
+    "question": "Is every overnight alarm a glucose emergency?",
+    "answer": "Check its type and follow the device and care plan. A signal-loss alert has a different meaning from a low.",
+    "takeaways": [
+      "Identify recurring alarm types",
+      "Support caregiver sleep",
+      "Review persistent lows"
+    ]
+  },
+  {
+    "id": "sustainable-self-care-habits",
+    "title": "Sustainable self-care habits",
+    "sourceIds": [
+      "burnout"
+    ],
+    "summary": "A sustainable habit fits the demands and resources of a particular day.",
+    "why": "Reducing the effort of repeated tasks can free attention for things beyond diabetes.",
+    "how": "Attaching a small task to an existing routine can help, especially with practical support.",
+    "example": "A person keeps a refill reminder beside their regular grocery list and asks a friend to collect supplies.",
+    "caution": "A habit is not a substitute for help with cost, depression or access to care.",
+    "question": "What if a routine stops working?",
+    "answer": "Revisit what changed and choose a smaller or better-supported step.",
+    "takeaways": [
+      "Choose one manageable task",
+      "Adapt when life changes",
+      "Address barriers to access"
+    ]
+  }
+]

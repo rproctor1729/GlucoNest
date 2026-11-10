@@ -48,46 +48,28 @@ export function getGlucoseStatus(mgDl: number, targetLow = 70, targetHigh = 180)
 }
 
 export function getGlucoseStatusColor(status: GlucoseStatus, isDark = false, targetLow = 70, targetHigh = 180): {
-  badgeBg: string;
-  badgeText: string;
-  dotColor: string;
-  label: string;
+  badgeBg: string; badgeText: string; dotColor: string; label: string;
 } {
   switch (status) {
-    case 'very-low':
-      return {
-        badgeBg: isDark ? 'bg-rose-950/70 border-rose-800 text-rose-200' : 'bg-rose-50 border-rose-200 text-rose-700',
-        badgeText: 'text-rose-600 dark:text-rose-400',
-        dotColor: 'bg-rose-600',
-        label: 'Urgent Low (<54 mg/dL)',
-      };
-    case 'low':
-      return {
-        badgeBg: isDark ? 'bg-rose-950/40 border-rose-800/60 text-rose-300' : 'bg-rose-50/90 border-rose-200 text-rose-600',
-        badgeText: 'text-rose-500 dark:text-rose-400',
-        dotColor: 'bg-rose-500',
-        label: `Below Target (<${targetLow} mg/dL)`,
-      };
-    case 'in-range':
-      return {
-        badgeBg: isDark ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-700',
-        badgeText: 'text-emerald-600 dark:text-emerald-400',
-        dotColor: 'bg-emerald-500',
-        label: `In Range (${targetLow}–${targetHigh} mg/dL)`,
-      };
-    case 'high':
-      return {
-        badgeBg: isDark ? 'bg-amber-950/40 border-amber-800/60 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-700',
-        badgeText: 'text-amber-600 dark:text-amber-400',
-        dotColor: 'bg-amber-500',
-        label: `Above Target (>${targetHigh} mg/dL)`,
-      };
-    case 'very-high':
-      return {
-        badgeBg: isDark ? 'bg-orange-950/50 border-orange-800/70 text-orange-300' : 'bg-orange-50 border-orange-200 text-orange-700',
-        badgeText: 'text-orange-600 dark:text-orange-400',
-        dotColor: 'bg-orange-600',
-        label: 'Elevated (>250 mg/dL)',
-      };
+    case 'very-low': return {
+      badgeBg: isDark ? 'bg-rose-950/70 border-rose-800 text-rose-200' : 'bg-rose-50 border-rose-200 text-rose-700',
+      badgeText: 'text-rose-600 dark:text-rose-400', dotColor: 'bg-rose-600', label: 'Urgent Low (<54 mg/dL)',
+    };
+    case 'low': return {
+      badgeBg: isDark ? 'bg-rose-950/40 border-rose-800/60 text-rose-300' : 'bg-rose-50/90 border-rose-200 text-rose-600',
+      badgeText: 'text-rose-500 dark:text-rose-400', dotColor: 'bg-rose-500', label: `Below Target (<${targetLow} mg/dL)`,
+    };
+    case 'in-range': return {
+      badgeBg: isDark ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-700',
+      badgeText: 'text-emerald-600 dark:text-emerald-400', dotColor: 'bg-emerald-500', label: `In Range (${targetLow}–${targetHigh} mg/dL)`,
+    };
+    case 'high': return {
+      badgeBg: isDark ? 'bg-amber-950/40 border-amber-800/60 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-700',
+      badgeText: 'text-amber-600 dark:text-amber-400', dotColor: 'bg-amber-500', label: `Above Target (>${targetHigh} mg/dL)`,
+    };
+    case 'very-high': return {
+      badgeBg: isDark ? 'bg-orange-950/50 border-orange-800/70 text-orange-300' : 'bg-orange-50 border-orange-200 text-orange-700',
+      badgeText: 'text-orange-600 dark:text-orange-400', dotColor: 'bg-orange-600', label: 'Elevated (>250 mg/dL)',
+    };
   }
 }

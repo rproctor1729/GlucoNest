@@ -1,37 +1,40 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useApp } from '@/context/AppContext';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import DashboardSection from '@/components/dashboard/DashboardSection';
-import QuickLogSection from '@/components/quicklog/QuickLogSection';
-import InsightsSection from '@/components/insights/InsightsSection';
-import FoodLibrarySection from '@/components/food/FoodLibrarySection';
-import LearnCommunitySection from '@/components/community/LearnCommunitySection';
-import AboutSection from '@/components/about/AboutSection';
-import FeedbackSection from '@/components/feedback/FeedbackSection';
-import DevicesSection from '@/components/devices/DevicesSection';
+const DashboardSection = dynamic(() => import('@/components/dashboard/DashboardSection'), { loading: () => <div className="section-loading" role="status">Opening your space…</div> });
+const QuickLogSection = dynamic(() => import('@/components/quicklog/QuickLogSection'), { loading: () => <div className="section-loading" role="status">Opening your space…</div> });
+const InsightsSection = dynamic(() => import('@/components/insights/InsightsSection'), { loading: () => <div className="section-loading" role="status">Opening your space…</div> });
+const FoodLibrarySection = dynamic(() => import('@/components/food/FoodLibrarySection'), { loading: () => <div className="section-loading" role="status">Opening your space…</div> });
+const AboutSection = dynamic(() => import('@/components/about/AboutSection'), { loading: () => <div className="section-loading" role="status">Opening your space…</div> });
+const FeedbackSection = dynamic(() => import('@/components/feedback/FeedbackSection'), { loading: () => <div className="section-loading" role="status">Opening your space…</div> });
+const DevicesSection = dynamic(() => import('@/components/devices/DevicesSection'), { loading: () => <div className="section-loading" role="status">Opening your space…</div> });
+const DoctorReportSection = dynamic(() => import('@/components/report/DoctorReportSection'), { loading: () => <div className="section-loading" role="status">Opening your space…</div> });
 import HypoEmergencyModal from '@/components/hypo/HypoEmergencyModal';
-import OneTapLogModal from '@/components/dashboard/OneTapLogModal';
 import { AlertCircle, X } from 'lucide-react';
 import SectionErrorBoundary from '@/components/layout/SectionErrorBoundary';
 import OnboardingDialog from '@/components/layout/OnboardingDialog';
-import LegalSection from '@/components/legal/LegalSection';
-import LocalReminderManager from '@/components/layout/LocalReminderManager';
+const LegalSection = dynamic(() => import('@/components/legal/LegalSection'), { loading: () => <div className="section-loading" role="status">Opening your space…</div> });
+import HomeSection from '@/components/home/HomeSection';
+import WorkspaceHeading from '@/components/layout/WorkspaceHeading';
+const KnowledgeHub = dynamic(() => import('@/components/knowledge/KnowledgeHub'), { loading: () => <div className="section-loading" role="status">Opening the Knowledge Hub…</div> });
 
 function MainContent() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { activeSection, setActiveSection, localDataError, dismissLocalDataError } = useApp();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fafaf9] dark:bg-[#0c1218] text-slate-800 dark:text-slate-100 transition-colors">
-      <Navbar />
+    <div data-sidebar-collapsed={sidebarCollapsed} className={`min-h-screen flex flex-col text-[color:var(--foreground)] transition-colors ${activeSection === 'home' ? 'landing-shell' : 'workspace-shell'}`}>
+      <Navbar collapsed={sidebarCollapsed} onToggleCollapsed={() => setSidebarCollapsed(current => !current)} />
 
       {localDataError && (
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-3">
+        <div className="workspace-data-warning w-full max-w-7xl mx-auto px-4 sm:px-6 pt-3">
           <div
             role="alert"
-            className="flex items-start gap-2 rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/30 p-3 text-xs text-amber-800 dark:text-amber-200"
+            className="flex flex-wrap items-start gap-2 rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/30 p-3 text-xs text-amber-800 dark:text-amber-200"
           >
             <AlertCircle className="w-4 h-4 shrink-0" />
             <p className="flex-1">{localDataError}</p>
@@ -54,27 +57,27 @@ function MainContent() {
         </div>
       )}
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 pb-20 xl:pb-6">
+      <main id="main-content" tabIndex={-1} className={activeSection === 'home' ? 'landing-main' : 'workspace-main'}>
         <SectionErrorBoundary key={activeSection} sectionName={activeSection}>
+          {activeSection === 'home' ? <HomeSection /> : <WorkspaceHeading />}
           {activeSection === 'my-day' && <DashboardSection />}
           {activeSection === 'devices' && <DevicesSection />}
           {activeSection === 'quick-log' && <QuickLogSection />}
           {activeSection === 'insights' && <InsightsSection />}
           {activeSection === 'food-library' && <FoodLibrarySection />}
-          {activeSection === 'learn-community' && <LearnCommunitySection />}
+          {activeSection === 'knowledge-hub' && <KnowledgeHub />}
           {activeSection === 'about' && <AboutSection />}
           {activeSection === 'feedback' && <FeedbackSection />}
           {activeSection === 'legal' && <LegalSection />}
+          {activeSection === 'report' && <DoctorReportSection />}
         </SectionErrorBoundary>
       </main>
 
       <Footer />
-      <OnboardingDialog />
-      <LocalReminderManager />
+      {['my-day', 'quick-log', 'food-library', 'insights', 'devices', 'report'].includes(activeSection) && <OnboardingDialog />}
 
       {/* Global modals */}
       <HypoEmergencyModal />
-      <OneTapLogModal />
     </div>
   );
 }
