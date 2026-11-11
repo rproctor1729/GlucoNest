@@ -36,7 +36,7 @@ export const educationalGuides: EducationalGuide[] = [
   {
     "id": "guide-insulin-storage-climate",
     "hubCategory": "injection",
-    "illustration": {"src": "/images/guides/storage.png", "alt": "Insulin pen and insulated pouch on a shaded tabletop"},
+    "illustration": {"src": "/images/guides/storage.webp", "alt": "Insulin pen and insulated pouch on a shaded tabletop"},
     "title": "Keep insulin cool, wherever life goes.",
     "category": "Climate & Storage",
     "readTime": "3 min read",
@@ -65,7 +65,7 @@ export const educationalGuides: EducationalGuide[] = [
   {
     "id": "guide-sick-day-rules",
     "hubCategory": "everyday",
-    "illustration": {"src": "/images/guides/sick-days.png", "alt": "Water, a warm mug and a thermometer beside a bed"},
+    "illustration": {"src": "/images/guides/sick-days.webp", "alt": "Water, a warm mug and a thermometer beside a bed"},
     "title": "Know your sick-day plan.",
     "category": "Daily Life",
     "readTime": "3 min read",
@@ -122,7 +122,7 @@ export const educationalGuides: EducationalGuide[] = [
   {
     "id": "guide-endo-checklist",
     "hubCategory": "prevention",
-    "illustration": {"src": "/images/guides/appointment.png", "alt": "A notebook, pen and glucose meter for an appointment"},
+    "illustration": {"src": "/images/guides/appointment.webp", "alt": "A notebook, pen and glucose meter for an appointment"},
     "title": "Make your next appointment count.",
     "category": "Clinic & Endo",
     "readTime": "2 min read",
@@ -151,7 +151,7 @@ export const educationalGuides: EducationalGuide[] = [
   {
     "id": "guide-travel-railways-airports",
     "hubCategory": "everyday",
-    "illustration": {"src": "/images/guides/travel.png", "alt": "An Indian passenger train and a travel bag"},
+    "illustration": {"src": "/images/guides/travel.webp", "alt": "An Indian passenger train and a travel bag"},
     "title": "Take your routine on the road.",
     "category": "Daily Life",
     "readTime": "3 min read",

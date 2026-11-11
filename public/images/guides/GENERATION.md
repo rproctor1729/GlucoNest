@@ -1,5 +1,7 @@
 # Guide image generation
 
+Note: the originals were 1254 px PNGs (about 2.5 MB each). They were resized to 1024 px and saved as WebP (about 90–200 KB each). The PNG masters are in git history.
+
 Mode: built-in image generation; new opaque editorial photographs. These images illustrate topics and are not device instructions or endorsements.
 
 ## storage.png

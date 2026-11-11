@@ -3,7 +3,7 @@
 Photographic sources and their licenses are listed below.
 
 - `food.jpg`: https://images.unsplash.com/photo-1547592180-85f173990554 (used in the food workspace)
-- `indian-meal.png`: generated with the built-in image generation tool for the home page; generation details below.
+- `indian-meal.webp`: generated with the built-in image generation tool for the home page; generation details below. The 3 MB PNG master was removed from the deployed site and is kept in git history.
 
 Photographs illustrate everyday life and food. The people shown are not represented as GlucoNest users or endorsers. The carousel’s 100 mg/dL reading is a separate, explicitly labelled editorial illustration; photographed device screens are not altered.
 

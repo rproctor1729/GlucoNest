@@ -28,6 +28,12 @@ const nextConfig = {
     ].join('; ');
 
     return [{
+      // Static images in /public change rarely; cache them for a week and allow a day of stale-while-revalidate.
+      source: '/images/:path*',
+      headers: [
+        { key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=86400' },
+      ],
+    }, {
       source: '/:path*',
       headers: [
         { key: 'Content-Security-Policy', value: contentSecurityPolicy },

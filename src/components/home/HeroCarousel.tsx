@@ -30,7 +30,7 @@ export default function HeroCarousel() {
   }, []);
 
   const items = slides.map((slide, index) => <div key={slide.id} className={`${styles.scene} ${slide.id === 'unicorn' ? styles.unicorn : ''}`}>
-    <Image src={slide.image} alt={slide.alt} fill priority={index === 0} loading={index === 0 ? undefined : 'eager'} sizes="(max-width: 767px) 88vw, (max-width: 1150px) 45vw, 520px" className={styles.photo} style={{ objectPosition: slide.position }} draggable={false}
+    <Image src={slide.image} alt={slide.alt} fill priority={index === 0} sizes="(max-width: 767px) 88vw, (max-width: 1150px) 45vw, 520px" className={styles.photo} style={{ objectPosition: slide.position }} draggable={false}
       onLoad={() => setLoaded(previous => previous[index] ? previous : previous.map((value, i) => i === index ? true : value))} />
     {slide.id === 'unicorn' && <div className={styles.unicornReading} aria-label="Illustrative reading of 100 milligrams per deciliter">
       <span className={styles.unicornLabel}><span aria-hidden="true">🦄</span> THE UNICORN MOMENT</span>
