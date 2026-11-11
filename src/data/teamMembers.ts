@@ -14,7 +14,9 @@ export interface TeamMember {
   consent: boolean;
 }
 
-// Synthetic examples. Set consent to false while drafting a real person's entry.
+// Entries are drafts. consent stays false until each person has given written consent to their
+// name, role, photo and story being published, and the story text has been written by them.
+// Placeholder text and roles (for example a clinical role) must never be published unverified.
 const members: TeamMember[] = [
   {
     id: 'member-1',
@@ -28,7 +30,7 @@ const members: TeamMember[] = [
       whatHelped: 'Add story here',
       adviceForNewlyDiagnosed: 'Add story here',
     },
-    consent: true,
+    consent: false,
   },
   {
     id: 'member-2',
@@ -42,7 +44,7 @@ const members: TeamMember[] = [
       whatHelped: 'Add story here',
       adviceForNewlyDiagnosed: 'Add story here',
     },
-    consent: true,
+    consent: false,
   },
   {
     id: 'member-3',
@@ -56,7 +58,7 @@ const members: TeamMember[] = [
       whatHelped: 'Add story here',
       adviceForNewlyDiagnosed: 'Add story here',
     },
-    consent: true,
+    consent: false,
   },
   {
     id: 'member-4',
@@ -70,7 +72,7 @@ const members: TeamMember[] = [
       whatHelped: 'Add story here',
       adviceForNewlyDiagnosed: 'Add story here',
     },
-    consent: true,
+    consent: false,
   },
   {
     id: 'member-5',
@@ -84,7 +86,7 @@ const members: TeamMember[] = [
       whatHelped: 'Add story here',
       adviceForNewlyDiagnosed: 'Add story here',
     },
-    consent: true,
+    consent: false,
   },
   {
     id: 'builder',
@@ -98,7 +100,7 @@ const members: TeamMember[] = [
       whatHelped: 'Add story here',
       adviceForNewlyDiagnosed: 'Add story here',
     },
-    consent: true,
+    consent: false,
   },
 ];
 
