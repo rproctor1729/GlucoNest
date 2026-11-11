@@ -484,7 +484,7 @@ export default function QuickLogSection() {
                       <span className="font-bold text-sm text-slate-900 dark:text-white">
                         {log.title}
                       </span>
-                      <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">
+                      <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                         {log.kind}
                       </span>
                     </div>

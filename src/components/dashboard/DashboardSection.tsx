@@ -162,7 +162,7 @@ export default function DashboardSection() {
                 className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
                   timeRange === range
                     ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-semibold shadow-sm'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-300'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
               >
                 {range}
@@ -172,7 +172,7 @@ export default function DashboardSection() {
         </div>
 
         <div className={styles.curveToolbar}>
-          <div className={styles.periodStats} aria-label="Selected period summary">{periodSummary && [{label:'Mean',value:periodSummary.average},{label:'Lowest',value:periodSummary.minimum},{label:'Highest',value:periodSummary.maximum}].map(stat => <span key={stat.label}><small className="text-slate-500 dark:text-slate-400">{stat.label}</small><strong>{convertGlucose(stat.value,glucoseUnit)}</strong></span>)}<small className="text-slate-400">{formatUnitLabel(glucoseUnit)} · {chartWindow ? 'Zoomed selection' : timeRange + ' summary'}</small></div>
+          <div className={styles.periodStats} aria-label="Selected period summary">{periodSummary && [{label:'Mean',value:periodSummary.average},{label:'Lowest',value:periodSummary.minimum},{label:'Highest',value:periodSummary.maximum}].map(stat => <span key={stat.label}><small className="text-slate-500 dark:text-slate-400">{stat.label}</small><strong>{convertGlucose(stat.value,glucoseUnit)}</strong></span>)}<small className="text-slate-600 dark:text-slate-400">{formatUnitLabel(glucoseUnit)} · {chartWindow ? 'Zoomed selection' : timeRange + ' summary'}</small></div>
           <button type="button" className={styles.targetToggle + ' text-nest-700 dark:text-nest-300'} aria-pressed={showTargetBand} onClick={() => setShowTargetBand(value => !value)}><span style={{backgroundColor:showTargetBand ? '#83a775' : '#94a3b8'}} />Target band {showTargetBand ? 'on' : 'off'}</button>
         </div>
         <div id="glucose-chart-description" className="sr-only">

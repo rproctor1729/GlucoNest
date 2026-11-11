@@ -166,7 +166,10 @@ test('feature titles/descriptions remain verbatim and every entry is one native 
       assert.equal(link.tabIndex, 0);
       link.focus();
       assert.equal(document.activeElement, link);
-      assert.equal(document.getElementById(link.getAttribute('aria-labelledby')).textContent, features[index].title);
+      assert.equal(link.hasAttribute('aria-labelledby'), false, 'the link name must include all of its visible text');
+      assert.equal(link.hasAttribute('aria-label'), false);
+      assert.ok(link.textContent.includes(features[index].title));
+      assert.ok(link.textContent.includes(features[index].cta));
       const event = new view.dom.window.MouseEvent('click', { bubbles: true, cancelable: true, button: 0 });
       await act(async () => link.dispatchEvent(event));
       assert.equal(event.defaultPrevented, true);

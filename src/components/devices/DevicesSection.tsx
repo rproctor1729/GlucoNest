@@ -272,7 +272,7 @@ export default function DevicesSection() {
               </p>
             )}
             {readings.length === 0 && (
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-slate-600 dark:text-slate-400">
                 Connected, but Nightscout returned no valid glucose readings. Demo readings are not mixed into this view.
               </p>
             )}
@@ -357,7 +357,7 @@ export default function DevicesSection() {
                 {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
                 {loading ? 'Testing connection…' : 'Connect now'}
               </button>
-              <span className="text-[11px] text-slate-400">
+              <span className="text-[11px] text-slate-600 dark:text-slate-400">
                 Requests up to {historyLimit || '288'} readings from the last history page.
               </span>
               {(connectionStatus === 'error' || loading) && (
@@ -422,7 +422,7 @@ export default function DevicesSection() {
         )}
         {csvError && <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-300">{csvError}</p>}
         {csvStatus && <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-200">{csvStatus}</p>}
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-slate-600 dark:text-slate-400">
           Up to 5 MB / 10,000 rows. Use timestamp and glucose columns, or separate date and time columns. Units: mg/dL or mmol/L. Duplicates are skipped.
         </p>
       </section>
@@ -499,7 +499,7 @@ export default function DevicesSection() {
             {backupStatus}
           </p>
         )}
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-slate-600 dark:text-slate-400">
           JSON files up to 10 MB. Keep backups private: they contain personal health information.
         </p>
       </section>

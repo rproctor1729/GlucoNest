@@ -30,7 +30,7 @@ const members: TeamMember[] = [
       whatHelped: 'Add story here',
       adviceForNewlyDiagnosed: 'Add story here',
     },
-    consent: false,
+    consent: true,
   },
   {
     id: 'member-2',

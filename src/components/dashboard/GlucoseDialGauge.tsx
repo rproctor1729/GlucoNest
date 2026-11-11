@@ -195,7 +195,7 @@ export default function GlucoseDialGauge({
             x={polarToCartesian(cx, cy, radius - 18, startAngle).x}
             y={polarToCartesian(cx, cy, radius - 18, startAngle).y + 5}
             textAnchor="middle"
-            className="text-[10px] font-mono font-semibold fill-slate-400 dark:fill-slate-500"
+            className="text-[10px] font-mono font-semibold fill-slate-300"
           >
             40
           </text>
@@ -203,7 +203,7 @@ export default function GlucoseDialGauge({
             x={polarToCartesian(cx, cy, radius - 18, endAngle).x}
             y={polarToCartesian(cx, cy, radius - 18, endAngle).y + 5}
             textAnchor="middle"
-            className="text-[10px] font-mono font-semibold fill-slate-400 dark:fill-slate-500"
+            className="text-[10px] font-mono font-semibold fill-slate-300"
           >
             300+
           </text>
@@ -245,10 +245,10 @@ export default function GlucoseDialGauge({
 
           {/* Numerical Value */}
           <div className="flex items-baseline justify-center tracking-tighter">
-            <span className="text-5xl sm:text-6xl font-black font-mono tracking-tight text-slate-900 dark:text-white tabular-nums leading-none">
+            <span className="text-5xl sm:text-6xl font-black font-mono tracking-tight text-white tabular-nums leading-none">
               {convertedValue}
             </span>
-            <span className="ml-1 text-xs sm:text-sm font-semibold uppercase text-slate-500 dark:text-slate-400">
+            <span className="ml-1 text-xs sm:text-sm font-semibold uppercase text-slate-300">
               {formatUnitLabel(unit)}
             </span>
           </div>
@@ -262,9 +262,9 @@ export default function GlucoseDialGauge({
           </div>
 
           {/* Reading freshness / timestamp */}
-          <div className="mt-2 text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+          <div className="mt-2 text-[10px] text-slate-300 flex items-center gap-1">
             {isStale ? (
-              <span className="text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1">
+              <span className="text-amber-300 font-semibold flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                 Stale reading · {timeLabel}
               </span>
@@ -276,7 +276,7 @@ export default function GlucoseDialGauge({
       </div>
 
       {/* Target range indicator bar underneath */}
-      <div className="mt-1 flex items-center gap-3 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+      <div className="mt-1 flex items-center gap-3 text-[11px] font-medium text-slate-300">
         <span className="flex items-center gap-1">
           <span className="w-2 h-2 rounded-xs bg-emerald-500/80" />
           Target: {targetLow}–{targetHigh} {formatUnitLabel(unit)}
