@@ -381,3 +381,12 @@
   .global-preferences { position: static; }
   .preferences-panel { right: 8px; top: calc(100% + 4px); max-width: calc(100vw - 16px); width: calc(100vw - 16px); }
 }
+
+/* Loading skeletons (SectionSkeleton). Reduced motion is handled by the global rule above. */
+.gn-skeleton { padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
+.gn-skeleton-block { border-radius: 12px; background: linear-gradient(90deg, rgba(127,127,140,.12) 0%, rgba(127,127,140,.24) 50%, rgba(127,127,140,.12) 100%); background-size: 200% 100%; animation: gn-skeleton-shimmer 1.4s ease-in-out infinite; }
+.gn-skeleton-title { height: 36px; width: min(340px, 70%); margin-bottom: 14px; }
+.gn-skeleton-line { height: 14px; width: min(520px, 90%); margin-bottom: 30px; }
+.gn-skeleton-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.gn-skeleton-card { height: 150px; }
+@keyframes gn-skeleton-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
