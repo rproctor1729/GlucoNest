@@ -9,6 +9,8 @@ const headings: Partial<Record<NavigationSection, { eyebrow: string; title: stri
   insights: { eyebrow: 'STEP BACK. SEE A LITTLE MORE.', title: 'Find your everyday patterns.', description: 'Explore your readings over time and prepare for a conversation with your care team.' },
   devices: { eyebrow: 'CONNECTED ON YOUR TERMS', title: 'Your data. Your space.', description: 'Connect your readings, import a file, and keep a private backup.' },
   report: { eyebrow: 'FOR THE NEXT CONVERSATION', title: 'Bring the bigger picture.', description: 'Prepare a clear summary of your available readings for your care team.' },
+  't1d-essentials': { eyebrow: 'THE LITTLE THINGS', title: 'T1D Essentials', description: 'The little things that make living with T1D easier.' },
+  'go-to-doctors': { eyebrow: 'SHARED EXPERIENCES', title: 'Our Go-To Doctors', description: 'Doctors we\'ve met. Experiences we\'ve shared.' },
   about: { eyebrow: '', title: 'About GlucoNest.', description: '' },
   feedback: { eyebrow: '', title: 'Help shape GlucoNest.', description: '' },
   legal: { eyebrow: 'CLEAR FROM THE START', title: 'A little transparency.', description: 'How this app works, where your data lives, and what to expect.' },

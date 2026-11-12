@@ -2,7 +2,7 @@ import type { NavigationSection } from '@/types';
 
 export const NAVIGATION_SECTIONS: readonly NavigationSection[] = [
   'home', 'my-day', 'quick-log', 'insights', 'food-library',
-  'knowledge-hub', 'about', 'feedback', 'devices', 'legal', 'report',
+  'knowledge-hub', 't1d-essentials', 'go-to-doctors', 'about', 'feedback', 'devices', 'legal', 'report',
 ];
 
 // Document anchors (including the skip link) must not change the active tool.
