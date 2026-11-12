@@ -13,6 +13,8 @@ export type NavigationSection =
   | 'food-library'
   | 'learn-community'
   | 'knowledge-hub'
+  | 't1d-essentials'
+  | 'go-to-doctors'
   | 'about'
   | 'feedback'
   | 'devices'

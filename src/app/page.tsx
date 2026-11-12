@@ -21,6 +21,8 @@ import SectionErrorBoundary from '@/components/layout/SectionErrorBoundary';
 import OnboardingDialog from '@/components/layout/OnboardingDialog';
 import LocalReminderManager from '@/components/layout/LocalReminderManager';
 import LandingPage from '@/components/landing/LandingPage';
+const T1dEssentialsSection = dynamic(() => import('@/components/store/StoreSection'), { loading: () => <SectionSkeleton label="Opening T1D Essentials…" /> });
+const GoToDoctorsSection = dynamic(() => import('@/components/doctors/DoctorsSection'), { loading: () => <SectionSkeleton label="Opening Our Go-To Doctors…" /> });
 const LegalSection = dynamic(() => import('@/components/legal/LegalSection'), { loading: () => <SectionSkeleton label="Opening your space…" /> });
 import HomeSection from '@/components/home/HomeSection';
 import WorkspaceHeading from '@/components/layout/WorkspaceHeading';
@@ -95,6 +97,8 @@ function MainContent() {
             {activeSection === 'food-library' && <FoodLibrarySection />}
             {activeSection === 'learn-community' && <LearnCommunitySection />}
             {activeSection === 'knowledge-hub' && <KnowledgeHub />}
+            {activeSection === 't1d-essentials' && <T1dEssentialsSection />}
+            {activeSection === 'go-to-doctors' && <GoToDoctorsSection />}
             {activeSection === 'about' && <AboutSection />}
             {activeSection === 'feedback' && <FeedbackSection />}
             {activeSection === 'legal' && <LegalSection />}
