@@ -3,8 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { X, Utensils, Syringe, Activity, Check, Plus, Sparkles } from 'lucide-react';
+import { parseQuickEntry, timestampFor, describeEntry, activityTypeFor, type QuickEntry, type QuickEntryResult } from '@/utils/quickEntry';
 
-type PendingInsulin = { units: number; subType: 'rapid' | 'basal'; label: string };
+// timestamp is set for typed entries ("2u 15m ago"); taps leave it empty and use the current time.
+type PendingInsulin = { units: number; subType: 'rapid' | 'basal'; label: string; timestamp?: string };
 
 export default function OneTapLogModal() {
   const {
@@ -22,10 +24,16 @@ export default function OneTapLogModal() {
   const [justLogged, setJustLogged] = useState<string | null>(null);
   // Insulin is never logged on a single tap: the user must confirm the exact dose first.
   const [pendingInsulin, setPendingInsulin] = useState<PendingInsulin | null>(null);
+  const [typedText, setTypedText] = useState<string>('');
+  const [typedReview, setTypedReview] = useState<QuickEntryResult | null>(null);
 
-  // Clear any unconfirmed dose when the modal closes.
+  // Clear any unconfirmed dose and typed entry when the modal closes.
   useEffect(() => {
-    if (!isOneTapModalOpen) setPendingInsulin(null);
+    if (!isOneTapModalOpen) {
+      setPendingInsulin(null);
+      setTypedText('');
+      setTypedReview(null);
+    }
   }, [isOneTapModalOpen]);
 
   if (!isOneTapModalOpen) return null;
@@ -82,7 +90,7 @@ export default function OneTapLogModal() {
   const confirmInsulin = () => {
     if (!pendingInsulin) return;
     const saved = addInsulinLog({
-      timestamp: new Date().toISOString(),
+      timestamp: pendingInsulin.timestamp ?? new Date().toISOString(),
       type: pendingInsulin.subType,
       units: pendingInsulin.units,
       brandName: pendingInsulin.subType === 'basal' ? 'Lantus / Tresiba' : 'Novorapid / Humalog',
@@ -104,6 +112,87 @@ export default function OneTapLogModal() {
 
   const requestInsulin = (units: number, subType: 'rapid' | 'basal', label: string) => {
     setPendingInsulin({ units, subType, label });
+  };
+
+  const reviewTyped = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!typedText.trim()) return;
+    setTypedReview(parseQuickEntry(typedText));
+  };
+
+  // Carbs and activity are saved on this step. Insulin is only staged; it is recorded after the confirmation below.
+  const saveTyped = () => {
+    if (!typedReview || typedReview.errors.length > 0 || typedReview.entries.length === 0) return;
+    const insulinEntries = typedReview.entries.filter(
+      (entry): entry is Extract<QuickEntry, { kind: 'insulin' }> => entry.kind === 'insulin'
+    );
+    if (insulinEntries.length > 1) {
+      setTypedReview({ entries: typedReview.entries, errors: ['Put one insulin dose on each line, so each dose can be confirmed separately.'] });
+      return;
+    }
+
+    const now = Date.now();
+    let savedCount = 0;
+    let allSaved = true;
+    for (const entry of typedReview.entries) {
+      if (entry.kind === 'insulin') continue;
+      const timestamp = timestampFor(entry, now);
+      const saved = entry.kind === 'carbs'
+        ? addMealLog({
+            timestamp,
+            mealType: 'snack',
+            name: entry.label || `${entry.grams}g Carbs`,
+            items: [
+              {
+                foodId: 'quick-log-carb',
+                name: entry.label || 'Typed carbs',
+                servings: 1,
+                servingDescription: `${entry.grams}g portion`,
+                carbsPerServing: entry.grams,
+                totalCarbs: entry.grams,
+              },
+            ],
+            totalCarbs: entry.grams,
+            isDemo: false,
+          })
+        : addActivityLog({
+            timestamp,
+            type: activityTypeFor(entry.label),
+            durationMinutes: entry.minutes,
+            intensity: 'moderate',
+            isDemo: false,
+          });
+      if (saved) savedCount += 1;
+      else allSaved = false;
+    }
+
+    const insulin = insulinEntries[0];
+    setTypedText('');
+    setTypedReview(null);
+
+    if (insulin) {
+      setPendingInsulin({
+        units: insulin.units,
+        subType: insulin.subType,
+        label: 'Typed entry',
+        timestamp: timestampFor(insulin, now),
+      });
+      setActiveTab('insulin');
+      setJustLogged(allSaved
+        ? (savedCount ? `${savedCount} saved. Confirm the insulin dose below.` : 'Confirm the insulin dose below.')
+        : 'Some entries were not saved. Export a backup before leaving this page.');
+      return;
+    }
+
+    setJustLogged(allSaved
+      ? `${savedCount} ${savedCount === 1 ? 'entry' : 'entries'} saved`
+      : 'Not saved. Export a backup before leaving this page.');
+    setTimeout(() => {
+      setJustLogged(null);
+      setIsOneTapModalOpen(false);
+      setCustomValue('');
+      setNote('');
+    }, 700);
   };
 
   const handleCustomSubmit = (e: React.FormEvent) => {
@@ -146,6 +235,63 @@ export default function OneTapLogModal() {
           >
             <X className="w-5 h-5" />
           </button>
+        </div>
+
+        {/* Typed quick entry: review first, then save */}
+        <div className="p-3 border-b border-slate-100 dark:border-slate-800/80">
+          <form onSubmit={reviewTyped} className="space-y-2">
+            <label htmlFor="quick-entry-text" className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Type a quick entry
+            </label>
+            <div className="flex gap-2">
+              <input
+                id="quick-entry-text"
+                type="text"
+                value={typedText}
+                onChange={(e) => { setTypedText(e.target.value); setTypedReview(null); }}
+                placeholder="e.g. 2u 15m ago, 45g carbs, run 30m"
+                autoComplete="off"
+                aria-describedby="quick-entry-help"
+                className="flex-1 min-w-0 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-nest-500/50"
+              />
+              <button
+                type="submit"
+                disabled={!typedText.trim()}
+                className="px-4 py-2.5 rounded-xl border border-nest-600 text-nest-700 dark:text-nest-300 disabled:opacity-40 text-xs font-medium transition-colors"
+              >
+                Review
+              </button>
+            </div>
+            <p id="quick-entry-help" className="text-[11px] text-slate-500 dark:text-slate-400">
+              Separate several entries with commas. Insulin is recorded only after you confirm the dose.
+            </p>
+          </form>
+
+          {typedReview && (
+            <div className="mt-3 space-y-2">
+              {typedReview.errors.length > 0 && (
+                <ul role="alert" className="space-y-1 text-xs text-amber-800 dark:text-amber-200">
+                  {typedReview.errors.map((error, index) => <li key={index}>{error}</li>)}
+                </ul>
+              )}
+              {typedReview.entries.length > 0 && (
+                <ul aria-label="Entries to save" className="space-y-1 text-xs font-mono text-slate-700 dark:text-slate-300">
+                  {typedReview.entries.map((entry, index) => <li key={`${entry.raw}-${index}`}>{describeEntry(entry)}</li>)}
+                </ul>
+              )}
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400">Carbs and activity save now. Insulin waits for your confirmation.</span>
+                <button
+                  type="button"
+                  onClick={saveTyped}
+                  disabled={typedReview.errors.length > 0 || typedReview.entries.length === 0}
+                  className="px-4 py-2 rounded-xl bg-nest-600 hover:bg-nest-700 disabled:opacity-40 text-white text-xs font-semibold"
+                >
+                  Save entries
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Tab Switcher */}
