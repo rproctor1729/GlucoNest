@@ -17,8 +17,10 @@ const headings: Partial<Record<NavigationSection, { eyebrow: string; title: stri
 };
 
 export default function WorkspaceHeading() {
-  const { activeSection } = useApp();
-  const heading = headings[activeSection];
+  const { activeSection, myDayView } = useApp();
+  // Inside My Day, the heading follows the open view.
+  const headingKey = activeSection === 'my-day' && myDayView !== 'today' ? myDayView : activeSection;
+  const heading = headings[headingKey];
   if (!heading) return null;
   return <div className="workspace-heading print:hidden"><div>{heading.eyebrow && <p className="section-kicker">{heading.eyebrow}</p>}<h1>{heading.title}</h1>{heading.description && <p className="workspace-description">{heading.description}</p>}</div></div>;
 }

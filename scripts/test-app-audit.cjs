@@ -11,7 +11,7 @@ require.extensions['.ts'] = (module, filename) => {
   module._compile(outputText, filename);
 };
 const load = file => require(path.join(process.cwd(), file));
-const { sectionFromHash, NAVIGATION_SECTIONS } = load('src/lib/navigation.ts');
+const { sectionFromHash, NAVIGATION_SECTIONS, myDayViewFromHash } = load('src/lib/navigation.ts');
 const { localDateTimeInputs, parseLocalDateTime } = load('src/utils/localDateTime.ts');
 const { buildReport } = load('src/utils/doctorReport.ts');
 const { summarizeToday } = load('src/utils/today.ts');
@@ -27,6 +27,19 @@ function sourceFiles(directory = path.resolve('src')) {
 test('all tool hashes resolve, while document anchors preserve the current tool', () => {
   for (const section of NAVIGATION_SECTIONS) assert.equal(sectionFromHash(`#${section}`), section);
   for (const anchor of ['#main-content', '#discover', '#unknown', '']) assert.equal(sectionFromHash(anchor), null);
+});
+
+test('old insights and report links open My Day on the matching view', () => {
+  assert.equal(sectionFromHash('#insights'), 'my-day');
+  assert.equal(sectionFromHash('#report'), 'my-day');
+  assert.equal(sectionFromHash('#my-day/insights'), 'my-day');
+  assert.equal(sectionFromHash('#my-day/report'), 'my-day');
+  assert.equal(myDayViewFromHash('#insights'), 'insights');
+  assert.equal(myDayViewFromHash('#my-day/insights'), 'insights');
+  assert.equal(myDayViewFromHash('#report'), 'report');
+  assert.equal(myDayViewFromHash('#my-day/report'), 'report');
+  assert.equal(myDayViewFromHash('#my-day'), 'today');
+  assert.equal(myDayViewFromHash('#quick-log'), 'today');
 });
 
 test('local entry dates preserve the Indian calendar day across UTC midnight', () => {
