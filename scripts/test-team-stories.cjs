@@ -87,25 +87,22 @@ test('story cards, modal navigation, keyboard focus and dismissal', async t => {
   await React.act(async () => portrait.dispatchEvent(new window.Event('error')));
   assert.equal(document.querySelector('article img'), null);
   assert.equal(document.querySelector('article span[aria-hidden="true"]').textContent, 'E');
+  // The single member is the centre card of the carousel.
   const card = document.querySelector('article');
-  card.getBoundingClientRect = () => ({ left: 0, top: 0, width: 300, height: 400 });
-  const move = () => card.dispatchEvent(new window.MouseEvent('pointermove', { clientX: 250, clientY: 20 }));
-  move();
-  await new Promise(resolve => window.requestAnimationFrame(() => window.requestAnimationFrame(resolve)));
-  assert.ok(Number(card.style.getPropertyValue('--tilt-x')) > 0);
-  motion.matches = false;
-  motion.dispatchEvent(new window.Event('change'));
-  move();
-  assert.equal(card.style.getPropertyValue('--tilt-x'), '');
+  assert.equal(card.hasAttribute('data-centre'), true);
+  assert.equal(card.getAttribute('aria-roledescription'), 'slide');
   await render([member]);
   await click(cards()[0]);
   assert.equal(dialog().querySelector('nav'), null);
   await click(dialog().querySelector('button[aria-label="Close story"]'));
   for (const count of [5, 6, 8]) {
     await render(Array.from({ length: count }, (_, i) => ({ ...member, id: String(i), firstName: 'Member ' + (i + 1) })));
-    assert.equal(cards().length, count);
+    // Every profile renders as a slide, but only the centre slide carries the Story button.
+    assert.equal(document.querySelectorAll('article').length, count);
+    assert.equal(cards().length, 1);
   }
-  const trigger = cards()[7];
+  await click(document.querySelector('button[aria-label="Show Member 8"]'));
+  const trigger = cards()[0];
   await click(trigger);
   await new Promise(resolve => window.requestAnimationFrame(resolve));
   const close = dialog().querySelector('button');
