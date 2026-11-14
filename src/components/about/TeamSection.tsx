@@ -6,7 +6,7 @@ import { useId, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useModalFocus } from '@/components/common/useModalFocus';
 import type { TeamMember } from '@/data/teamMembers';
-import ProfileCard from './ProfileCard';
+import TeamCarousel from './TeamCarousel';
 import styles from './TeamSection.module.css';
 
 function Avatar({ member }: { member: TeamMember }) {
@@ -64,9 +64,7 @@ export default function TeamSection({ members }: { members: readonly TeamMember[
     <p className="section-kicker">THE PEOPLE BEHIND IT</p>
     <h2 id={titleId} className={styles.heading}>Built with people who <em>live with type 1</em>.</h2>
     <p className={styles.intro}>Real stories from the community that shaped GlucoNest.</p>
-    <ul className={styles.grid}>{members.map(member =>
-      <li key={member.id}><ProfileCard member={member} onOpen={() => setActiveId(member.id)}><MemberTags member={member} /></ProfileCard></li>
-    )}</ul>
+    <TeamCarousel members={members} onExplore={id => setActiveId(id)} />
     <p className={styles.note}>Personal experiences, not medical advice.</p>
     {index >= 0 && <StoryModal member={members[index]} onClose={() => setActiveId(null)}
       onStep={members.length > 1 ? direction => setActiveId(members[(index + direction + members.length) % members.length].id) : undefined} />}
