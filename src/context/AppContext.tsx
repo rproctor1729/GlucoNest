@@ -26,7 +26,7 @@ import {
   replaceDemoRecords,
 } from '../lib/localData';
 import { APP_LANGUAGES, type AppLanguage } from '../lib/i18n';
-import { sectionFromHash } from '../lib/navigation';
+import { LEGACY_MY_DAY_SECTIONS, myDayViewFromHash, sectionFromHash, type MyDayView } from '../lib/navigation';
 import type { TeamMember } from '../data/teamMembers';
 import { mockPatternInsights } from '../data/mockInsights';
 import { educationalGuides } from '../data/educationalContent';
@@ -62,6 +62,9 @@ interface AppContextType {
   // Navigation
   activeSection: NavigationSection;
   setActiveSection: (sec: NavigationSection) => void;
+  // Which view is open inside My Day (today, insights or the doctor report).
+  myDayView: MyDayView;
+  setMyDayView: (view: MyDayView) => void;
 
   // Preferences
   darkMode: boolean;
@@ -177,13 +180,26 @@ function useCollection<T>(initial: T[] | (() => T[])) {
 export function AppProvider({ children, teamMembers = [] }: { children: React.ReactNode; teamMembers?: readonly TeamMember[] }) {
   // Navigation
   const [activeSection, setActiveSectionState] = useState<NavigationSection>('home');
+  const [myDayView, setMyDayViewState] = useState<MyDayView>('today');
   const setActiveSection = useCallback((section: NavigationSection) => {
-    setActiveSectionState(section);
-    if (window.location.hash !== `#${section}`) {
-      window.history.pushState(null, '', `#${section}`);
-      if (section === 'knowledge-hub') window.dispatchEvent(new Event('hashchange'));
+    // Old ids (insights, report) open My Day on the matching view.
+    const legacy = LEGACY_MY_DAY_SECTIONS.includes(section);
+    const target: NavigationSection = legacy ? 'my-day' : section;
+    const view: MyDayView = legacy ? (section as MyDayView) : 'today';
+    setActiveSectionState(target);
+    setMyDayViewState(view);
+    const hash = target === 'my-day' && view !== 'today' ? `#my-day/${view}` : `#${target}`;
+    if (window.location.hash !== hash) {
+      window.history.pushState(null, '', hash);
+      if (target === 'knowledge-hub') window.dispatchEvent(new Event('hashchange'));
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
+  const setMyDayView = useCallback((view: MyDayView) => {
+    setMyDayViewState(view);
+    const hash = view === 'today' ? '#my-day' : `#my-day/${view}`;
+    if (window.location.hash !== hash) window.history.pushState(null, '', hash);
   }, []);
 
   useEffect(() => {
@@ -192,7 +208,10 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
         window.history.replaceState(window.history.state, '', '#knowledge-hub');
       }
       const section = sectionFromHash(window.location.hash);
-      if (section) setActiveSectionState(section);
+      if (section) {
+        setActiveSectionState(section);
+        setMyDayViewState(myDayViewFromHash(window.location.hash));
+      }
       else if (!window.location.hash) setActiveSectionState('home');
     };
     restoreSection();
@@ -804,6 +823,8 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
         teamMembers,
         activeSection,
         setActiveSection,
+        myDayView,
+        setMyDayView,
         darkMode,
         setDarkMode,
         toggleDarkMode,

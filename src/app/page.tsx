@@ -6,14 +6,13 @@ import { useApp } from '@/context/AppContext';
 import type { NavigationSection } from '@/types';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-const DashboardSection = dynamic(() => import('@/components/dashboard/DashboardSection'), { loading: () => <SectionSkeleton label="Opening your space…" /> });
+// My Day holds today's view, My Insights and the Doctor report.
+const MyDaySection = dynamic(() => import('@/components/dashboard/MyDaySection'), { loading: () => <SectionSkeleton label="Opening your space…" /> });
 const QuickLogSection = dynamic(() => import('@/components/quicklog/QuickLogSection'), { loading: () => <SectionSkeleton label="Opening your space…" /> });
-const InsightsSection = dynamic(() => import('@/components/insights/InsightsSection'), { loading: () => <SectionSkeleton label="Opening your space…" /> });
 const FoodLibrarySection = dynamic(() => import('@/components/food/FoodLibrarySection'), { loading: () => <SectionSkeleton label="Opening your space…" /> });
 const AboutSection = dynamic(() => import('@/components/about/AboutSection'), { loading: () => <SectionSkeleton label="Opening your space…" /> });
 const FeedbackSection = dynamic(() => import('@/components/feedback/FeedbackSection'), { loading: () => <SectionSkeleton label="Opening your space…" /> });
 const DevicesSection = dynamic(() => import('@/components/devices/DevicesSection'), { loading: () => <SectionSkeleton label="Opening your space…" /> });
-const DoctorReportSection = dynamic(() => import('@/components/report/DoctorReportSection'), { loading: () => <SectionSkeleton label="Opening your space…" /> });
 import HypoEmergencyModal from '@/components/hypo/HypoEmergencyModal';
 import SectionSkeleton from '@/components/common/SectionSkeleton';
 import { AlertCircle, X } from 'lucide-react';
@@ -31,7 +30,7 @@ const LearnCommunitySection = dynamic(() => import('@/components/community/Learn
 
 function MainContent() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { activeSection, setActiveSection, localDataError, dismissLocalDataError, onboardingComplete } = useApp();
+  const { activeSection, setActiveSection, myDayView, localDataError, dismissLocalDataError, onboardingComplete } = useApp();
   const [landingSeen, setLandingSeen] = useState(true);
 
   useEffect(() => {
@@ -88,12 +87,11 @@ function MainContent() {
         {showLanding ? (
           <LandingPage onEnter={enterApp} />
         ) : (
-          <SectionErrorBoundary key={activeSection} sectionName={activeSection}>
+          <SectionErrorBoundary key={activeSection === 'my-day' ? `my-day-${myDayView}` : activeSection} sectionName={activeSection}>
             {activeSection === 'home' ? <HomeSection /> : <WorkspaceHeading />}
-            {activeSection === 'my-day' && <DashboardSection />}
+            {activeSection === 'my-day' && <MyDaySection />}
             {activeSection === 'devices' && <DevicesSection />}
             {activeSection === 'quick-log' && <QuickLogSection />}
-            {activeSection === 'insights' && <InsightsSection />}
             {activeSection === 'food-library' && <FoodLibrarySection />}
             {activeSection === 'learn-community' && <LearnCommunitySection />}
             {activeSection === 'knowledge-hub' && <KnowledgeHub />}
@@ -102,13 +100,12 @@ function MainContent() {
             {activeSection === 'about' && <AboutSection />}
             {activeSection === 'feedback' && <FeedbackSection />}
             {activeSection === 'legal' && <LegalSection />}
-            {activeSection === 'report' && <DoctorReportSection />}
           </SectionErrorBoundary>
         )}
       </main>
 
       <Footer />
-      {!showLanding && ['my-day', 'quick-log', 'food-library', 'insights', 'devices', 'report'].includes(activeSection) && <OnboardingDialog />}
+      {!showLanding && ['my-day', 'quick-log', 'food-library', 'devices'].includes(activeSection) && <OnboardingDialog />}
       <LocalReminderManager />
 
       {/* Global modals */}
