@@ -1,15 +1,14 @@
 import type { NavigationSection } from '@/types';
 
 export const NAVIGATION_SECTIONS: readonly NavigationSection[] = [
-  // insights and report are not listed: they open My Day on their own view (see sectionFromHash).
+  // insights and report resolve to devices where they are unified.
   'home', 'my-day', 'quick-log', 'food-library',
   'knowledge-hub', 't1d-essentials', 'go-to-doctors', 'about', 'feedback', 'devices', 'legal',
 ];
 
-// My Day holds three views: today's readings, My Insights, and the Doctor report.
+// Legacy views preserved for backward compatibility with existing links.
 export type MyDayView = 'today' | 'insights' | 'report';
 
-// Old section ids that now live inside My Day. Existing links such as #insights and #report keep working.
 export const LEGACY_MY_DAY_SECTIONS: readonly NavigationSection[] = ['insights', 'report'];
 
 export function myDayViewFromHash(hash: string): MyDayView {
@@ -24,6 +23,10 @@ export function sectionFromHash(hash: string): NavigationSection | null {
   const section = hash.replace(/^#/, '');
   if (section === 'learn-community') return 'knowledge-hub';
   if (section.startsWith('knowledge-hub/')) return 'knowledge-hub';
-  if (section.startsWith('my-day/') || LEGACY_MY_DAY_SECTIONS.includes(section as NavigationSection)) return 'my-day';
+  // Clubbed My Insights and Doctor report into the devices/sources page.
+  if (section === 'insights' || section === 'my-day/insights' || section === 'report' || section === 'my-day/report') {
+    return 'devices';
+  }
+  if (section.startsWith('my-day/')) return 'my-day';
   return NAVIGATION_SECTIONS.includes(section as NavigationSection) ? section as NavigationSection : null;
 }

@@ -29,11 +29,11 @@ test('all tool hashes resolve, while document anchors preserve the current tool'
   for (const anchor of ['#main-content', '#discover', '#unknown', '']) assert.equal(sectionFromHash(anchor), null);
 });
 
-test('old insights and report links open My Day on the matching view', () => {
-  assert.equal(sectionFromHash('#insights'), 'my-day');
-  assert.equal(sectionFromHash('#report'), 'my-day');
-  assert.equal(sectionFromHash('#my-day/insights'), 'my-day');
-  assert.equal(sectionFromHash('#my-day/report'), 'my-day');
+test('insights and report links resolve to unified devices section', () => {
+  assert.equal(sectionFromHash('#insights'), 'devices');
+  assert.equal(sectionFromHash('#report'), 'devices');
+  assert.equal(sectionFromHash('#my-day/insights'), 'devices');
+  assert.equal(sectionFromHash('#my-day/report'), 'devices');
   assert.equal(myDayViewFromHash('#insights'), 'insights');
   assert.equal(myDayViewFromHash('#my-day/insights'), 'insights');
   assert.equal(myDayViewFromHash('#report'), 'report');

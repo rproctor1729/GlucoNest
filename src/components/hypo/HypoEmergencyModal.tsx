@@ -168,7 +168,7 @@ export default function HypoEmergencyModal() {
                     className={`hypo-option ${
                       selected
                         ? 'border-rose-500 bg-rose-50/90 dark:border-rose-500 dark:bg-rose-950/40 ring-2 ring-rose-500/20'
-                        : 'border-slate-200 bg-slate-50/70 hover:border-rose-300 hover:bg-rose-50/30 dark:border-slate-700 dark:bg-slate-900/50 dark:hover:border-rose-500/50'
+                        : 'border-slate-200 bg-slate-50/70 hover:border-rose-300 hover:bg-rose-50/30 dark:border-slate-700 dark:bg-slate-900/50 dark:hover:border-rose-500/50 dark:hover:bg-rose-950/30'
                     }`}
                   >
                     <div className="hypo-option-top">

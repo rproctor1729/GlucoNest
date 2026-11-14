@@ -80,8 +80,8 @@ test('sidebar keeps route labels/order and provides only one Log entry', async (
   try {
     const main = [...document.querySelectorAll('nav[aria-label="Main navigation"] a')];
     const bottom = [...document.querySelectorAll('nav[aria-label="More navigation"] a')];
-    assert.deepEqual(main.map(link => link.getAttribute('href')), ['#my-day','#insights','#food-library','#knowledge-hub','#report']);
-    assert.deepEqual(main.map(link => link.getAttribute('aria-label')), ['My Day','My Insights','Food Library','T1D Knowledge Hub','Doctor report']);
+    assert.deepEqual(main.map(link => link.getAttribute('href')), ['#my-day','#food-library','#knowledge-hub','#t1d-essentials','#go-to-doctors']);
+    assert.deepEqual(main.map(link => link.getAttribute('aria-label')), ['My Day','Food Library','T1D Knowledge Hub','T1D Essentials','Our Go-To Doctors']);
     assert.deepEqual(bottom.map(link => link.getAttribute('href')), ['#devices','#feedback','#about']);
     assert.equal(document.querySelectorAll('button[aria-label="Log"]').length, 1);
     assert.equal(document.querySelector('nav a[href="#quick-log"]'), null);
@@ -105,10 +105,10 @@ test('collapsed rail retains names, focus tooltips and working collapse control'
   const view = await mount({ collapsed: true, onToggleCollapsed: () => toggled++ });
   try {
     assert.equal(document.querySelector('.product-sidebar').dataset.collapsed, 'true');
-    const link = document.querySelector('a[href="#insights"]');
+    const link = document.querySelector('a[href="#food-library"]');
     await act(async () => link.focus());
     assert.equal(document.activeElement, link);
-    assert.equal(document.querySelector('[role="tooltip"]').textContent, 'My Insights');
+    assert.equal(document.querySelector('[role="tooltip"]').textContent, 'Food Library');
     await view.click(document.querySelector('[aria-label="Expand sidebar"]'));
     assert.equal(toggled, 1);
     await view.render({ collapsed: false });

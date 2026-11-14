@@ -76,7 +76,18 @@ export default function DoctorReportSection() {
 
         {!hasReadings ? (
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            No glucose readings from your own data in this period yet. Connect Nightscout or import a CSV from Devices &amp; Data to include them.
+            No glucose readings from your own data in this period yet.{' '}
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('data-sources');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-nest-700 dark:text-nest-300 font-semibold underline inline cursor-pointer hover:text-nest-800 dark:hover:text-nest-200"
+            >
+              Connect Nightscout or import a CSV above
+            </button>{' '}
+            to include them.
           </p>
         ) : (
           <>

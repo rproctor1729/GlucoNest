@@ -23,6 +23,8 @@ import { parseGlucoseCsv, CsvGlucoseImport } from '@/lib/csvImport';
 import styles from './DevicesSection.module.css';
 import ReminderSettings from './ReminderSettings';
 import TargetRangeSettings from './TargetRangeSettings';
+import InsightsSection from '@/components/insights/InsightsSection';
+import DoctorReportSection from '@/components/report/DoctorReportSection';
 
 function formatTimestamp(timestamp: string | null) {
   if (!timestamp) return 'Not available';
@@ -196,8 +198,54 @@ export default function DevicesSection() {
     : 0;
 
   return (
-    <div className={`${styles.workspace} space-y-6 animate-fadeIn`}>
-      <div className={styles.sourceBar} role="status">
+    <div className={`${styles.workspace} space-y-10 animate-fadeIn`}>
+      {/* Quick Jump Bar */}
+      <nav aria-label="Devices and Insights sections" className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-slate-100/90 dark:bg-slate-900/70 w-fit max-w-full text-xs">
+        <a
+          href="#insights-overview"
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById('insights-overview')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="rounded-xl px-3.5 py-2 font-semibold text-slate-700 hover:text-slate-900 hover:bg-white/90 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+        >
+          📊 Glucose Insights
+        </a>
+        <a
+          href="#data-sources"
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById('data-sources')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="rounded-xl px-3.5 py-2 font-semibold text-slate-700 hover:text-slate-900 hover:bg-white/90 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+        >
+          🔌 Data Sources &amp; Devices
+        </a>
+        <a
+          href="#doctor-report"
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById('doctor-report')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="rounded-xl px-3.5 py-2 font-semibold text-slate-700 hover:text-slate-900 hover:bg-white/90 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+        >
+          🩺 Doctor Report
+        </a>
+      </nav>
+
+      {/* 1. Glucose Insights */}
+      <section id="insights-overview" aria-label="Glucose Insights" className="space-y-4">
+        <InsightsSection />
+      </section>
+
+      {/* 2. Devices and Data Sources */}
+      <div id="data-sources" className="space-y-6 pt-6 border-t border-slate-200/80 dark:border-slate-800">
+        <div className="flex flex-col gap-1">
+          <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">Connection &amp; files</p>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Devices &amp; Data Sources</h2>
+        </div>
+
+        <div className={styles.sourceBar} role="status">
         <div className={styles.sourceIdentity}>
           <span className={styles.sourceIcon}><Database size={20} aria-hidden="true" /></span>
           <div><p className={styles.eyebrow}>CURRENT GLUCOSE SOURCE</p>
@@ -506,6 +554,16 @@ export default function DevicesSection() {
       </div>
       <ReminderSettings />
       <TargetRangeSettings />
+      </div>
+
+      {/* 3. Doctor Report at the bottom */}
+      <section id="doctor-report" className="space-y-5 pt-8 border-t border-slate-200/80 dark:border-slate-800" aria-label="Doctor Report">
+        <div className="flex flex-col gap-1">
+          <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">Clinical summary</p>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Doctor Report</h2>
+        </div>
+        <DoctorReportSection />
+      </section>
     </div>
   );
 }

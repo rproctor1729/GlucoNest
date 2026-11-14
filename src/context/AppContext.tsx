@@ -182,35 +182,56 @@ export function AppProvider({ children, teamMembers = [] }: { children: React.Re
   const [activeSection, setActiveSectionState] = useState<NavigationSection>('home');
   const [myDayView, setMyDayViewState] = useState<MyDayView>('today');
   const setActiveSection = useCallback((section: NavigationSection) => {
-    // Old ids (insights, report) open My Day on the matching view.
-    const legacy = LEGACY_MY_DAY_SECTIONS.includes(section);
-    const target: NavigationSection = legacy ? 'my-day' : section;
-    const view: MyDayView = legacy ? (section as MyDayView) : 'today';
+    // Old ids (insights, report) open the combined devices & insights page.
+    const isDoctorReport = section === 'report';
+    const isInsights = section === 'insights';
+    const target: NavigationSection = (isDoctorReport || isInsights) ? 'devices' : section;
     setActiveSectionState(target);
-    setMyDayViewState(view);
-    const hash = target === 'my-day' && view !== 'today' ? `#my-day/${view}` : `#${target}`;
+    setMyDayViewState('today');
+    const hash = isDoctorReport ? '#devices#doctor-report' : isInsights ? '#devices#insights-overview' : `#${target}`;
     if (window.location.hash !== hash) {
       window.history.pushState(null, '', hash);
       if (target === 'knowledge-hub') window.dispatchEvent(new Event('hashchange'));
     }
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (isDoctorReport) {
+      window.setTimeout(() => {
+        const el = document.getElementById('doctor-report');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
   }, []);
 
   const setMyDayView = useCallback((view: MyDayView) => {
-    setMyDayViewState(view);
-    const hash = view === 'today' ? '#my-day' : `#my-day/${view}`;
-    if (window.location.hash !== hash) window.history.pushState(null, '', hash);
-  }, []);
+    if (view === 'insights') {
+      setActiveSection('insights');
+      return;
+    }
+    if (view === 'report') {
+      setActiveSection('report');
+      return;
+    }
+    setMyDayViewState('today');
+    if (window.location.hash !== '#my-day') window.history.pushState(null, '', '#my-day');
+  }, [setActiveSection]);
 
   useEffect(() => {
     const restoreSection = () => {
       if (window.location.hash === '#learn-community') {
         window.history.replaceState(window.history.state, '', '#knowledge-hub');
       }
-      const section = sectionFromHash(window.location.hash);
+      const hash = window.location.hash;
+      const section = sectionFromHash(hash);
       if (section) {
         setActiveSectionState(section);
-        setMyDayViewState(myDayViewFromHash(window.location.hash));
+        setMyDayViewState(myDayViewFromHash(hash));
+        if (hash === '#report' || hash.includes('doctor-report')) {
+          window.setTimeout(() => {
+            const el = document.getElementById('doctor-report');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 150);
+        }
       }
       else if (!window.location.hash) setActiveSectionState('home');
     };
