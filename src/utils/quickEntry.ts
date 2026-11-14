@@ -24,7 +24,6 @@ const CARBS_GRAMS = /(\d+(?:\.\d+)?)\s*(?:g|grams?)\b/i;
 const CARBS_WORD = /\b(?:carbs?|carbohydrates?)\s*(\d+(?:\.\d+)?)\b|\b(\d+(?:\.\d+)?)\s*carbs?\b/i;
 const MINUTES = /(\d+(?:\.\d+)?)\s*(minutes?|mins?|m|hours?|hrs?|h)\b/i;
 const BASAL_WORDS = /\b(basal|lantus|tresiba|glargine|levemir|degludec)\b/i;
-const RAPID_WORDS = /\b(rapid|bolus|novorapid|novolog|humalog|lispro|aspart)\b/i;
 const EXERCISE_WORDS = /\b(run|running|walk|walking|cycle|cycling|swim|swimming|gym|yoga|workout|exercise|cricket|football|dance|hike|jog|sport|sports)\b/i;
 
 function toMinutes(amount: number, unit: string): number {

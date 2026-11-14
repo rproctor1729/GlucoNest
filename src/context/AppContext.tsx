@@ -26,7 +26,7 @@ import {
   replaceDemoRecords,
 } from '../lib/localData';
 import { APP_LANGUAGES, type AppLanguage } from '../lib/i18n';
-import { LEGACY_MY_DAY_SECTIONS, myDayViewFromHash, sectionFromHash, type MyDayView } from '../lib/navigation';
+import { myDayViewFromHash, sectionFromHash, type MyDayView } from '../lib/navigation';
 import type { TeamMember } from '../data/teamMembers';
 import { mockPatternInsights } from '../data/mockInsights';
 import { educationalGuides } from '../data/educationalContent';
