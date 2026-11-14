@@ -11,6 +11,8 @@ import TimeInRangeRing from './TimeInRangeRing';
 import TodayCard from './TodayCard';
 import GlucoseDialGauge from './GlucoseDialGauge';
 import OneTapLogModal from './OneTapLogModal';
+import ReportGlucoseProfile from '@/components/report/ReportGlucoseProfile';
+import { calculateAgpProfile } from '@/utils/agp';
 import styles from './DashboardSection.module.css';
 import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ReferenceArea, ReferenceLine, Brush } from 'recharts';
 
@@ -21,6 +23,12 @@ export default function DashboardSection() {
   const [timeRange, setTimeRange] = useState<'3h' | '6h' | '12h' | '24h'>('24h');
   const [now, setNow] = useState(() => Date.now());
   const [glucoseDetailsExpanded, setGlucoseDetailsExpanded] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  // The profile is only calculated once the card is opened.
+  const profileReady = useMemo(
+    () => profileOpen && calculateAgpProfile(readings).filter(bucket => bucket.count >= 5).length >= 12,
+    [profileOpen, readings]
+  );
   const chartGradientId = useId();
   const [showTargetBand, setShowTargetBand] = useState(true);
   const [chartWindow, setChartWindow] = useState<{startIndex:number;endIndex:number} | null>(null);
@@ -274,6 +282,28 @@ export default function DashboardSection() {
           </span>
         </div>
       </div>}
+      {currentReading && (
+        <details
+          className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[var(--surface)] p-4 text-xs"
+          onToggle={(event) => setProfileOpen(event.currentTarget.open)}
+        >
+          <summary className="cursor-pointer text-sm font-semibold text-nest-700 dark:text-nest-300">
+            Time-of-day profile
+          </summary>
+          <p className="mt-1 text-slate-500 dark:text-slate-400">
+            How your glucose usually looks at each time of day, using all loaded readings.
+          </p>
+          {profileOpen && (profileReady ? (
+            <div className="mt-3">
+              <ReportGlucoseProfile readings={readings} unit={glucoseUnit} targetRange={targetRange} />
+            </div>
+          ) : (
+            <p className="mt-3 text-slate-500 dark:text-slate-400">
+              Not enough readings yet. This profile needs at least five readings in most half-hour slots across the day.
+            </p>
+          ))}
+        </details>
+      )}
       <TodayCard />
       {currentReading && <>
           <div className={styles.detailArea + ' border-slate-100 dark:border-slate-800'}><button type="button" aria-expanded={glucoseDetailsExpanded} aria-controls="glucose-details" className={styles.detailToggle + ' text-nest-700 dark:text-nest-300'} onClick={() => setGlucoseDetailsExpanded(v => !v)}>{glucoseDetailsExpanded ? translate(language,'dashboard.hideDetails') : translate(language,'dashboard.details')}<ChevronDown size={15} style={{transform:glucoseDetailsExpanded ? 'rotate(180deg)' : undefined}} /></button>
