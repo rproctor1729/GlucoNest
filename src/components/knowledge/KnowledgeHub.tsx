@@ -5,6 +5,9 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Activity, ArrowRight, BookOpen, ClipboardList, Dna, Footprints, Heart, Library, Microscope, Search, ShieldPlus, Sprout, Stethoscope, Syringe, Utensils, Users } from 'lucide-react';
 import { categories, categoryHref, guideHref, HUB, practicalGuides, pathways, searchTopics, topicById, topicHref, type LibraryItem } from '@/lib/knowledge';
 import TopicReader, { EmergencyNotice } from './TopicReader';
+import InsulinExplorer from './insulin/InsulinExplorer';
+import InsulinDetail from './insulin/InsulinDetail';
+import { INSULIN_HUB, insulinById } from '@/lib/insulinExplorer';
 import styles from './KnowledgeHub.module.css';
 
 const icons = [Syringe, Activity, Stethoscope, Microscope, Utensils, Footprints, ShieldPlus, Heart, ClipboardList, Users, Dna, Sprout];
@@ -37,6 +40,10 @@ export default function KnowledgeHub() {
   const allTopics = kind === 'topics' && !slug;
   const current = topic ?? guide;
   const path = kind === 'path' && !extra ? pathways.find(item => item.id === slug) : undefined;
+  // Insulin Explorer: #knowledge-hub/insulin (explorer) and #knowledge-hub/insulin/<id> (one product).
+  const insulinRoute = kind === 'insulin' && !extra;
+  const insulinExplorer = insulinRoute && !slug;
+  const insulin = insulinRoute && slug ? insulinById.get(slug) : undefined;
   const [query, setQuery] = useState('');
   const [limit, setLimit] = useState(12);
   const region = useRef<HTMLDivElement>(null);
@@ -48,15 +55,20 @@ export default function KnowledgeHub() {
   }, [hash]);
   function reset() { setQuery(''); setLimit(12); }
   const listing = Boolean(allTopics || category || query.trim());
-  const invalid = Boolean(kind && !current && !category && !path && !allTopics);
+  const invalid = Boolean(kind && !current && !category && !path && !allTopics && !insulinExplorer && !insulin);
   const results = searchTopics(query, category?.id);
   const lookup = (ids: string[]) => ids.map(id => topicById.get(id)!);
   return <div ref={region} className={styles.hub}>
     {kind && <nav className={styles.crumbs} aria-label="Knowledge Hub breadcrumb"><a href={HUB} onClick={reset}><Library size={16} />T1D Knowledge Hub</a>
       {current && <><span>/</span><a onClick={reset} href={categoryHref(current.category.id)}>{current.category.short}</a></>}
       {(current || category || path || allTopics) && <><span>/</span><span aria-current="page">{current?.title ?? category?.short ?? path?.title ?? 'All topics'}</span></>}
+      {insulinRoute && <><span>/</span>{insulin
+        ? <><a href={INSULIN_HUB} onClick={reset}>Insulin Explorer</a><span>/</span><span aria-current="page">{insulin.brands[0].name} · {insulin.concentration}</span></>
+        : <span aria-current="page">Insulin Explorer</span>}</>}
     </nav>}
     {invalid ? <section><h1 tabIndex={-1}>Topic unavailable</h1><a href={HUB}>Browse the Knowledge Hub</a></section> :
+    insulinExplorer ? <InsulinExplorer /> :
+    insulin ? <InsulinDetail key={insulin.id} record={insulin} /> :
     topic ? <TopicReader key={topic.id} topic={topic} /> :
     guide ? <article className={styles.article}><header className={styles.readerHead}><p className={styles.meta}>{guide.category.short} · {guide.guide.readTime}</p>
       <h1 tabIndex={-1}>{guide.title}</h1><p className={styles.intro}>{guide.guide.summary}</p></header>
@@ -87,7 +99,9 @@ export default function KnowledgeHub() {
         {results.length ? <TopicLinks items={results.slice(0, limit)} /> : <p>No matches. Try “low sugar”, “CGM” or “carbs”, or choose All categories.</p>}
         {limit < results.length && <button className={styles.control} onClick={() => setLimit(limit + 12)}>Show more topics</button>}
       </section> : <>
-        <div className={styles.paths}>{pathways.map(item => <a key={item.id} href={HUB + '/path/' + item.id}><BookOpen size={20} /><span>{item.title}<small>{item.ids.length} lessons</small></span><ArrowRight size={18} /></a>)}</div>
+        <div className={styles.paths}>
+          <a href={INSULIN_HUB}><Syringe size={20} /><span>Insulin Explorer – Know Your Insulin<small>From mealtime bolus to background basal, discover how different insulins work and what makes them unique.</small></span><ArrowRight size={18} /></a>
+          {pathways.map(item => <a key={item.id} href={HUB + '/path/' + item.id}><BookOpen size={20} /><span>{item.title}<small>{item.ids.length} lessons</small></span><ArrowRight size={18} /></a>)}</div>
         <section><div className={styles.sectionHead}><h2>Browse by subject</h2><a href={HUB + '/topics'}>View all topics</a></div><div className={styles.categories}>{categories.map((item, index) => {
           const Icon = icons[index];
           return <a key={item.id} href={categoryHref(item.id)}><Icon size={23} strokeWidth={1.5} /><span><strong>{item.short}</strong><small>{item.description}</small></span></a>;
